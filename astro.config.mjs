@@ -3,8 +3,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://classpaddev.github.io/wiki/',
-	base: '/wiki/',
+	site: 'https://classpaddev.github.io/wiki',
+	base: '/wiki',
 	integrations: [
 		starlight({
 			title: 'Classpad Dev',

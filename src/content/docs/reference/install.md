@@ -12,7 +12,7 @@ If you need help or support feel free to join our [Discord Community](https://di
 
 ## Disclaimer
 
-:::danger
+:::caution
 A little disclaimer about possible effects is needed :
 - I AM NOT RESPONSIBLE FOR ANY DAMAGE YOU MAY DO TO YOUR fx-CP400.  
 - I AM NOT LIABLE IF YOU BRICK OR OTHERWISE DAMAGE YOUR CALCULATOR.  
