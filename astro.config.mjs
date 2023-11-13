@@ -10,7 +10,7 @@ export default defineConfig({
 			title: 'Classpad Dev',
 			description: 'Dive into the Classpad II fx-CP400! Unlock the full potential of the Classpad with our SDK and create your own app',
 			logo: {
-				src: './src/assets/favicon.png',
+				src: './src/assets/favicon.svg',
 			},
 			editLink: {
 				baseUrl: 'https://github.com/classpaddev/wiki/edit/main/',
