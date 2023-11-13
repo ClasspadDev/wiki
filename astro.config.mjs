@@ -38,7 +38,7 @@ export default defineConfig({
 				}
 			],
 			lastUpdated: true,
-			favicon: './src/assets/favicon.png',
+			favicon: './src/assets/favicon.svg',
 		}),
 	],
 });
