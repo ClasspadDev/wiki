@@ -1,0 +1,14 @@
+
+.card-app, .card-game {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    border-radius: 0.5rem;
+}
+
+.card-app {
+    background: linear-gradient(225deg, #00dc684d, transparent);
+}
+
+.card-game {
+    background: linear-gradient(225deg, #5989E84d, transparent);
+}

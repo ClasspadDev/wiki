@@ -21,7 +21,15 @@ export default defineConfig({
 			},
 			sidebar: [
 				{
+					label: 'Get Started',
+					items: [
+						{ label: 'Introduction', link: '/getting-started/introduction/' },
+					],
+				},
+				{
 					label: 'Guides',
+					collapsed: true,
+					autogenerate: { directory: 'guides' },
 					items: [
 						// Each item here is one entry in the navigation menu.
 						{ label: 'Example Guide', link: '/guides/example/' },
@@ -29,16 +37,29 @@ export default defineConfig({
 				},
 				{
 					label: 'Reference',
+					collapsed: true,
 					autogenerate: { directory: 'reference' },
 				},
 				{
+					label: 'Tutorials',
+					autogenerate: { directory: 'tutorials' },
+				},
+				{
+					label: 'Examples',
+					autogenerate: { directory: 'examples' },
+				},
+				{
 					label: 'Developer Notes',
+					collapsed: true,
 					badge: { text: 'WIP', variant: 'caution' },
 					autogenerate: { directory: 'dev' },
 				}
 			],
 			lastUpdated: true,
 			favicon: './src/assets/favicon.svg',
+			customCss: [
+				'./src/custom.css'
+			]
 		}),
 	],
 });

@@ -1,0 +1,145 @@
+---
+title: Introduction
+description: Hollyhock2 aims to simplify, streamline, and optimize Classpad development, prioritizing an intuitive and high-performance experience for developers.
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+HollyHock2 operates as a modification (mod) for Classpad calculators, utilizing a **custom ROM** for enhanced functionality to make your calculator do even more **awesome things**. To make HHK work, you gotta **install it on your calculator**. If you haven't done this yet, we have a **simple guide** to help you out. Just go to our **[🛠️ calculator patching guide](/wiki/reference/install/)** to learn how to do it.
+
+:::tip[HollyHock2 community]
+Let's just talk about our **Discord community** for a second. HollyHock2 is a project led by the community, meaning **everyone** plays a part in **making it better**. So, if you ever have **questions** or want to be part of **something cool**, **[💬 Join our Discord community](https://discord.gg/knpcNJTzpd)** ! We're all about making HHK awesome together.
+:::
+
+## Instant Coding using online codespace
+
+The **easiest way** to start is by setting up a **Github Codespace**. You'll get **coding instantly** without the hassle of installations or long downloads. **No need for local setups**—our integrated online IDE with Git makes coding a breeze. Follow our **step-by-step guide** in our online sandboxes to get your **app from code to ready** to use app:
+
+
+<CardGrid>
+    <div class="card-app">
+        <LinkCard
+            title="📱 Application template"
+            href="https://github.com/theRainbowPhoenix/CpAppTemplate#cpapptemplate"
+            description="Discover how to build your own applications for Classpad using our Application template"
+        />
+    </div>
+    <div class="card-game">
+        <LinkCard
+            title="🎮 Game template"
+            href="https://github.com/TheRainbowPhoenix/CPGameTemplate#cpgametemplate"
+            description="Dive into game development for Classpad with our Game template."
+        />
+    </div>
+</CardGrid>
+
+
+> *If GitHub prompts for login, you'll need to **create a GitHub account** to use Codespaces. Don't worry, it's a **quick and free** process! Plus, enjoy 120 hours of free usage per month – more than enough to dive into coding, create cool apps, and kickstart your development journey*.
+
+For advanced users, alternative methods are available, but **for beginners**, we highly **recommend** starting with **Codespaces** for the **quickest and user-friendly experience**. Dive into **coding effortlessly** and build your projects with confidence by taking a look at the **following tutorial** : 
+
+<LinkCard
+        title="🧩 Beginner's Guide"
+        href="/wiki/tutorials/beginners-guide"
+        description="Step-by-step tutorial for a smooth start with Codespaces and other advanced setup options. <b>Learn how to :</b><br/>
+        - Draw colored shapes and text on the screen <br/>
+        - Interact with keyboard"
+/>
+
+*Below that point are instructions for **advanced users**. You may skip them if you have successfuly setup the codespace.*
+
+---
+
+## Docker Setup 
+
+:::caution
+Using docker is currently a **WIP feature**, as it powers the Github codespace as it and **is not battle tested**.
+You may need **extra setup** to get it work with your workflow
+:::
+
+If you need to troubleshoot or adapt this Docker image, you can take a look at [the source of the DevEnv](https://github.com/TheRainbowPhoenix/sh4-devenv-gitpod).
+
+First you'll need to pull the latest release of the SH4 devenv :
+
+`docker pull pho3be/sh4devenvgitpod`
+
+Then run a bash, and you'll get into the docker image :
+
+`docker run -it -p 8080:8080 pho3be/sh4devenvgitpod bash`
+
+You can now clone a template and start building
+
+```bash
+su - dev
+# password is dev
+git clone https://github.com/TheRainbowPhoenix/CPAppTemplate.git
+cd CPAppTemplate
+ls
+# you don't have the app or anything
+cat WELCOME.txt
+make all
+ls
+# now you have both the .bin and .hhk ready to get installed onto your classpad !
+```
+
+You may want to setup the [VSCode remote host](https://code.visualstudio.com/remote/advancedcontainers/develop-remote-host), use the default [VSCode devcontainers configuration](https://code.visualstudio.com/docs/devcontainers/containers), or even go with a [custom code-server](https://github.com/coder/code-server)
+
+### Docker and code-server
+
+With code-server you may need to `sudo apt update && sudo apt install curl` first.
+
+Then install code-server with `curl -fsSL https://code-server.dev/install.sh | sh`
+
+Take note of the code-server password on `cat /home/dev/.config/code-server/config.yaml`
+
+Finally run it with `code-server --bind-addr 0.0.0.0:8080`
+
+You can now open your browser to the [127.0.0.1:8080](http://127.0.0.1:8080), enter the password.
+
+VS Code should prompt you to install recommended extensions. I advise you to do so as they'll make your development experience a breeze !
+
+Accept when asked about "installing clangd" and reload the window. Then it should be okay ! 
+
+![VS Code with C++ and ClangD ready to be used](/wiki/img/vscode-browser.png)
+
+## Using the pre-built compiler
+:::tip
+The pre-built is tailored for **Windows** users only – *for now*.
+:::
+
+To use the pre-built compiler for HollyHock2, follow these simple steps:
+
+1. **Download the Files:**
+   Go to [SH4-cross-mingw Releases](https://github.com/TheRainbowPhoenix/SH4-cross-mingw/releases) and download three files:
+   - `build-all.zip`: Contains SH4 gcc for Windows and some helpers.
+   - `tests.zip`: Includes test projects, build scripts, and make.
+   - `hollyhock-2.zip`: The compiled SDK with the source.
+
+2. **Create a Folder:**
+   Create a new folder on your computer and name it, for example, "hhk".
+
+3. **Extract Files:**
+   - Extract the contents of `build-all.zip`. The "out" folder should be extracted to the root of your "hhk" folder.
+   - Extract the contents of `hollyhock-2.zip` to the root of the "hhk" folder.
+   - Extract the contents of `tests.zip` to the "hhk" folder.
+
+4. **Prepare for Build:**
+   Navigate to the `tests/CPAppTemplate-main` folder and remove the `.hhk` and `.bin` files.
+
+5. **Open CMD:**
+   Open a Command Prompt (CMD) at the path of `tests/CPAppTemplate-main`:
+   - Navigate to the folder's address bar, type "cmd", and press Enter.
+
+6. **Build the App:**
+   In the Command Prompt, type and execute the command: `build.bat`. This will build the app `hhk` and `bin`.
+
+Your development environment is now set up, and you can start exploring and building with HollyHock2.
+
+
+## Local SDK with WSL2
+
+<LinkCard
+        title="Install with WSL2 on Windows"
+        href="/wiki/reference/sdk/"
+        description="Detailed guide on how to build the cross compiler to your local device"
+/>
