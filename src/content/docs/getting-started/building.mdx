@@ -1,0 +1,31 @@
+---
+title: Building your app
+description: Learn the process of building your Classpad app from the SDK.
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+If your devev is ready to be used, you shall be able to run the `make` command from the command line.  
+
+Building your Classpad app involves using the `make` command, a powerful tool for automating the compilation process.
+When you run `make bin`, it compiles your source code into a binary file.
+Similarly, `make hhk` generates an elf file for HollyHock2 but thoses are not recommended anymore.
+
+## On the codespace / remote VSCode
+
+From the "**Explorer**" (*Ctrl + Shift + E*) panel at the top left, right click on the "main.cpp" file and choose "**Open in integrated terminal**"
+
+![Right click on the "main.cpp" and open in terminal](/wiki/img/tutorials/main-open-in-term.png)
+
+Inside the terminal, enter the following text : `make bin`
+
+You should now see a file on the tree view ending with "**.bin**" (maybe *app_template.bin*). Right click on it and choose "**Download...**"
+
+Now, **plug your calculator** and put this file on the **root folder of the calculator** (not the *Autoimport*, the very **root folder that opens**).
+
+Finally, unplug your calculator and on the *menu → System → Hollyhock-2 Launcher* and you should see your app on the list.
+
+:::tip[Not seeing your app ?]
+The app should be present on the **root of the calculator**, not into a subfolder. 
+Also, there's **sometime error** while copying the file. If so **try again one more time** just to be sure. 
+:::

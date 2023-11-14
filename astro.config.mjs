@@ -24,6 +24,7 @@ export default defineConfig({
 					label: 'Get Started',
 					items: [
 						{ label: 'Introduction', link: '/getting-started/introduction/' },
+						{ label: 'Building', link: '/getting-started/building/' },
 					],
 				},
 				{
