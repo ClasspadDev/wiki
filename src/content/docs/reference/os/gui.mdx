@@ -1,0 +1,35 @@
+---
+title: GUI
+description: Functions and classes to create/display GUI elements.
+---
+
+:::caution
+This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui.hpp)
+:::
+
+
+__Example:__ Display a simple dialog with a label
+
+![The dialog as shown on the calculator, with "Dialog Title" as title and "Label Text" as body](/wiki/img/gui/dialog_label.png)
+
+Here we are using a [GUIDialog](../../gui/dialog/) that's wrapping a [GUILabel](../../gui/label/). The code should look like this : 
+
+```cpp
+GUIDialog dialog(
+    GUIDialog::Height25,
+    GUIDialog::AlignTop,
+    "Dialog Title",
+    GUIDialog::KeyboardStateABC
+);
+
+GUILabel label(
+    dialog.GetLeftX() + 10,
+    dialog.GetTopY() + 10,
+    "Label Text"
+);
+dialog.AddElement(label);
+
+dialog.ShowDialog();
+```
+Where the [Height25](../../gui/dialog/#Height25) means 1/4 of the screen height, and [AlignTop](../../gui/dialog/#AlignTop) that it'll be top-aligned, fixed to screen top.
+The [KeyboardStateABC](../../gui/dialog/#KeyboardStateABC) is a flag indicating what the keyboard should display if called on this dialog. Here the "ABC" tells it'll be the standard "abc" keyboard when pressing the "Keyboard" key.  

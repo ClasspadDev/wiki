@@ -27,19 +27,38 @@ export default defineConfig({
 						{ label: 'Building', link: '/getting-started/building/' },
 					],
 				},
-				{
-					label: 'Guides',
-					collapsed: true,
-					autogenerate: { directory: 'guides' },
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', link: '/guides/example/' },
-					],
-				},
+				// {
+				// 	label: 'Guides',
+				// 	collapsed: true,
+				// 	autogenerate: { directory: 'guides' },
+				// 	items: [
+				// 		// Each item here is one entry in the navigation menu.
+				// 		{ label: 'Example Guide', link: '/guides/example/' },
+				// 	],
+				// },
 				{
 					label: 'Reference',
 					collapsed: true,
-					autogenerate: { directory: 'reference' },
+					items: [
+						{
+							label: '📱 GUI',
+							collapsed: true,
+							autogenerate: { directory: 'reference/gui' },
+
+						},
+						{
+							label: '📟 OS',
+							collapsed: true,
+							autogenerate: { directory: 'reference/os' },
+
+						},
+						{
+							label: '🧮 CPU',
+							collapsed: true,
+							autogenerate: { directory: 'reference/cpu' },
+
+						}
+					]
 				},
 				{
 					label: 'Tutorials',

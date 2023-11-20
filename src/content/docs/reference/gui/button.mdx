@@ -1,0 +1,83 @@
+---
+title: Button
+description: GUIButton
+---
+
+Buttons are a fundamental GUI element that provides a clickable area with an associated action. They are commonly used in dialogs and serve as a convenient way for users to interact with the touchscreen. Below is a simplified documentation for the `GUIButton` class.
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/button.hpp) if you need more details.
+:::
+
+## Constructor
+
+```c
+GUIButton(
+    uint16_t leftX, uint16_t topY, uint16_t rightX, uint16_t bottomY,
+    const char *text,
+    uint16_t eventID
+)
+```
+
+Creates a **basic button** with the specified dimensions and text.
+
+- `leftX`: x-coordinate of the left side of the button.
+- `topY`: y-coordinate of the top side of the button.
+- `rightX`: x-coordinate of the right side of the button.
+- `bottomY`: y-coordinate of the bottom side of the button.
+- `text`: text displayed on the button, indicating the action it performs.
+- `eventID`: A unique identifier associated with the button, typically used to handle button clicks.
+
+### Optional "flags" 
+
+```c
+GUIButton(
+    uint16_t leftX, uint16_t topY, uint16_t rightX, uint16_t bottomY,
+    const char *text,
+    uint16_t eventID, int flags
+)
+```
+
+Creates a **basic button** with the flag capacity. *For now*, the only flag known is the "FlagEnabled" and could be found on the [GUIButton.Flag](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/button.hpp#L7) enum.
+
+
+## Usage
+
+Let's create a button that says "Click Me !" :
+
+![A button that says "Click Me !"](/wiki/img/gui/button_clickme.png)
+
+
+```c++
+// parent is the dialog or parent container
+
+// the BUTTON_CLICK_EVENT_ID on click
+const uint16_t BUTTON_CLICK_EVENT_ID = 1;
+
+GUIButton m_buttonOK = new GUIButton(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 40,
+    parent.GetLeftX() + 10 + 95, // width of 95
+    parent.GetTopY() + 40 + 30  //  height of 30
+    "Click Me !",
+    BUTTON_CLICK_EVENT_ID
+);
+
+// ...
+
+// On the parent.OnEvent, here a GUIDialog :
+virtual int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event) {
+    if (event->GetEventID() == BUTTON_CLICK_EVENT_ID) {
+        // TODO: do some action
+        return 0;
+    }
+    // If we don't process the event, let the base class process it.
+    return GUIDialog::OnEvent(dialog, event);
+}
+```
+
+### Use in C++ dialog
+
+:::caution
+This section is **not finished**, but you can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example
+:::

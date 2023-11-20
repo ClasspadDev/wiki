@@ -1,0 +1,34 @@
+---
+title: Debug
+description: Functions useful during debugging
+---
+
+:::caution
+This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/debug.hpp)
+:::
+
+
+It can be useful to print text or numbers to the screen whilst debugging, without creating a full GUI, or pause execution and wait for a key press.
+Thoroughly recommended only for debugging - prefer GUI elements for user-facing input/output!
+```cpp
+// Print "Hello, world!" at 0, 0 in black on white
+Debug_SetCursorPosition(0, 0);
+Debug_PrintString("Hello, world!", false);
+
+// Print "Inverted text" at 1, 1 in white on black
+Debug_SetCursorPosition(1, 1);
+Debug_PrintString("Inverted text", true);
+
+// Print the number 0x1322 at 3, 7
+Debug_PrintNumberHex_Word(0x1322, 3, 7);
+
+// Print small text with a format string
+Debug_Printf(20, 20, false, 0, "Format strings are %s in %d!", "cool", 2018);
+
+// Draw the changes we made to VRAM onto the LCD
+// Defined in sdk/os/lcd.hpp
+LCD_Refresh();
+
+// Block until the user presses a key
+Debug_WaitKey();
+```
