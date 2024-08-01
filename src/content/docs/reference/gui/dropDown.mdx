@@ -1,8 +1,227 @@
 ---
 title: Drop Down Menu
-description: GUIDropDownMenuItem
+description: GUIDropDownMenu and GUIDropDownMenuItem
 ---
 
-:::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/dropDown.hpp)
+Drop down menus are versatile GUI elements that allow users to select from a list of options. The `GUIDropDownMenu` class, along with the `GUIDropDownMenuItem` class, provides a robust implementation of this functionality. Below is the detailed documentation for these classes.
+
+:::tip[Need code?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/dropDown.hpp) if you need more details.
 :::
+
+## GUIDropDownMenu
+
+### Constructor
+
+```c++
+GUIDropDownMenu(
+    uint16_t leftX, uint16_t topY, uint16_t rightX, uint16_t bottomY,
+    uint16_t eventID
+)
+```
+
+Creates a **drop down menu** with the specified bounding box and event ID.
+
+- `leftX`, `topY`, `rightX`, `bottomY`: Coordinates defining the bounding box of the drop down menu.
+- `eventID`: The event ID for the drop down menu.
+
+### Methods
+
+#### SetScrollBarVisibility
+
+```c++
+void SetScrollBarVisibility(ScrollBarVisibility visibility)
+```
+
+Sets the visibility of the scroll bar.
+
+- `visibility`: One of the `ScrollBarVisibility` enum values:
+  - `ScrollBarHidden`: Always hide the scroll bar.
+  - `ScrollBarAlwaysVisible`: Always show the scroll bar.
+  - `ScrollBarVisibleWhenRequired`: Show the scroll bar only when required.
+
+#### AddMenuItem
+
+```c++
+void AddMenuItem(GUIDropDownMenuItem &dropDownMenuItem)
+```
+
+Adds a menu item to the drop down menu.
+
+- `dropDownMenuItem`: The menu item to add.
+
+## GUIDropDownMenuItem
+
+### Constructor
+
+```c++
+GUIDropDownMenuItem(const char *s, int idx, int flags)
+```
+
+Creates a **drop down menu item** with the specified text, index, and flags.
+
+- `s`: The text displayed for the menu item.
+- `idx`: The index of the menu item.
+- `flags`: A bitfield of flags specified by bitwise-ORing members of the `Flag` enum (e.g., `FlagTextAlignRight`, `FlagTextAlignLeft`, `FlagEnabled`).
+
+### Flags
+
+#### FlagTextAlignRight
+
+```c++
+FlagTextAlignRight = 1 << 5
+```
+
+Aligns the text of the item within the drop down to the right.
+
+#### FlagTextAlignLeft
+
+```c++
+FlagTextAlignLeft = 1 << 6
+```
+
+Aligns the text of the item within the drop down to the left.
+
+#### FlagEnabled
+
+```c++
+FlagEnabled = 1 << 15
+```
+
+Allows the item to be selected.
+
+## Usage
+
+Here's an example that demonstrates the creation and usage of a drop down menu with multiple items:
+
+```c++
+// parent is the dialog or parent container
+
+const uint16_t APP_NAMES_EVENT_ID = 1;
+
+GUIDropDownMenu m_appNames(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 10,
+    parent.GetRightX() - 10,
+    parent.GetBottomY() - 10,
+    APP_NAMES_EVENT_ID
+);
+
+// Adding items to the drop down menu
+m_appNames.AddMenuItem(*(
+    new GUIDropDownMenuItem(
+        "Option 1", 1,
+        GUIDropDownMenuItem::FlagEnabled | GUIDropDownMenuItem::FlagTextAlignLeft
+    )
+));
+
+m_appNames.AddMenuItem(*(
+    new GUIDropDownMenuItem(
+        "Option 2", 2,
+        GUIDropDownMenuItem::FlagEnabled | GUIDropDownMenuItem::FlagTextAlignLeft
+    )
+));
+
+m_appNames.SetScrollBarVisibility(
+    GUIDropDownMenu::ScrollBarVisibleWhenRequired
+);
+
+parent.AddElement(m_appNames);
+```
+
+### Example Dialog Implementation
+
+A real world usage example dialog class that uses the `GUIDropDownMenu` and `GUIDropDownMenuItem` is the actual 
+[Hollyhock 2 Launcher](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/launcher/main.cpp#L53)
+
+### Fruits Picker dialog
+
+```c++
+#include <sdk/os/debug.hpp>
+#include <sdk/os/gui.hpp>
+#include <sdk/os/lcd.hpp>
+#include <sdk/os/mem.hpp>
+#include <sdk/os/string.hpp>
+
+class FruitSelector : public GUIDialog {
+public:
+    int m_selectedFruitIndex;
+
+    FruitSelector() : GUIDialog(
+        GUIDialog::Height95, GUIDialog::AlignTop,
+        "What's the best fruit?",
+        GUIDialog::KeyboardStateNone
+    ), m_fruitDropDown(
+        GetLeftX() + 10, GetTopY() + 10, GetRightX() - 10, GetTopY() + 50,
+        FRUIT_DROPDOWN_EVENT_ID
+    ), m_selectedFruitLabel(
+        GetLeftX() + 10, GetTopY() + 60, GetRightX() - 10, GetTopY() + 100,
+        "The best fruit is: None selected"
+    ), m_selectButton(
+        GetLeftX() + 10, GetTopY() + 110, GetRightX() - 10, GetTopY() + 145,
+        "Select", SELECT_BUTTON_EVENT_ID
+    ) {
+        const char *fruits[] = {"Apple", "Banana", "Orange", "Grape", "Mango"};
+        const int numFruits = sizeof(fruits) / sizeof(fruits[0]);
+
+        for (int i = 0; i < numFruits; ++i) {
+            m_fruitDropDown.AddMenuItem(*(
+                new GUIDropDownMenuItem(
+                    fruits[i], i,
+                    GUIDropDownMenuItem::FlagEnabled | GUIDropDownMenuItem::FlagTextAlignLeft
+                )
+            ));
+        }
+
+        m_fruitDropDown.SetScrollBarVisibility(
+            GUIDropDownMenu::ScrollBarVisibleWhenRequired
+        );
+
+        AddElement(m_fruitDropDown);
+        AddElement(m_selectedFruitLabel);
+        AddElement(m_selectButton);
+    }
+
+    virtual int OnEvent(GUIDialog_Wrapped *dialog, GUIDialog_OnEvent_Data *event) {
+        if (event->GetEventID() == SELECT_BUTTON_EVENT_ID) {
+            UpdateSelectedFruit();
+            return 0;
+        }
+
+        if (event->GetEventID() == FRUIT_DROPDOWN_EVENT_ID && (event->type & 0xF) == 0xD) {
+            m_selectedFruitIndex = event->data;
+            return 0;
+        }
+
+        return GUIDialog::OnEvent(dialog, event);
+    }
+
+    void UpdateSelectedFruit() {
+        const char *fruits[] = {"Apple", "Banana", "Orange", "Grape", "Mango"};
+        const int numFruits = sizeof(fruits) / sizeof(fruits[0]);
+
+        if (m_selectedFruitIndex >= 0 && m_selectedFruitIndex < numFruits) {
+            char labelText[100];
+            snprintf(labelText, sizeof(labelText), "The best fruit is: %s", fruits[m_selectedFruitIndex]);
+            m_selectedFruitLabel.SetText(labelText);
+            m_selectedFruitLabel.Refresh();
+            Refresh();
+        }
+    }
+
+private:
+    const uint16_t FRUIT_DROPDOWN_EVENT_ID = 1;
+    const uint16_t SELECT_BUTTON_EVENT_ID = 2;
+
+    GUIDropDownMenu m_fruitDropDown;
+    GUILabel m_selectedFruitLabel;
+    GUIButton m_selectButton;
+};
+
+void main() {
+    FruitSelector fruitSelector;
+    fruitSelector.ShowDialog();
+}
+```
+
+This example creates a dialog with a drop down menu containing a list of fruits ("Apple", "Banana", "Orange", "Grape", "Mango"). There is a label initially displaying "The best fruit is: None selected" and a button labeled "Select". When the button is pressed, the label is updated to show the selected fruit.
