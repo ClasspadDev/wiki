@@ -3,6 +3,102 @@ title: radioButton
 description: GUIRadioButton
 ---
 
+Radio buttons are essential GUI elements that allow users to select one option from a set. They are commonly used in forms and dialogs. Below is the detailed documentation for the `GUIRadioButton` class.
+
+:::tip[Need code?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/radioButton.hpp) if you need more details.
+:::
+
+## Constructor
+
+```c
+GUIRadioButton(
+    int x, int y,
+    const char *text,
+    int flags
+)
+```
+
+Creates a **radio button** with the specified position, text, and flags.
+
+- `x`: x-coordinate of the radio button's position.
+- `y`: y-coordinate of the radio button's position.
+- `text`: text displayed to the right-hand side of the radio button.
+- `flags`: A bitfield of flags specified by bitwise-ORing members of the `Flag` enum (e.g., `FlagSelected`, `FlagEnabled`).
+
+## Flags
+
+### FlagSelected
+
+```c++
+FlagSelected = 1 << 2
+```
+
+Causes the radio button to be selected by default.
+
+### FlagEnabled
+
+```c++
+FlagEnabled = 1 << 15
+```
+
+Makes the radio button interactive.
+
+## Usage
+
+Let's create two radio buttons labeled "Option 1" and "Option 2":
+
+![Radio buttons labeled "Option 1" and "Option 2"](/wiki/img/gui/radiobutton_options.png)
+
+```c++
+// parent is the dialog or parent container
+
+const int radioFlags = GUIRadioButton::FlagEnabled;
+
+GUIRadioButton m_radioButtonOption1 = new GUIRadioButton(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 30,
+    "Option 1",
+    radioFlags | GUIRadioButton::FlagSelected
+);
+
+GUIRadioButton m_radioButtonOption2 = new GUIRadioButton(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 60,
+    "Option 2",
+    radioFlags
+);
+
+const uint16_t RADIO_BUTTON_OPTION1_ID = 1;
+const uint16_t RADIO_BUTTON_OPTION2_ID = 2;
+
+// ...
+
+// On the parent.OnEvent, here a GUIDialog:
+virtual int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event) {
+    uint16_t eventID = event->GetEventID();
+    if (eventID == RADIO_BUTTON_OPTION1_ID || eventID == RADIO_BUTTON_OPTION2_ID) {
+        // Deselect both radio buttons
+        m_radioButtonOption1->SetFlags(m_radioButtonOption1->GetFlags() & ~GUIRadioButton::FlagSelected);
+        m_radioButtonOption2->SetFlags(m_radioButtonOption2->GetFlags() & ~GUIRadioButton::FlagSelected);
+
+        // Select the clicked radio button
+        if (eventID == RADIO_BUTTON_OPTION1_ID) {
+            m_radioButtonOption1->SetFlags(m_radioButtonOption1->GetFlags() | GUIRadioButton::FlagSelected);
+        } else if (eventID == RADIO_BUTTON_OPTION2_ID) {
+            m_radioButtonOption2->SetFlags(m_radioButtonOption2->GetFlags() | GUIRadioButton::FlagSelected);
+        }
+
+        // TODO: handle radio button selection change
+        return 0;
+    }
+    // If we don't process the event, let the base class process it.
+    return GUIDialog::OnEvent(dialog, event);
+}
+```
+
+### Use in C++ dialog
+
 :::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/radioButton.hpp)
+This section is **not finished**, but you can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example.
 :::
