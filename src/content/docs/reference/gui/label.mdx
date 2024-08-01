@@ -3,6 +3,92 @@ title: Label
 description: GUILabel
 ---
 
+Labels are essential GUI elements that provide static text displays. They are commonly used to show information or instructions on the touchscreen. Below is the detailed documentation for the `GUILabel` class.
+
+:::tip[Need code?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/label.hpp) if you need more details.
+:::
+
+## Constructor
+
+```c
+GUILabel(
+    int x, int y, const char *text
+)
+```
+
+Creates a **basic label** with the specified position and text.
+
+- `x`: x-coordinate of the label's position.
+- `y`: y-coordinate of the label's position.
+- `text`: text displayed by the label.
+
+### Optional "flags"
+
+```c
+GUILabel(
+    int x, int y,
+    const char *text,
+    int flags,
+    uint16_t *textColor, uint16_t *backgroundColor
+)
+```
+
+Creates a **label** with the capacity for flags and color customization.
+
+- `flags`: Optional flags for the label's behavior (e.g., `FlagBackground`, `FlagSelectable`).
+- `textColor`: Color of the text displayed by the label.
+- `backgroundColor`: Background color of the label.
+
+```c
+GUILabel(
+    int x, int y,
+    const char *text,
+    int flags,
+    uint16_t *textColor, uint16_t *backgroundColor,
+    bool showShadow, uint16_t shadowColor
+)
+```
+
+Creates a **label** with the capacity for flags, color customization, and shadow effects.
+
+- `showShadow`: Boolean indicating if the label should display a shadow.
+- `shadowColor`: Color of the shadow.
+
+## Usage
+
+Let's create a label that says "Hello, World!":
+
+![A label that says "Hello, World!"](/wiki/img/gui/label_helloworld.png)
+
+```c++
+// parent is the dialog or parent container
+
+GUILabel m_labelHelloWorld = new GUILabel(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 20,
+    "Hello, World!"
+);
+
+// ...
+
+// If you need to handle flags and colors:
+const int labelFlags = GUILabel::FlagBackground | GUILabel::FlagSelectable;
+uint16_t textColor = 0xFFFF; // White
+uint16_t backgroundColor = 0x0000; // Black
+
+GUILabel m_labelCustom = new GUILabel(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 50,
+    "Custom Label",
+    labelFlags,
+    &textColor, &backgroundColor,
+    true, 0x7BEF // Gray shadow
+);
+```
+
+### Use in C++ dialog
+
 :::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/label.hpp)
+This section is **not finished**, but you can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example.
 :::
