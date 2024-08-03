@@ -3,13 +3,73 @@ title: Debug
 description: Functions useful during debugging
 ---
 
-:::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/debug.hpp)
+:::tip[Debug Methods]
+Those methods are not made to be used in a normal calculator usage.
+
+It is still possible to rely on them, but please consider alternatives (Like GUI) before doing `Debug_Printf`.
+
+Check them on the [Usage](#usage) and [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/debug.hpp)
 :::
 
 
-It can be useful to print text or numbers to the screen whilst debugging, without creating a full GUI, or pause execution and wait for a key press.
-Thoroughly recommended only for debugging - prefer GUI elements for user-facing input/output!
+## Overview
+Debug methods should be called inside a prepared environment, so be sure to do both a `calcInit()`, `calcEnd()` and some manual `LCD_Refresh()` when using them.
+
+Some of the debug methods use a cursor position internally, which can be changed using `Debug_SetCursorPosition`. Units are character size and not pixels, so setting the cursor at `(1,1)` means the second line second character.
+
+## Methods
+
+### Set Cursor Position
+```cpp
+void Debug_GetCursorPosition(int x, int y);
+void Debug_GetCursorPosition(int *x, int *y);
+```
+`x` and `y` are the position of the cursor in character size.
+
+### Print String
+```cpp
+bool Debug_PrintString(const char *string, bool invert);
+```
+Prints a `string` in debug text mode, either in normal black-on-white or inverted white-on-black (controlled by the `invert` parameter)
+
+### Print Advanced String
+```cpp
+void Debug_Printf(int x, int y, bool invert, int zero, const char *format, ...);
+```
+Print a formatted string in small debug text mode, either in normal black-on-white or inverted white-on-black (controlled by the `invert` parameter)
+
+Supports most format specifiers:
+- `%s` for strings
+- `%d` for decimals
+
+Check the [Usage](#usage) on how to use it.
+
+### Print Hex
+```cpp
+void Debug_PrintNumberHex_Nibble(uint8_t value, int x, int y);
+void Debug_PrintNumberHex_Byte(uint8_t value, int x, int y);
+void Debug_PrintNumberHex_Word(uint16_t value, int x, int y);
+void Debug_PrintNumberHex_Dword(uint32_t value, int x, int y);
+```
+Depending on the `value`:
+- nibble are 4-bit number
+- byte are 8-bit number
+- word are 16-bit number
+- Dword are 32-bit number
+
+
+### Waits for a key
+```cpp
+int Debug_WaitKey();
+```
+Waits until a key is pressed, then returns a number representing the key.
+
+More details about its return and behavior in the [SDK source code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/debug.hpp#L126)
+
+
+
+
+## Usage 
 ```cpp
 // Print "Hello, world!" at 0, 0 in black on white
 Debug_SetCursorPosition(0, 0);
@@ -23,6 +83,7 @@ Debug_PrintString("Inverted text", true);
 Debug_PrintNumberHex_Word(0x1322, 3, 7);
 
 // Print small text with a format string
+Debug_Printf(10, 10, false, 0, "Just one number : %d", 42);
 Debug_Printf(20, 20, false, 0, "Format strings are %s in %d!", "cool", 2018);
 
 // Draw the changes we made to VRAM onto the LCD
