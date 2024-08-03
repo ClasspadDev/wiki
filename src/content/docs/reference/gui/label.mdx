@@ -5,6 +5,10 @@ description: GUILabel
 
 Labels are essential GUI elements that provide static text displays. They are commonly used to show information or instructions on the touchscreen. Below is the detailed documentation for the `GUILabel` class.
 
+
+![A label that says "Hello World !" to you](/wiki/img/gui/label.png)
+
+
 :::tip[Need code?]
 You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/label.hpp) if you need more details.
 :::
@@ -59,7 +63,7 @@ Creates a **label** with the capacity for flags, color customization, and shadow
 
 Let's create a label that says "Hello, World!":
 
-![A label that says "Hello, World!"](/wiki/img/gui/label_helloworld.png)
+![A label that says "Hello, World!"](/wiki/img/gui/label.png)
 
 ```c++
 // parent is the dialog or parent container
@@ -67,7 +71,7 @@ Let's create a label that says "Hello, World!":
 GUILabel m_labelHelloWorld = new GUILabel(
     parent.GetLeftX() + 10,
     parent.GetTopY() + 20,
-    "Hello, World!"
+    "Hello World !"
 );
 
 // ...
@@ -89,6 +93,22 @@ GUILabel m_labelCustom = new GUILabel(
 
 ### Use in C++ dialog
 
-:::caution
-This section is **not finished**, but you can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example.
+:::tip[Need code ?]
+You can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example
 :::
+
+```c++
+// ...
+
+class LabelDialog : public GUIDialog {
+public:
+  LabelDialog()
+      : GUIDialog(Height35, AlignCenter, "Label Dialog", KeyboardStateNone),
+        m_myLabel(GetLeftX() + 10, GetTopY() + 10, "Hello World, I'm the label text c(^w^c ) !") {
+    AddElement(m_myLabel);
+  }
+
+private:
+  GUILabel m_myLabel;
+};
+```

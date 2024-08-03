@@ -5,6 +5,8 @@ description: GUIButton
 
 Buttons are a fundamental GUI element that provides a clickable area with an associated action. They are commonly used in dialogs and serve as a convenient way for users to interact with the touchscreen. Below is a simplified documentation for the `GUIButton` class.
 
+![A button that says "Click Me !"](/wiki/img/gui/button_clickme.png)
+
 :::tip[Need code ?]
 You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/button.hpp) if you need more details.
 :::
@@ -78,6 +80,36 @@ virtual int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_D
 
 ### Use in C++ dialog
 
-:::caution
-This section is **not finished**, but you can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example
+:::tip[Need code ?]
+You can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example
 :::
+
+```cpp
+// ...
+
+class ButtonDialog : public GUIDialog {
+public:
+  ButtonDialog()
+      : GUIDialog(Height35, AlignCenter, "Button Dialog", KeyboardStateNone),
+        m_myBtn(GetLeftX() + 10, GetTopY() + 55, GetRightX() - 10,
+                   GetTopY() + 85, "Button Text", BUTTON_MY_EVENT_ID) {
+    AddElement(m_myBtn);
+  }
+
+  virtual int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event) {
+    if (event->GetEventID() == BUTTON_CLICK_EVENT_ID) {
+        // TODO: do some action
+        return 0;
+    }
+    // If we don't process the event, let the base class process it.
+    return GUIDialog::OnEvent(dialog, event);
+  }
+
+private:
+  // use a custom event id here or just the GUIDialog::DialogResult*
+  static const int BUTTON_MY_EVENT_ID = 1;
+
+  GUIButton m_myBtn;
+};
+
+```

@@ -5,6 +5,10 @@ description: GUIDropDownMenu and GUIDropDownMenuItem
 
 Drop down menus are versatile GUI elements that allow users to select from a list of options. The `GUIDropDownMenu` class, along with the `GUIDropDownMenuItem` class, provides a robust implementation of this functionality. Below is the detailed documentation for these classes.
 
+![A dropdown button that says "test"](/wiki/img/gui/dropdown_test.png)
+
+
+
 :::tip[Need code?]
 You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/dropDown.hpp) if you need more details.
 :::
@@ -136,91 +140,101 @@ A real world usage example dialog class that uses the `GUIDropDownMenu` and `GUI
 
 ### Fruits Picker dialog
 
+It's important to note a few things there:
+- MenuItem index starts at 1, not 0
+- You can't size the dropdown button, only the dropdown popup dialog
+
 ```c++
+
+#include <appdef.hpp>
 #include <sdk/os/debug.hpp>
 #include <sdk/os/gui.hpp>
 #include <sdk/os/lcd.hpp>
 #include <sdk/os/mem.hpp>
 #include <sdk/os/string.hpp>
 
+/*
+ * Fill this section in with some information about your app.
+ * All fields are optional - so if you don't need one, take it out.
+ */
+APP_NAME("DropDown dialog app")
+APP_DESCRIPTION("Testing a DropDown with a button")
+APP_AUTHOR("Demo")
+APP_VERSION("1.0.0")
+
 class FruitSelector : public GUIDialog {
 public:
-    int m_selectedFruitIndex;
+  int m_selectedFruitIndex;
 
-    FruitSelector() : GUIDialog(
-        GUIDialog::Height95, GUIDialog::AlignTop,
-        "What's the best fruit?",
-        GUIDialog::KeyboardStateNone
-    ), m_fruitDropDown(
-        GetLeftX() + 10, GetTopY() + 10, GetRightX() - 10, GetTopY() + 50,
-        FRUIT_DROPDOWN_EVENT_ID
-    ), m_selectedFruitLabel(
-        GetLeftX() + 10, GetTopY() + 60, GetRightX() - 10, GetTopY() + 100,
-        "The best fruit is: None selected"
-    ), m_selectButton(
-        GetLeftX() + 10, GetTopY() + 110, GetRightX() - 10, GetTopY() + 145,
-        "Select", SELECT_BUTTON_EVENT_ID
-    ) {
-        const char *fruits[] = {"Apple", "Banana", "Orange", "Grape", "Mango"};
-        const int numFruits = sizeof(fruits) / sizeof(fruits[0]);
+  FruitSelector()
+      : GUIDialog(GUIDialog::Height95, GUIDialog::AlignTop,
+                  "What's the best fruit?", GUIDialog::KeyboardStateNone),
+        m_fruitDropDown(GetLeftX() + 10, GetTopY() + 10, GetRightX() - 10,
+                        // You  can't size the dropdown picker element, only the
+                        // dropdown menu size
+                        GetBottomY() - 10, FRUIT_DROPDOWN_EVENT_ID),
+        m_selectedFruitTextBox(GetLeftX() + 10, GetTopY() + 60,
+                               GetRightX() - 10, GetTopY() + 100,
+                               "The best fruit is: None selected"),
+        m_selectButton(GetLeftX() + 10, GetTopY() + 110, GetRightX() - 10,
+                       GetTopY() + 145, "Select", SELECT_BUTTON_EVENT_ID) {
+    const char *fruits[] = {"Apple", "Banana", "Orange", "Grape", "Mango"};
+    const int numFruits = sizeof(fruits) / sizeof(fruits[0]);
 
-        for (int i = 0; i < numFruits; ++i) {
-            m_fruitDropDown.AddMenuItem(*(
-                new GUIDropDownMenuItem(
-                    fruits[i], i,
-                    GUIDropDownMenuItem::FlagEnabled | GUIDropDownMenuItem::FlagTextAlignLeft
-                )
-            ));
-        }
-
-        m_fruitDropDown.SetScrollBarVisibility(
-            GUIDropDownMenu::ScrollBarVisibleWhenRequired
-        );
-
-        AddElement(m_fruitDropDown);
-        AddElement(m_selectedFruitLabel);
-        AddElement(m_selectButton);
+    for (int i = 0; i < numFruits; ++i) {
+      m_fruitDropDown.AddMenuItem(*(new GUIDropDownMenuItem(
+          fruits[i], i + 1, // off-by-one, indexes begin at 1 for the DropDown
+          GUIDropDownMenuItem::FlagEnabled |
+              GUIDropDownMenuItem::FlagTextAlignLeft)));
     }
 
-    virtual int OnEvent(GUIDialog_Wrapped *dialog, GUIDialog_OnEvent_Data *event) {
-        if (event->GetEventID() == SELECT_BUTTON_EVENT_ID) {
-            UpdateSelectedFruit();
-            return 0;
-        }
+    m_fruitDropDown.SetScrollBarVisibility(
+        GUIDropDownMenu::ScrollBarVisibleWhenRequired);
 
-        if (event->GetEventID() == FRUIT_DROPDOWN_EVENT_ID && (event->type & 0xF) == 0xD) {
-            m_selectedFruitIndex = event->data;
-            return 0;
-        }
+    AddElement(m_fruitDropDown);
+    AddElement(m_selectedFruitTextBox);
+    AddElement(m_selectButton);
+  }
 
-        return GUIDialog::OnEvent(dialog, event);
+  virtual int OnEvent(GUIDialog_Wrapped *dialog,
+                      GUIDialog_OnEvent_Data *event) {
+    if (event->GetEventID() == SELECT_BUTTON_EVENT_ID) {
+      UpdateSelectedFruit();
+      return 0;
     }
 
-    void UpdateSelectedFruit() {
-        const char *fruits[] = {"Apple", "Banana", "Orange", "Grape", "Mango"};
-        const int numFruits = sizeof(fruits) / sizeof(fruits[0]);
-
-        if (m_selectedFruitIndex >= 0 && m_selectedFruitIndex < numFruits) {
-            char labelText[100];
-            snprintf(labelText, sizeof(labelText), "The best fruit is: %s", fruits[m_selectedFruitIndex]);
-            m_selectedFruitLabel.SetText(labelText);
-            m_selectedFruitLabel.Refresh();
-            Refresh();
-        }
+    if (event->GetEventID() == FRUIT_DROPDOWN_EVENT_ID &&
+        (event->type & 0xF) == 0xD) {
+      m_selectedFruitIndex = event->data - 1; // -1 to fox the off-by-one
+      return 0;
     }
+
+    return GUIDialog::OnEvent(dialog, event);
+  }
+
+  void UpdateSelectedFruit() {
+    const char *fruits[] = {"Apple", "Banana", "Orange", "Grape", "Mango"};
+    const int numFruits = sizeof(fruits) / sizeof(fruits[0]);
+
+    if (m_selectedFruitIndex >= 0 && m_selectedFruitIndex < numFruits) {
+      m_selectedFruitTextBox.SetText(fruits[m_selectedFruitIndex]);
+      Refresh();
+    }
+  }
 
 private:
-    const uint16_t FRUIT_DROPDOWN_EVENT_ID = 1;
-    const uint16_t SELECT_BUTTON_EVENT_ID = 2;
+  const uint16_t FRUIT_DROPDOWN_EVENT_ID = 1;
+  const uint16_t SELECT_BUTTON_EVENT_ID = 2;
 
-    GUIDropDownMenu m_fruitDropDown;
-    GUILabel m_selectedFruitLabel;
-    GUIButton m_selectButton;
+  GUIDropDownMenu m_fruitDropDown;
+  GUITextBox m_selectedFruitTextBox;
+  GUIButton m_selectButton;
 };
 
-void main() {
-    FruitSelector fruitSelector;
-    fruitSelector.ShowDialog();
+int main() {
+  FruitSelector fruitSelector;
+  fruitSelector.ShowDialog();
+  return 0;
 }
 ```
 

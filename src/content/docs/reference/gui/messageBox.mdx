@@ -1,7 +1,14 @@
 ---
-title: displayMessageBox
+title: Message Box
 description: GUI_DisplayMessageBox
 ---
+
+Messages Box are mainly used by the system and aren't meant to be widely used. 
+
+Basically, the `GUI_DisplayMessageBox` only accept system-defined messages, and it's not really useful in most cases. To display custom messages like the following, you'd rather use the `GUI_DisplayMessageBox_Internal` and pass your own messages. 
+
+![A message box showing how it looks on the calculator](/wiki/img/gui/messagebox_small.png)
+
 
 ## GUI_DisplayMessageBox_Internal
 
@@ -20,7 +27,7 @@ void *GUI_DisplayMessageBox_Internal(
 
 ### Parameters
 
-- `unknown`: An unknown parameter.
+- `unknown`: An unknown parameter. [help us find out !](/wiki/dev/helping#studying-the-rom)
 - `titleString`: A string to use for the message box's title.
 - `contentPrefix`: A string to prefix the content with.
 - `contentString`: A string to use for the message box's content.
@@ -74,7 +81,7 @@ void GUI_DisplayMessageBox(int unknown, int titleStringID, int contentStringID);
 
 ### Parameters
 
-- `unknown`: An unknown parameter.
+- `unknown`: An unknown parameter. [help us find out !](/wiki/dev/helping#studying-the-rom)
 - `titleStringID`: The ID of the string to use for the message box's title.
 - `contentStringID`: The ID of the string to use for the message box's content.
 

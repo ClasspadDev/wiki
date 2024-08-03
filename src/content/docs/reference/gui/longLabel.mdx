@@ -1,8 +1,92 @@
 ---
-title: longLabel
+title: Long Label
 description: GUILongLabel
 ---
 
-:::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/longLabel.hpp)
+Long Labels are simply [labels](../label) elements that supports multiple lines and text overflow. They are generally used on dialogs and message boxes.
+
+
+![A long label that shows multiple lines and line breaks](/wiki/img/gui/long_label.png)
+
+
+:::tip[Need code?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/longLabel.hpp) if you need more details.
 :::
+
+## Constructor
+
+```c
+GUILongLabel(
+    uint16_t leftX, uint16_t topY, uint16_t rightX, uint16_t bottomY,
+    const char *text
+);
+```
+
+Creates a **long label** with the specified rectangular bounds and text.
+
+- `leftX`: The x-coordinate of the label's left boundary.
+- `topY`: The y-coordinate of the label's top boundary.
+- `rightX`: The x-coordinate of the label's right boundary.
+- `bottomY`: The y-coordinate of the label's bottom boundary.
+- `text`: The text displayed by the label.
+
+## Methods
+
+### Set Text
+
+```c++
+void SetText(const char *text);
+```
+
+Sets the text of the long label.
+
+- `text`: The new text to be displayed.
+
+### Refresh
+
+```c++
+void Refresh();
+```
+
+Refreshes the long label to reflect any changes made to its properties or text.
+
+## Usage
+
+Let's create a long label that displays a multiline message:
+
+![A long label that shows multiple lines and line breaks](/wiki/img/gui/long_label.png)
+
+```c++
+// parent is the dialog or parent container
+
+GUILongLabel m_longLabelMessage = new GUILongLabel(
+    parent.GetLeftX() + 10,
+    parent.GetTopY() + 20,
+    parent.GetLeftX() + 210,
+    parent.GetTopY() + 120,
+    "I'm a long label ? You know what that means - I don't care about overflow. Hey look :\n - A new line !"
+);
+
+// Update the text later if needed
+m_longLabelMessage->SetText("Updated text for the long label.\nThis should also wrap properly.");
+m_longLabelMessage->Refresh();
+```
+
+### Use in C++ dialog
+
+```c++
+// ...
+
+class LongLabelDialog : public GUIDialog {
+public:
+  LongLabelDialog()
+      : GUIDialog(Height50, AlignCenter, "Long Label Dialog", KeyboardStateNone),
+        m_myLongLabel(GetLeftX() + 10, GetTopY() + 10, GetLeftX() + 310, GetTopY() + 110,
+                      "Hello World, this is a long label text!\nIt can span multiple lines and handle text wrapping.") {
+    AddElement(m_myLongLabel);
+  }
+
+private:
+  GUILongLabel m_myLongLabel;
+};
+```
