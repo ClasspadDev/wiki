@@ -3,6 +3,90 @@ title: Dialog
 description: GUIDialog
 ---
 
-:::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/dialog.hpp)
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/dialog.hpp) if you need more details.
 :::
+
+
+The `GUIDialog` is one of the most common way to compose visual elements, represented as a dialog window. It provides a simple way to create a dialog with a specified height, alignment, title, and keyboard state (if the keyboard is visible or not when opening). Dialogs can contain various elements, such as labels, buttons, and text boxes.
+
+### Constructor
+
+```cpp
+GUIDialog(
+    enum Height height,
+    enum Alignment alignment,
+    const char* title,
+    enum KeyboardState keyboard
+);
+```
+Creates a **dialog** with given title. Child element such as labels need to be added later with `AddElement()`.
+
+## Enums
+
+The `GUIDialog` class defines the following enums:
+
+### Height
+Height is the percentage of the screen taken by the dialog. Possible values are:
+- `Height25`
+- `Height35`
+- `Height55`
+- `Height60`
+- `Height75`
+- `Height95`
+
+### Alignment
+- `AlignTop`
+- `AlignCenter`
+- `AlignBottom`
+
+### KeyboardState
+Indicate in which state the keyboard should be when the dialog is shown. Values are: 
+- `KeyboardStateNone` (keyboard is hidden)
+- `KeyboardStateMath1`
+- `KeyboardStateMath2`
+- `KeyboardStateMath3`
+- `KeyboardStateTrig`
+- `KeyboardStateVar`
+- `KeyboardStateABC`
+- `KeyboardStateCatalog`
+- `KeyboardStateAdvance`
+- `KeyboardStateNumber`
+
+### DialogResult
+- `DialogResultOK`
+- `DialogResultCancel`
+
+## Member Functions
+
+- `int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event);`
+- `uint16_t GetLeftX();`
+- `uint16_t GetTopY();`
+- `uint16_t GetRightX();`
+- `uint16_t GetBottomY();`
+- `void AddElement(GUIElement &element);`
+- `void Refresh();`
+- `DialogResult ShowDialog();`
+
+## Usage
+
+This element is used in both the [main launcher](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/launcher/main.cpp#L14) and the [demo gui](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/demos/demo_gui/main.cpp#L8)
+
+### Display a Simple Dialog with a Label
+
+```cpp
+GUIDialog dialog(
+    GUIDialog::Height25, GUIDialog::AlignTop,
+    "Dialog Title",
+    GUIDialog::KeyboardStateABC
+);
+
+GUILabel label(
+    dialog.GetLeftX() + 10,
+    dialog.GetTopY() + 10,
+    "Label Text"
+);
+dialog.AddElement(label);
+
+dialog.ShowDialog();
+```
