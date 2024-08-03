@@ -5,8 +5,9 @@ description: GUIRadioButton
 
 Radio buttons are essential GUI elements that allow users to select one option from a set. They are commonly used in forms and dialogs. Below is the detailed documentation for the `GUIRadioButton` class.
 
-:::tip[Need code?]
-You can jump right to the [👨‍💻 Usage](#usage) or refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/radioButton.hpp) if you need more details.
+:::caution
+The radio buttons are an **Untested feature**, and no real world usage have been done so far. 
+You can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/radioButton.hpp) if you need more details, but feature described here may not work
 :::
 
 ## Constructor
@@ -48,7 +49,7 @@ Makes the radio button interactive.
 
 Let's create two radio buttons labeled "Option 1" and "Option 2":
 
-![Radio buttons labeled "Option 1" and "Option 2"](/wiki/img/gui/radiobutton_options.png)
+![Radio buttons labeled "Option 1" and "Option 2"](/wiki/img/gui/radio_button.png)
 
 ```c++
 // parent is the dialog or parent container
@@ -100,5 +101,5 @@ virtual int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_D
 ### Use in C++ dialog
 
 :::caution
-This section is **not finished**, but you can take a look at the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) for a complete example.
+No test have passed using this feature and it is considered as **unstable**. Feel free to try and create examples from it.
 :::
