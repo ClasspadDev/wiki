@@ -3,13 +3,14 @@ title: textBox
 description: GUITextBox
 ---
 
+The `GUITextBox` class is used to create and manage text box elements in the GUI.
+
+![Sample text box screenshot](/wiki/img/gui/textBox.png)
+
+
 :::tip[Need code ?]
 You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/textBox.hpp) if you need more details.
 :::
-
-## GUITextBox
-
-The `GUITextBox` class is used to create and manage text box elements in the GUI.
 
 ### Public Types
 
@@ -90,11 +91,23 @@ This component is part of the [👨‍💻 demo gui](https://github.com/SnailMat
 Below is a simple dialog that repeats the input text on a label when clicking the button:
 
 ```cpp
+#include <appdef.hpp>
+#include <sdk/calc/calc.hpp>
 #include <sdk/os/debug.hpp>
 #include <sdk/os/gui.hpp>
 #include <sdk/os/lcd.hpp>
 #include <sdk/os/mem.hpp>
 #include <sdk/os/string.hpp>
+
+/*
+ * Fill this section in with some information about your app.
+ * All fields are optional - so if you don't need one, take it out.
+ */
+APP_NAME("Tutorial textBox app")
+APP_DESCRIPTION("Testing a textBox")
+APP_AUTHOR("Demo")
+APP_VERSION("1.0.0")
+
 
 class MyDialog : public GUIDialog {
 public:
