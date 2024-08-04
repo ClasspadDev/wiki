@@ -1,0 +1,267 @@
+---
+title: String
+description: Functions for manipulating C-style strings.
+---
+
+## Overview
+
+This API provides basic string manipulation functions, similar to those found in the C standard library.
+
+- **strcat**: Concatenates two strings.
+- **strchr**: Finds the first occurrence of a character in a string.
+- **strcmp**: Compares two strings.
+- **strcpy**: Copies a string.
+- **strlen**: Returns the length of a string.
+
+## Methods
+
+### strcat
+
+Concatenates the source string to the destination string.
+
+```cpp
+extern "C"
+char *strcat(char *dest, const char *src);
+```
+
+- **Parameters**:
+  - `dest`: The destination string.
+  - `src`: The source string.
+- **Returns**: A pointer to the destination string.
+
+**Example:**
+
+```cpp
+char dest[50] = "Hello, ";
+char src[] = "World!";
+strcat(dest, src);
+// dest now contains "Hello, World!"
+```
+
+
+### strchr
+
+Finds the first occurrence of a character in a string.
+
+```cpp
+extern "C"
+const char *strchr(const char *str, char c);
+```
+
+- **Parameters**:
+  - `str`: The string to search.
+  - `c`: The character to find.
+- **Returns**: A pointer to the first occurrence of the character, or `NULL` if the character is not found.
+
+**Example:**
+
+```cpp
+const char str[] = "Hello, World!";
+char c = 'W';
+const char *p = strchr(str, c);
+// p points to "World!"
+```
+
+### strcmp
+
+Compares two strings.
+
+```cpp
+extern "C"
+int strcmp(const char *str1, const char *str2);
+```
+
+- **Parameters**:
+  - `str1`: The first string.
+  - `str2`: The second string.
+- **Returns**: An integer less than, equal to, or greater than zero if `str1` is found, respectively, to be less than, to match, or be greater than `str2`.
+
+**Example:**
+
+```cpp
+const char str1[] = "Hello";
+const char str2[] = "World";
+int result = strcmp(str1, str2);
+// result is negative because "Hello" is less than "World"
+```
+
+### strcpy
+
+Copies the source string to the destination string.
+
+```cpp
+extern "C"
+char *strcpy(char *destination, const char *source);
+```
+
+- **Parameters**:
+  - `destination`: The destination string.
+  - `source`: The source string.
+- **Returns**: A pointer to the destination string.
+
+**Example:**
+
+```cpp
+char dest[50];
+const char src[] = "Hello, World!";
+strcpy(dest, src);
+// dest now contains "Hello, World!"
+```
+
+### strlen
+
+Returns the length of a string.
+
+```cpp
+extern "C"
+int strlen(const char *str);
+```
+
+- **Parameters**:
+  - `str`: The string to measure.
+- **Returns**: The length of the string, excluding the null terminator.
+
+**Example:**
+
+```cpp
+const char str[] = "Hello, World!";
+int length = strlen(str);
+// length is 13
+```
+
+## Usage
+
+### Concatenating Strings
+
+```cpp
+#include <sdk/os/string.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/lcd.hpp>
+
+// Add headers and app definition here ...
+
+int main() {
+    calcInit(); // Initialize the screen
+
+    char dest[50] = "Hello, ";
+    const char *src = "World!";
+    
+    strcat(dest, src);
+    
+    Debug_Printf(0,0,false,0, "%s", dest); // Output: Hello, World!
+    
+    LCD_Refresh();
+    calcEnd(); // Restore the screen to the initial state
+
+    return 0;
+}
+```
+
+### Finding a Character in a String
+
+```cpp
+#include <sdk/os/string.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/lcd.hpp>
+
+// Add headers and app definition here ...
+
+int main() {
+    calcInit(); // Initialize the screen
+
+    const char *str = "Hello, World!";
+    char c = 'W';
+    
+    const char *p = strchr(str, c);
+    if (p) {
+        Debug_Printf(0,0,false,0, "Character found: %c", *p); // Output: Character found: W
+    } else {
+        Debug_Printf(0,0,false,0, "Character not found");
+    }
+
+    LCD_Refresh();
+    calcEnd(); // Restore the screen to the initial state
+
+    return 0;
+}
+```
+
+### Comparing Strings
+
+```cpp
+#include <sdk/os/string.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/lcd.hpp>
+
+// Add headers and app definition here ...
+
+int main() {
+    calcInit(); // Initialize the screen
+
+    const char *str1 = "Hello";
+    const char *str2 = "World";
+    
+    int result = strcmp(str1, str2);
+    if (result < 0) {
+        Debug_Printf(0,0,false,0, "str1 is less than str2\n");
+    } else if (result == 0) {
+        Debug_Printf(0,0,false,0, "str1 is equal to str2\n");
+    } else {
+        Debug_Printf(0,0,false,0, "str1 is greater than str2\n");
+    }
+
+    LCD_Refresh();
+    calcEnd(); // Restore the screen to the initial state
+
+    return 0;
+}
+```
+
+### Copying a String
+
+```cpp
+#include <sdk/os/string.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/lcd.hpp>
+
+// Add headers and app definition here ...
+
+int main() {
+    calcInit(); // Initialize the screen
+
+    char dest[50];
+    const char *src = "Hello, World!";
+    
+    strcpy(dest, src);
+    Debug_Printf(0,0,false,0, "%s\n", dest); // Output: Hello, World!
+    
+    LCD_Refresh();
+    calcEnd(); // Restore the screen to the initial state
+
+    return 0;
+}
+```
+
+### Getting the Length of a String
+
+```cpp
+#include <sdk/os/string.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/lcd.hpp>
+
+// Add headers and app definition here ...
+
+int main() {
+    calcInit(); // Initialize the screen
+
+    const char *str = "Hello, World!";
+    
+    int length = strlen(str);
+    Debug_Printf(0,0,false,0, "Length of string: %d\n", length); // Output: Length of string: 13
+    
+    LCD_Refresh();
+    calcEnd(); // Restore the screen to the initial state
+
+    return 0;
+}
+```

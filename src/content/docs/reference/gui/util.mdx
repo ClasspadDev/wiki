@@ -3,6 +3,9 @@ title: Primitives & Utils
 description: GUIElement
 ---
 
-:::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/util.hpp)
-:::
+Internally, every GUI component are based off a `GUIElement` class. Not much is to be said about it, but please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/util.hpp) if you need to extends them.
+
+The C++ classes wrap their C call to make them easier to use using virtual tables, as shown in the SDK.
+
+It is thought that internally the GUI is based on an older version of [PEG - Portable Embded GUI](https://www.smxrtos.com/gui.htm), that is now NXP proprietary.
+

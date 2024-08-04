@@ -1,0 +1,103 @@
+---
+title: Message Box
+description: GUI_DisplayMessageBox
+---
+
+Messages Box are mainly used by the system and aren't meant to be widely used. 
+
+Basically, the `GUI_DisplayMessageBox` only accept system-defined messages, and it's not really useful in most cases. To display custom messages like the following, you'd rather use the `GUI_DisplayMessageBox_Internal` and pass your own messages. 
+
+![A message box showing how it looks on the calculator](/wiki/img/gui/messagebox_small.png)
+
+
+## GUI_DisplayMessageBox_Internal
+
+The `GUI_DisplayMessageBox_Internal` function displays a message box with specified title, content, and optional buttons.
+
+### Constructor
+
+```cpp
+void *GUI_DisplayMessageBox_Internal(
+    int unknown,
+    const char *titleString,
+    const char *contentPrefix, const char *contentString,
+    int buttons, bool disableCloseButton
+);
+```
+
+### Parameters
+
+- `unknown`: An unknown parameter. [help us find out !](/wiki/dev/helping#studying-the-rom)
+- `titleString`: A string to use for the message box's title.
+- `contentPrefix`: A string to prefix the content with.
+- `contentString`: A string to use for the message box's content.
+- `buttons`: A bitfield specifying which buttons to show. Possible values are:
+  - `BUTTON_OK`
+  - `BUTTON_YES`
+  - `BUTTON_NO`
+  - `BUTTON_ABORT`
+  - `BUTTON_RETRY`
+  - `BUTTON_CANCEL`
+- `disableCloseButton`: Set to `true` to disable the close button.
+
+### Usage
+
+Below is an example taken from the message box that [displays after running a program](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/launcher/main_bootstrap.cpp#L14):
+
+```cpp
+#include <sdk/os/gui.hpp>
+
+void showInternalMessageBox() {
+    // Display a message box with a title, content prefix, and main content.
+    // No buttons are specified, and the close button is not disabled.
+    GUI_DisplayMessageBox_Internal(
+        0,
+        "Program",
+        "run.bin", "The program has finished execution.",
+        0, false
+    );
+}
+
+void main() {
+    showInternalMessageBox();
+}
+```
+
+### Notes
+
+- The `buttons` parameter allows you to specify up to 3 buttons by bitwise OR'ing the button macros.
+- If no buttons are specified and the close button is disabled, it becomes impossible to exit the message box.
+- The usage of the 4th bit in the `buttons` bitfield is unknown, but it may shrink the title bar's black box.
+
+## GUI_DisplayMessageBox
+
+The `GUI_DisplayMessageBox` function displays a message box with a specified title and content, retrieved through their IDs in the string table.
+
+### Syntax
+
+```cpp
+void GUI_DisplayMessageBox(int unknown, int titleStringID, int contentStringID);
+```
+
+### Parameters
+
+- `unknown`: An unknown parameter. [help us find out !](/wiki/dev/helping#studying-the-rom)
+- `titleStringID`: The ID of the string to use for the message box's title.
+- `contentStringID`: The ID of the string to use for the message box's content.
+
+### Example Usage
+
+Below is an example of how to use the `GUI_DisplayMessageBox` function:
+
+```cpp
+#include <sdk/os/gui.hpp>
+
+void showMessageBox() {
+    // Display a message box with title and content retrieved by their string IDs.
+    GUI_DisplayMessageBox(0, 1001, 1002);
+}
+
+void main() {
+    showMessageBox();
+}
+```

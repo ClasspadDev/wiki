@@ -1,8 +1,160 @@
 ---
-title: textBox
+title: Text Box
 description: GUITextBox
 ---
 
-:::caution
-This doc is **WIP**, please refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/textBox.hpp)
+The `GUITextBox` class is used to create and manage text box elements in the GUI.
+
+![Sample text box screenshot](/wiki/img/gui/textBox.png)
+
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/gui/textBox.hpp) if you need more details.
 :::
+
+### Public Types
+
+#### enum `Flag`
+```cpp
+enum Flag {
+    FlagDrawBox = 1 << 3,  // Enables drawing the text box's outline and background.
+    FlagEditable = 1 << 8  // Allows the contents of the text box to be modified.
+};
+```
+
+### Constructors
+
+#### `GUITextBox`
+```cpp
+GUITextBox(int x, int y, int width, int maxLength, bool countLengthByBytes);
+```
+Creates a `GUITextBox` with specified position, width, maximum length, and length counting method.
+
+- `x`: The X coordinate of the top-left corner.
+- `y`: The Y coordinate of the top-left corner.
+- `width`: The width of the text box.
+- `maxLength`: The maximum length of the text box content.
+- `countLengthByBytes`: If true, length is counted by bytes; otherwise, by characters.
+
+```cpp
+GUITextBox(int x, int y, int width, const char *text, int maxLength, bool countLengthByBytes);
+```
+Creates a `GUITextBox` with specified position, width, initial text, maximum length, and length counting method.
+
+- `x`: The X coordinate of the top-left corner.
+- `y`: The Y coordinate of the top-left corner.
+- `width`: The width of the text box.
+- `text`: The initial text of the text box.
+- `maxLength`: The maximum length of the text box content.
+- `countLengthByBytes`: If true, length is counted by bytes; otherwise, by characters.
+
+### Public Methods
+
+#### `const char *GetText()`
+```cpp
+const char *GetText();
+```
+Returns the current text of the text box.
+
+#### `void SetText(const char *text)`
+```cpp
+void SetText(const char *text);
+```
+Sets the text of the text box.
+
+- `text`: The text to set.
+
+### Usage
+
+```cpp
+// create a new element
+GUITextBox m_textBox = new GUITextBox(
+        GetLeftX() + 10, GetTopY() + 100, GetRightX() - GetLeftX() - 10,
+        "Loading...",
+        100, false
+    )
+
+// change the text
+m_label.SetText("Loaded, edit me");
+m_label.Refresh();
+
+// get the text in the userInput variable
+userInput = m_label.GetText();
+```
+
+### Use in C++ dialog
+
+This component is part of the [👨‍💻 demo gui](https://github.com/SnailMath/hollyhock-2/blob/04a4c086e1145a89d79dfe65158558398da6d8b1/demos/demo_gui/main.cpp#L21) that you can look for a complete example.
+
+#### Text repeater
+
+Below is a simple dialog that repeats the input text on a label when clicking the button:
+
+```cpp
+#include <appdef.hpp>
+#include <sdk/calc/calc.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/gui.hpp>
+#include <sdk/os/lcd.hpp>
+#include <sdk/os/mem.hpp>
+#include <sdk/os/string.hpp>
+
+/*
+ * Fill this section in with some information about your app.
+ * All fields are optional - so if you don't need one, take it out.
+ */
+APP_NAME("Tutorial textBox app")
+APP_DESCRIPTION("Testing a textBox")
+APP_AUTHOR("Demo")
+APP_VERSION("1.0.0")
+
+
+class MyDialog : public GUIDialog {
+public:
+    MyDialog() : GUIDialog(
+        GUIDialog::Height55, GUIDialog::AlignTop,
+        "My Demo Dialog",
+        GUIDialog::KeyboardStateABC
+    ), m_label(
+        GetLeftX() + 10, GetTopY() + 10,
+        "The text is:"
+    ), m_button(
+        GetLeftX() + 10, GetTopY() + 50,
+        GetRightX() - 10, GetTopY() + 90,
+        "Set Text", BUTTON_EVENT_ID
+    ), m_textBox(
+        GetLeftX() + 10, GetTopY() + 100, GetRightX() - GetLeftX() - 10,
+        "Enter text here...",
+        100, false
+    ) {
+        AddElement(m_label);
+        AddElement(m_button);
+        AddElement(m_textBox);
+    }
+
+    virtual int OnEvent(struct GUIDialog_Wrapped *dialog, struct GUIDialog_OnEvent_Data *event) {
+        if (event->GetEventID() == BUTTON_EVENT_ID) {
+            const char *text = m_textBox.GetText();
+            char labelText[100];
+            snprintf(labelText, sizeof(labelText), "The text is: %s", text);
+            m_label.SetText(labelText);
+            m_label.Refresh();
+            Refresh();
+            return 0;
+        }
+        return GUIDialog::OnEvent(dialog, event);
+    }
+
+private:
+    const uint16_t BUTTON_EVENT_ID = 1;
+
+    GUILabel m_label;
+    GUIButton m_button;
+    GUITextBox m_textBox;
+};
+
+void main() {
+    MyDialog dialog;
+    dialog.ShowDialog();
+}
+```

@@ -66,12 +66,13 @@ export default defineConfig({
 				},
 				{
 					label: 'Examples',
+					collapsed: true,
 					autogenerate: { directory: 'examples' },
 				},
 				{
 					label: 'Developer Notes',
 					collapsed: true,
-					badge: { text: 'WIP', variant: 'caution' },
+					badge: { text: 'New', variant: 'tip' },
 					autogenerate: { directory: 'dev' },
 				}
 			],

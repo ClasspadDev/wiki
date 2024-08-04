@@ -1,0 +1,314 @@
+---
+title: Files
+description: Functions for interacting with the calculator's file system.
+---
+
+The file operations API provides a set of functions to interact with the calculator's file system, similar to Unix.
+
+The storage accessible when the calculator is connected to a PC can be found under the path `\fls0\`. It is also possible to read from `\drv0\` if you have a SDCard and made a hardware mod on the calculator.
+
+The storage can be **slow** and sometimes **unreliable** for large files or frequent read/writes.
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/file.hpp) if you need more details.
+:::
+
+
+## Methods
+
+### Basic file operations
+
+Most of the file operations are similar to Unix and use the same concepts (file descriptor ...)
+
+#### Open 
+
+```cpp
+int open(const char *path, int flags);
+```
+Opens a file on the file system.
+The argument `flags` is fed a bitwise OR'd combination of flags.
+Flag are among:
+- `OPEN_READ`
+- `OPEN_WRITE`
+- `OPEN_CREATE`
+- `OPEN_APPEND`
+
+See the [open_flags_values](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/file.hpp#L105) 
+
+#### Read 
+
+```cpp
+int read(int fd, void *buf, int count);
+```
+Reads up to `count` bytes from a file, and stores them in `buf`. 
+
+If `count` bytes cannot be read from the file, as many bytes as possible are read (i.e. between 0 and `count - 1` bytes are read and stored in `buf`).
+`fd` is a file handle that you get from using `open()`.
+
+Returns the number of bytes read on success, or a negative error code on failure.
+
+#### Write 
+
+```cpp
+int write(int fd, const void *buf, int count);
+```
+Writes `count` bytes from `buf` to a file.
+`fd` is a file handle that you get from using `open()`.
+
+Returns the number of bytes written on success, or a negative error code on failure.
+
+#### Close 
+
+```cpp
+int close(int fd);
+```
+Closes an open file.
+
+`fd` is a file handle that you get from using `open()`.
+Don't try to double-close a file, it can make the storage crash.
+
+Returns 0 on success, or a negative error code on failure.
+
+#### Remove 
+
+```cpp
+int remove(const char *path);
+```
+Deletes a file or directory.
+
+`path` is the path to the file or directory to be deleted.
+
+Returns 0 on success, or a negative error code on failure.
+
+#### Rename 
+
+```cpp
+int rename(const char *oldPath, const char *newPath);
+```
+Renames a file or directory.
+
+`oldPath` is the path to the file or directory to be renamed to `newPath`.
+
+Returns 0 on success, or a negative error code on failure.
+
+#### Create directory
+
+```cpp
+int mkdir(const char *path);
+```
+Creates a directory.
+
+`path` is the path to the  directory to be created.
+
+Returns 0 on success, or a negative error code on failure.
+
+### Find handles
+
+#### Find First
+```cpp
+int findFirst(const wchar_t *path, int *findHandle, wchar_t *name, struct findInfo *findInfoBuf);
+```
+Starts a find operation, locating files matching a specific path.
+
+Can be used to list the contents of a directory by using a wildcard. For example, passing the path `"\fls0\*"` or `"\fls0\*.*"` matches all files and directories on the calculator's flash (not recursive, though).
+
+To find the next file/directory which matches the path, call `findNext`, passing in the find handle returned by this function. Ensure the find handle is closed using `findClose` when the find operation is finished. Bad things happen if the handle is not closed.
+
+- `path` to search. May contain wildcards.
+- `findHandle` is created. Must be closed when the find operation is finished.
+- `name` of the first file/directory found. Call `findNext` to get the next one.
+- `findInfoBuf` Information about the found file.
+
+
+#### Find Next
+
+```cpp
+int findNext(int findHandle, wchar_t *name, struct findInfo *findInfoBuf);
+```
+Continues a find operation to locate the next file.
+
+#### Close find session
+
+```cpp
+int findClose(int findHandle);
+```
+Closes a find handle. 
+
+Very, very, very bad things happen if a find handle is not closed, so do not forget do close when done.
+
+#### findInfoBuf
+
+Information about a file/directory, as returned from `findFirst` or `findNext`:
+- `type`: File (`0x1`) or Directory (`0x5`)
+- `size`: Size of the entry in bytes (`uint32_t`). Zero on directories.
+
+:::caution
+Some of the find internals are still unkown and not well tested. You can [help us find out !](/wiki/dev/helping#studying-the-rom)
+:::
+
+### Advanced file operations
+
+#### Seek
+
+```cpp
+int lseek(int fd, int offset, int whence);
+```
+Seeking make you able to repositions the file offset of the file descriptor.
+
+For more details on the usage, see the [lseek_whence_values](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/file.hpp#L92) 
+
+#### Stat
+
+```cpp
+int stat(const char *path, struct stat *buf);
+```
+Retrieves information about a file.
+
+- `path` is the path to the file to retrieve the information of.
+- `buf` contains the retrieved information about the file.
+
+Returns 0 on success, or a negative error code on failure.
+
+The `stat` structure contains the following informations:
+- `fileSize`: The size of the file, in bytes (`uint32_t`)
+- `creationDate`: The creation date of the file (`uint16_t`)
+- `creationTime`: The creation time of the file (`uint16_t`)
+- `lastModifiedDate`: The date the file was last modified (`uint16_t`)
+- `lastModifiedTime`: The time the file was last modified (`uint16_t`)
+- `lastAccessedDate`: The date the file was last accessed (`uint16_t`)
+More information on the date format are available on the [internal documentation](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/file.hpp#L183)
+
+```cpp
+int fstat(int fd, struct stat *buf);
+```
+Works the same way that `stat` but uses an open file descriptor as handle.
+
+
+#### Memory address
+
+```cpp
+int getAddr(int fd, int offset, const void **addr);
+```
+Retrieves the memory address of a file. If the file is empty or the offset would point outside of the file, `EINVAL` is returned.
+
+- `fd` is the file descriptor of an open file
+- `offset` to apply to the pointer to the file's data
+- `addr` is the return address of the file's data
+
+Returns 0 on success, or a negative error code on failure.
+
+## Helper Functions for Date and Time
+
+Dates and times are stored as bitfields in the `stat` structure. The following helper functions can be used to extract meaningful values:
+
+- **statDateYear**: Retrieves the year.
+- **statDateMonth**: Retrieves the month.
+- **statDateDay**: Retrieves the day.
+- **statTimeHour**: Retrieves the hour.
+- **statTimeMinute**: Retrieves the minute.
+- **statTimeSecond**: Retrieves the second (maximum resolution of 2 seconds).
+
+
+## Usage
+
+### Reading 256 Bytes from a File
+
+```cpp
+int fd = open("\\fls0\\test.txt", OPEN_READ);
+if (fd < 0) {
+    // An error occurred calling open
+    goto exit;
+}
+
+uint8_t buf[256];
+int ret = read(fd, buf, sizeof(buf));
+if (ret < 0) {
+    // An error occurred calling read
+    close(fd);
+    goto exit;
+}
+
+ret = close(fd);
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+exit:
+```
+
+### Writing 16 Bytes to a Non-existent File
+
+```cpp
+int fd = open("\\fls0\\out.bin", OPEN_WRITE | OPEN_CREATE);
+if (fd < 0) {
+    // An error occurred calling open
+    goto exit;
+}
+
+uint8_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF};
+int ret = write(fd, buf, sizeof(buf));
+if (ret < 0) {
+    // An error occurred calling write
+    close(fd);
+    goto exit;
+}
+
+ret = close(fd);
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+exit:
+```
+
+### Appending a Line to a File
+
+```cpp
+int fd = open("\\fls0\\append_test.txt", OPEN_WRITE | OPEN_APPEND);
+if (fd < 0) {
+    // An error occurred calling open
+    goto exit;
+}
+
+const char *line = "This is a new line.\n";
+int ret = write(fd, line, strlen(line));
+if (ret < 0) {
+    // An error occurred calling write
+    close(fd);
+    goto exit;
+}
+
+ret = close(fd);
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+exit:
+```
+
+### Checking if a File is Empty
+
+```cpp
+int fd = open("\\fls0\\check_empty.txt", OPEN_READ);
+if (fd < 0) {
+    // An error occurred calling open
+    goto exit;
+}
+
+struct stat fileStat;
+int ret = fstat(fd, &fileStat);
+if (ret < 0) {
+    // An error occurred calling fstat
+    close(fd);
+    goto exit;
+}
+
+bool isEmpty = (fileStat.fileSize == 0);
+
+ret = close(fd);
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+exit:
+```

@@ -1,0 +1,129 @@
+---
+title: Memory
+description: Functions used for modifying and allocating memory.
+---
+
+Memory functions are advanced tools in programming, allowing you to dynamically allocate, manage, and manipulate memory.
+
+These functions are similar to those provided by the C standard library and include functions for allocating memory (`malloc`), freeing memory (`free`), copying memory (`memcpy`), and setting memory (`memset`).
+
+### Dangers of direct memory modification
+
+Improper use of memory functions can lead to various issues:
+- **Memory Leaks**: Failing to free allocated memory can cause your application to consume increasing amounts of memory.
+- **Buffer Overflows**: Copying more data than the allocated space can hold can overwrite adjacent memory, causing unpredictable behavior or crashes.
+- **Undefined Behavior**: Using memory after it has been freed or accessing memory beyond allocated regions can lead to undefined behavior.
+
+## Methods
+
+### malloc
+
+Allocates a specified number of bytes of memory.
+
+```c
+extern "C"
+void *malloc(uint32_t size);
+```
+
+- **Parameters**: `size` - The number of bytes to allocate.
+- **Returns**: A pointer to the allocated memory.
+
+### free
+
+Frees memory that was previously allocated with `malloc`.
+
+```c
+extern "C"
+void free(void *ptr);
+```
+
+- **Parameters**: `ptr` - The pointer to the memory to free.
+
+### memcpy
+
+Copies a specified number of bytes from a source memory location to a destination memory location.
+
+```c
+extern "C"
+void *memcpy(void *destination, const void *source, int num);
+```
+
+- **Parameters**: 
+  - `destination` - The pointer to the destination memory location.
+  - `source` - The pointer to the source memory location.
+  - `num` - The number of bytes to copy.
+- **Returns**: A pointer to the destination memory location.
+
+### memset
+
+Sets a specified number of bytes in a memory location to a given value.
+
+```c
+extern "C"
+void *memset(void *ptr, int value, int num);
+```
+
+- **Parameters**: 
+  - `ptr` - The pointer to the memory location.
+  - `value` - The value to set.
+  - `num` - The number of bytes to set.
+- **Returns**: A pointer to the memory location.
+
+## Usage
+
+### Allocating and Freeing Memory
+
+```c
+#include <sdk/os/mem.hpp>
+#include <sdk/os/debug.hpp>
+
+void example_malloc_free() {
+    // Allocate 100 bytes of memory
+    void *ptr = malloc(100);
+    if (ptr == NULL) {
+        Debug_Printf(0,0,false,0, "Memory allocation failed\n");
+        return;
+    }
+
+    Debug_Printf(0,0,false,0, "Memory allocated at %p", ptr);
+
+    // Free the allocated memory
+    free(ptr);
+    Debug_Printf(0,1,false,0, "Memory freed");
+}
+```
+
+### Copying Memory with `memcpy`
+
+```c
+#include <sdk/os/mem.hpp>
+#include <sdk/os/debug.hpp>
+
+void example_memcpy() {
+    char source[] = "Hello, World!";
+    char destination[20];
+
+    // Copy the contents of source to destination
+    memcpy(destination, source, sizeof(source));
+
+    Debug_Printf(0,0,false,0, "Source: %s", source);
+    Debug_Printf(0,1,false,0, "Destination: %s", destination);
+}
+```
+
+#### Setting Memory with `memset`
+
+```c
+#include <sdk/os/mem.hpp>
+#include <sdk/os/debug.hpp>
+
+void example_memset() {
+    char buffer[20];
+
+    // Set the first 10 bytes of buffer to 'A'
+    memset(buffer, 'A', 10);
+    buffer[10] = '\0'; // Null-terminate the string for printing
+
+    Debug_Printf(0,0,false,0, "Buffer after memset: %s", buffer);
+}
+```
