@@ -1,0 +1,204 @@
+---
+title: LCD
+description: LCD Manipulation Functions
+---
+
+
+This API provides functions to interact with the LCD and VRAM, allowing direct memory access, getter/setter methods, and palette-based drawing.
+
+Changes to VRAM are not automatically rendered on the LCD and must be explicitly refreshed using `LCD_Refresh`.
+
+Available methods are:
+- **LCD_ClearScreen**: Clears the screen by filling VRAM with white.
+- **LCD_GetPixel**: Retrieves the color of a pixel from VRAM.
+- **LCD_GetSize**: Retrieves the dimensions of the LCD.
+- **LCD_GetVRAMAddress**: Returns a pointer to the VRAM.
+- **LCD_Refresh**: Pushes the content of the VRAM to the LCD.
+- **LCD_SetPixel**: Sets the color of a pixel in VRAM.
+- **LCD_SetPixelFromPalette**: Sets the color of a pixel using a predefined palette.
+- **LCD_VRAMBackup**: Backs up the current contents of VRAM.
+- **LCD_VRAMRestore**: Restores the backed-up contents of VRAM.
+
+### Palette Colors
+
+The following colors can be used with `LCD_SetPixelFromPalette`:
+
+```c
+const uint8_t PALETTE_BLACK = 0;
+const uint8_t PALETTE_BLUE = 1;
+const uint8_t PALETTE_GREEN = 2;
+const uint8_t PALETTE_CYAN = 3;
+const uint8_t PALETTE_RED = 4;
+const uint8_t PALETTE_MAGENTA = 5;
+const uint8_t PALETTE_YELLOW = 6;
+const uint8_t PALETTE_WHITE = 7;
+```
+
+### RGB565 Color Conversion Macros
+
+- **RGB_TO_RGB565**: Converts RGB values to RGB565 format.
+- **RGB565_TO_R**: Extracts the red component from an RGB565 value.
+- **RGB565_TO_G**: Extracts the green component from an RGB565 value.
+- **RGB565_TO_B**: Extracts the blue component from an RGB565 value.
+
+## Methods
+
+### Clear Screen
+
+```c
+extern "C"
+void LCD_ClearScreen();
+```
+
+Clears the LCD by filling VRAM with white.
+
+
+### Get Pixel
+
+```c
+extern "C"
+uint16_t LCD_GetPixel(int x, int y);
+```
+
+Returns the color of a pixel in VRAM.
+
+- **Parameters**:
+  - `x`, `y`: Coordinates of the pixel.
+- **Returns**: The color of the pixel in RGB565 format.
+
+### Get LCD Size
+
+```c
+extern "C"
+void LCD_GetSize(int *width, int *height);
+```
+
+Retrieves the size of the LCD.
+
+
+- **Parameters**:
+  - `width`, `height`: Pointers to store the dimensions of the LCD.
+
+### Get VRAM Address
+
+Returns a pointer to the VRAM.
+
+```c
+extern "C"
+uint16_t *LCD_GetVRAMAddress();
+```
+
+### Refresh LCD
+
+Pushes the content of the VRAM to the LCD.
+
+```c
+extern "C"
+void LCD_Refresh();
+```
+
+Call this after doing any `Debug_Printf` or drawing on screen to view the changes.
+
+
+### Set Pixel
+
+Sets the color of a pixel in VRAM.
+
+```c
+extern "C"
+void LCD_SetPixel(int x, int y, uint16_t color);
+```
+
+
+- **Parameters**:
+  - `x`, `y`: Coordinates of the pixel.
+  - `color`: The color to set in RGB565 format.
+
+### Set Pixel (From Palette)
+
+Sets the color of a pixel using a predefined palette.
+
+```c
+extern "C"
+void LCD_SetPixelFromPalette(int x, int y, uint8_t index);
+```
+
+- **Parameters**:
+  - `x`, `y`: Coordinates of the pixel.
+  - `index`: Index of the color in the palette.
+
+### VRAM Backup
+
+Backs up the current contents of VRAM.
+
+```c
+extern "C"
+void LCD_VRAMBackup();
+```
+
+
+### VRAM Restore
+
+Restores the backed-up contents of VRAM.
+
+```c
+extern "C"
+void LCD_VRAMRestore();
+```
+
+
+## Usage
+
+### Drawing a purple rectangle
+
+The following code draws a 30x50 Rectangle at (10, 20) in Purple
+
+```c
+#include <sdk/os/lcd.hpp>
+
+void example_draw_rectangle() {
+    uint16_t *vram = LCD_GetVRAMAddress();
+    int width, height;
+    LCD_GetSize(&width, &height);
+
+    for (int y = 0; y < 50; ++y) {
+        for (int x = 0; x < 30; ++x) {
+            vram[(x + 10) + (y + 20) * width] = RGB_TO_RGB565(0xFF, 0x00, 0xFF);
+        }
+    }
+
+    // Put our changes on the display
+    LCD_Refresh();
+}
+
+// call example_draw_rectangle in your main
+```
+
+### Random Pixel Changes
+
+```c
+#include <sdk/os/lcd.hpp>
+
+static uint32_t seed = 12345; // You can change this seed to any value
+
+int rand() {
+    seed = (1103515245 * seed + 12345) & 0x7fffffff;
+    return seed;
+}
+
+void random_pixels() {
+    uint16_t *vram = LCD_GetVRAMAddress();
+    int width, height;
+    LCD_GetSize(&width, &height);
+
+    for (int y = 0; y < 20; ++y) {
+        for (int x = 0; x < width; ++x) {
+            vram[(x) + (y)*width] =
+                RGB_TO_RGB565(my_rand() % 32, my_rand() % 64, my_rand() % 32);
+        }
+    }
+
+    // Put our changes on the display
+    LCD_Refresh();
+}
+```
