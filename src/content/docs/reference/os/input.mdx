@@ -1,0 +1,240 @@
+---
+title: Input
+description: Functions used to retrieve user input via the touch screen or keypad.
+---
+
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or can refer to its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/sdk/include/sdk/os/input.hpp) if you need more details.
+:::
+
+If you need to interact with keys or the touchscreen, the `GetInput` method is the function which polls for input events. 
+It provides an undefined structure, making it easy to manage any input event in one single place.
+
+## Constants
+
+The `GetInput` relies on a lot of constants, reading its [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/sdk/include/sdk/os/input.hpp) is recommended if you wish to work on advanced behavior with it.
+
+### Event Types
+The `GetInput` method emits events, containing a `type` value that is one of : 
+- `EVENT_KEY`
+- `EVENT_ACTBAR_RESIZE`
+- `EVENT_ACTBAR_SWAP`
+- `EVENT_ACTBAR_ROTATE`
+- `EVENT_ACTBAR_ESC`
+- `EVENT_ACTBAR_SETTINGS`
+- `EVENT_TOUCH`
+- `EVENT_TIMER`
+
+### Key States
+
+- `KEY_PRESSED`
+- `KEY_HELD`
+- `KEY_RELEASED`
+
+### Key Codes
+Here are some of the most commonly used key codes :
+- `KEYCODE_UP`
+- `KEYCODE_RIGHT`
+- `KEYCODE_DOWN`
+- `KEYCODE_LEFT`
+- `KEYCODE_POWER_CLEAR`
+- ...
+
+All key codes are available on the [SDK source](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/sdk/include/sdk/os/input.hpp#L25).
+
+### Touch Directions
+
+- `TOUCH_DOWN`
+- `TOUCH_HOLD_DRAG`
+- `TOUCH_ACT_BAR`
+- `TOUCH_UP`
+
+## Structure
+
+### InputEvent 
+
+`InputEvent` provides a `type` value to switch from, determining its "Event Types". The full structure is a bit complex, please refer to the [SDK source](https://github.com/SnailMath/hollyhock-2/blob/1666f4b55d80b6f50d12f3414bec94d4fe58ff94/sdk/include/sdk/os/input.hpp#L106) for the complete definition.
+
+## Methods
+
+### Get input
+
+Polls for any input events.
+
+```cpp
+int GetInput(struct InputEvent *event, uint32_t unknown1, uint32_t unknown2);
+```
+
+
+- **Parameters:**
+    - `event`: The input event's data.
+    - `unknown1`: An unknown value (must be `0xFFFFFFFF`).
+    - `unknown2`: An unknown value (must be `0x10`).
+- **Returns:**
+    - Always returns `0`.
+
+### Get Key State
+
+Returns true if the specified key is currently down.
+
+```cpp
+bool Input_GetKeyState(InputScancode *scancode);
+```
+
+- **Parameters:**
+  - `scanCode`: The scancode of the key to check.
+- **Returns:**
+  - `true` if the key is down, `false` otherwise.
+
+### Is Any Key Down
+
+Returns true if any key on the keyboard is currently down.
+
+```cpp
+bool Input_IsAnyKeyDown();
+```
+
+- **Returns:**
+  - `true` if a key is pressed, `false` otherwise.
+
+
+## Usage
+
+You would need to create an handler to work with the generated `event` structure. It is recommended to use switch case for that to be easier.
+
+```cpp
+#include <sdk/os/input.hpp>
+
+// ...
+
+GetInput(&event, 0xFFFFFFFF, 0x10);
+
+switch (event.type) {
+    case EVENT_TOUCH:
+        if (event.data.touch_single.direction == TOUCH_DOWN ||
+            event.data.touch_single.direction == TOUCH_HOLD_DRAG
+        ) {
+            rectX = event.data.touch_single.p1_x;
+            rectY = event.data.touch_single.p1_y;
+        }
+        break;
+        // ...
+
+    case EVENT_KEY:
+        switch (event.data.key.keyCode) {
+            case KEYCODE_POWER_CLEAR:
+                running = false;
+                break;
+            // ...
+        }
+        break;
+}
+
+// ...
+
+```
+
+### TouchRectangle
+
+TouchRectangle is a demo app where you can drag a rectangle on screen and move it with the arrow keys.
+Use the "Clear" button to exit.
+
+```cpp
+#include <appdef.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/input.hpp>
+#include <sdk/os/lcd.hpp>
+
+APP_NAME("TouchRectangle")
+APP_DESCRIPTION("Move a rectangle based on touch and key input.")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+
+#define COLOR_BACKGROUND RGB_TO_RGB565(0, 0, 0)
+#define COLOR_RECTANGLE RGB_TO_RGB565(0x1F, 0, 0)
+
+#define RECT_SIZE 20
+#define MOVE_STEP 5
+
+extern uint16_t *vram;
+int lcdWidth, lcdHeight;
+int rectX, rectY;
+
+void drawRectangle(int x, int y, uint16_t color) {
+  for (int i = x; i < x + RECT_SIZE; ++i) {
+    for (int j = y; j < y + RECT_SIZE; ++j) {
+      if (i >= 0 && i < lcdWidth && j >= 0 && j < lcdHeight) {
+        vram[i + (j + 24) * lcdWidth] = color;
+      }
+    }
+  }
+}
+
+void draw() {
+  LCD_ClearScreen();
+  drawRectangle(rectX, rectY, COLOR_RECTANGLE);
+  LCD_Refresh();
+}
+
+void main() {
+  LCD_VRAMBackup();
+  vram = LCD_GetVRAMAddress();
+  LCD_GetSize(&lcdWidth, &lcdHeight);
+
+  rectX = lcdWidth / 2 - RECT_SIZE / 2;
+  rectY = lcdHeight / 2 - RECT_SIZE / 2;
+
+  struct InputEvent event;
+
+  bool running = true;
+  while (running) {
+    draw();
+
+    GetInput(&event, 0xFFFFFFFF, 0x10);
+
+    switch (event.type) {
+    case EVENT_TOUCH:
+      if (event.data.touch_single.direction == TOUCH_DOWN ||
+          event.data.touch_single.direction == TOUCH_HOLD_DRAG) {
+        rectX = event.data.touch_single.p1_x;
+        rectY = event.data.touch_single.p1_y;
+      }
+      break;
+
+    case EVENT_KEY:
+      switch (event.data.key.keyCode) {
+        case KEYCODE_UP:
+          rectY -= MOVE_STEP;
+          break;
+        case KEYCODE_RIGHT:
+          rectX += MOVE_STEP;
+          break;
+        case KEYCODE_DOWN:
+          rectY += MOVE_STEP;
+          break;
+        case KEYCODE_LEFT:
+          rectX -= MOVE_STEP;
+          break;
+        case KEYCODE_POWER_CLEAR:
+          running = false;
+          break;
+      }
+      break;
+    }
+
+    // Ensure the rectangle stays within the screen boundaries
+    if (rectX < 0)
+      rectX = 0;
+    if (rectY < 0)
+      rectY = 0;
+    if (rectX + RECT_SIZE > lcdWidth)
+      rectX = lcdWidth - RECT_SIZE;
+    if (rectY + RECT_SIZE > lcdHeight)
+      rectY = lcdHeight - RECT_SIZE;
+  }
+
+  LCD_VRAMRestore();
+  LCD_Refresh();
+}
+```
