@@ -17,9 +17,9 @@ Here's some of the mapping I know about :
 
 - MCS starts at `0x8e00_0000`
 
-- ROM is `0x8000_0000` to `0x81ff_ffff` 
+- Cached ROM is `0x8000_0000` to `0x81ff_ffff` 
 
-- Cached rom is `0xa000_0000` to `0xa1ff_ffff`
+- Uncached ROM is `0xa000_0000` to `0xa1ff_ffff`
 
 - Display DMAC start at `0xb400_0000`
 
