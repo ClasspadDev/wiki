@@ -1,0 +1,198 @@
+---
+title: Introduction to Python
+description: Write Python code and build interactive Classpad programs using the gint-powered PythonExtra system.
+sidebar:
+  order: 1
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+PythonExtra is a custom Python runtime made for ClassPad calculators, built on top of the [**gint kernel**](https://git.planet-casio.com/Lephenixnoir/gint#readme).  
+It lets you build games, utilities, and animations using **pure Python**, while accessing low-level screen rendering, key input, and more — all optimized for performance.
+
+If you’re just getting started, **no setup is needed**.  
+Just open your Codespace or use your favorite editor and you’re ready to write Python code that runs directly on your calculator!
+
+---
+
+:::tip[What can PythonExtra do?]
+With PythonExtra, you can:
+- Draw pixels, rectangles, circles, and text
+- Read key presses for making interactive programs
+- Display images and animations
+- Build games with fast screen refresh
+:::
+
+---
+
+## Instant start with Codespaces
+
+The **fastest way** to start using PythonExtra is with our pre-configured GitHub Codespace.
+
+You don’t need to install anything locally — just open a project in the browser and start coding:
+
+<CardGrid>
+  <div class="card-app">
+    <LinkCard
+      title="🐍 Python template"
+      href="https://github.com/TheRainbowPhoenix/pythonextra-template"
+      description="Pre-configured Codespace to build PythonExtra apps"
+    />
+  </div>
+  {/* <div class="card-game">
+    <LinkCard
+      title="🎮 Game template"
+      href="https://github.com/TheRainbowPhoenix/CPGameTemplate#cpgametemplate"
+      description="Start building interactive games in Python"
+    />
+  </div> */}
+</CardGrid>
+---
+
+### Need Help While Coding?
+
+Stuck on something? Don’t worry — you don’t have to figure it all out alone.
+
+You can ask help directly to the  
+👉 **[👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper)**
+
+If you're old school, you can also ask  
+[💬 on the ClassPad Club](https://discord.gg/knpcNJTzpd)
+
+---
+
+## Beginner Tutorials
+
+These tutorials will walk you through the essentials of PythonExtra — from printing your first message to creating animated programs.
+
+### Step 1: Drawing Your First Rectangle
+
+Learn how to:
+- Draw a custom logo made of text
+- Move it across the screen
+- Bounce it off screen borders
+- Exit the program on key press
+
+<LinkCard
+  title="🖥️ Drawing Your First Rectangle"
+  href="/wiki/python/examples/rectangle/"
+  description="Draw a single rectangle on the screen"
+/>
+
+---
+
+### Step 2: Drawing and Colors
+
+Learn to draw colored shapes, fill the screen, and use screen coordinates with precision. Perfect for starting any visual project.
+
+<LinkCard
+  title="🎨 Colors and Shapes"
+  href="/wiki/python/examples/color-shapes/"
+  description="How to draw rectangles, lines, and circles using gint"
+/>
+
+---
+
+### Step 3: Handling Input
+
+In this tutorial, you’ll make a simple game where you move a shape around with the keyboard. It covers real-time input with `pollevent()` and `keydown()`.
+
+<LinkCard
+  title="🎮 Moving a Rectangle"
+  href="/wiki/python/examples/input/"
+  description="Move shapes around with key input"
+/>
+
+---
+
+### Step 4: Bouncing Logo
+
+Learn how to:
+- Draw a custom logo made of text
+- Move it across the screen
+- Bounce it off screen borders
+- Exit the program on key press
+
+<LinkCard
+  title="💽 Bouncing Logo"
+  href="/wiki/python/examples/bounce/"
+  description="Simple screen animation using drawing and input"
+/>
+
+---
+
+### Step 5: Snake ? Snaaake !
+
+Put everything you learnt in practice with the classical "Snake" game
+
+<LinkCard
+  title="🐍 Snake"
+  href="/wiki/python/examples/snake/"
+  description="The first game ported to the ClassPad"
+/>
+
+
+---
+
+### Step 6: Drawing Images
+
+Use tools like `fxconv` to convert real images into Python data and draw them on screen.
+
+:::caution
+Coming later!
+:::
+
+---
+
+## What’s next?
+
+If you're comfortable with drawing, input, and animation, try combining them into your own game or app. PythonExtra is capable of running surprisingly complex things — and you can always peek at sample projects like:
+
+<LinkCard
+  title="🧱 cg_chute.py (3D falling platforms)"
+  href="https://git.planet-casio.com/Lephenixnoir/PythonExtra/src/branch/main/ports/sh/examples/cg_chute.py"
+  description="Advanced 3D-style platform game made with PythonExtra"
+/>
+
+
+### Technical Documentation
+
+Want to dive into the internals and low-level functions?
+
+Check out the full [**technical documentation**](https://git.planet-casio.com/Lephenixnoir/PythonExtra/src/branch/main/docs/sh/modgint-en.md)  
+(*also available in [french for some reason](https://git.planet-casio.com/Lephenixnoir/PythonExtra/src/branch/main/docs/sh/modgint-fr.md) 🇫🇷*)
+
+
+There’s also [**casioplot**](https://git.planet-casio.com/Lephenixnoir/PythonExtra/src/branch/main/docs/sh/modcasioplot-en.md) module.
+Not really great for games, but might be useful in other contexts!
+
+
+---
+
+### Try Drawing Code Online
+
+Want to quickly test simple drawing code (like `gint.drect`, `gint.dpixel`, `gint.dcircle`, etc.)?
+
+You can use the **PythonExtra REPL (beta)** here:  
+[🌐 python-extra-repl](https://therainbowphoenix.github.io/python-extra-repl/)
+
+⚠️ This REPL only supports **drawing commands**.  
+Functions like `gint.getkey()` or `gint.pollevent()` won’t work.  
+Avoid infinite loops like `while True:`. You've been warned.
+
+
+### All the Examples
+
+Want more sample code?
+
+All examples can be found here:  
+🔗 [https://git.planet-casio.com/Lephenixnoir/PythonExtra/src/branch/main/ports/sh/examples](https://git.planet-casio.com/Lephenixnoir/PythonExtra/src/branch/main/ports/sh/examples)
+
+> ⚠️ Note: some of these aren't tailored specifically for the ClassPad, so you might need to tweak them.
+
+---
+
+:::tip[Need help?]
+Join our community on **Discord** to ask questions, get tips, or show what you've built:  
+**[💬 Join our Discord community](https://discord.gg/knpcNJTzpd)**
+:::

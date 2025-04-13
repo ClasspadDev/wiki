@@ -1,0 +1,421 @@
+---
+title: Bouncing Logo  
+description: Creating a Simple Animation That Bounces a Logo Across the Screen  
+sidebar:
+  order: 4
+---
+
+In this tutorial, we’ll build a small animated program that makes a logo bounce around the screen, just like an old DVD screensaver.
+
+You’ll learn how to:
+- Draw on the screen using `gint`
+- Animate a logo by updating its position
+- Detect screen edges to bounce off them
+- Exit the program when a key is pressed
+
+This guide is written with **beginners in mind**, so we’ll explain everything step by step.
+
+:::tip[Need help ?]
+You can either ask help to the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper) or go retro and ask [💬 some human on the ClassPad Club](https://discord.gg/knpcNJTzpd).
+:::
+
+---
+
+## Step 1: Create a New File
+
+Open your Codespace and create a new file named `bounce.py`. This will be the program file we edit.     
+
+If you don't have anything to code, we recommend using the [pythonextra-template](https://github.com/TheRainbowPhoenix/pythonextra-template) (it will include that file as example !)
+
+---
+
+## Step 2: Import the Needed Module
+
+At the top of the file, start by importing the `gint` module:
+
+```py
+import gint
+```
+
+This module gives you everything you need to:
+- Draw on the screen
+- Work with colors
+- Handle key input
+
+We’ll be using it throughout the program.
+
+---
+
+## Step 3: Define the Logo
+
+Now, we’ll create the image that will bounce around. It's made using **text characters**, and we’ll later convert that into actual pixels on the screen.
+
+```py
+DVD = [
+    "                       ",
+    "   ####    ####        ",
+    "  #       #    #       ",
+    "  #       #    #       ",
+    "  #       ######   ### ",
+    "  #       #            ",
+    "  #       #            ",
+    "   ###    #            ",
+    "                       ",
+    "  ####   #####  #   #  ",
+    "  #   #  #      #   #  ",
+    "  #   #  #      #   #  ",
+    "  #   #  #####  #   #  ",
+    "  #   #  #       # #   ",
+    "  #   #  #       # #   ",
+    "  ####   #####    #    ",
+]
+```
+
+Let’s break it down:
+
+#### What is this?
+
+- Each `"line of text"` is a **string**, which is just a sequence of characters.
+- A bunch of strings, grouped in `[...]`, makes a **list**. Lists let us organize related items in order.
+
+So this is a **list of strings**, and each character in those strings will become a **pixel**.
+
+#### What do the characters mean?
+
+- The `#` characters will become **black pixels**.
+- The spaces (`" "`) will become **white pixels**.
+
+Later, we’ll read this list and draw pixels depending on the character at each spot.
+
+We’ll also define the **width and height** of the image so we can position and move it:
+
+```py
+DVD_W = 23
+DVD_H = 16
+```
+
+---
+
+## Step 4: Drawing the Logo on Screen
+
+We want to draw the image starting at `(x, y)`, and go through each character in our logo.
+
+- `dy` goes from top to bottom (each row of the image)
+- `dx` goes left to right (each column of a row)
+- `DVD[dy][dx]` gives us the character at that position (`#` or space)
+- Depending on that character, we draw a black pixel or a white pixel
+
+We also make sure that we don’t draw **outside the screen**.
+
+To show the logo, we’ll create a function that reads the list and draws it on screen:
+
+```py
+def draw_logo(x, y, color=gint.C_BLACK, bg=gint.C_WHITE):
+    for dy in range(DVD_H):
+        for dx in range(DVD_W):
+            if 0 <= x+dx < gint.DWIDTH and 0 <= y+dy < gint.DHEIGHT:
+                pixel = DVD[dy][dx]
+                gint.dpixel(x+dx, y+dy, color if pixel == '#' else bg)
+```
+
+### How the screen works
+
+The screen is a **grid of pixels**.
+
+- Each **pixel** is a tiny dot on the screen that can have a color.
+- The screen has **coordinates**, just like a map:
+  - `x` is the horizontal axis (left to right)
+  - `y` is the vertical axis (top to bottom)
+
+You can think of `(x, y)` as saying "draw at column `x`, row `y`".
+
+The screen size is:
+```py
+gint.DWIDTH  = 320   # width in pixels
+gint.DHEIGHT = 528   # height in pixels
+```
+
+So `(0,0)` is the **top-left**, and `(319, 527)` is the **bottom-right**.
+
+### Loops for Drawing
+
+#### What is this part doing?
+
+```py
+for dy in range(DVD_H):
+    for dx in range(DVD_W):
+```
+
+This is a **nested loop**. It goes through every row and column of the image:
+
+- `dy` is the **row index** — it starts at 0 and goes up to `DVD_H - 1` (in our case, 15).
+- `dx` is the **column index** — it starts at 0 and goes up to `DVD_W - 1` (in our case, 22).
+
+This lets us visit **every character** of the logo, one by one, starting from the top-left.
+
+---
+
+### Accessing Characters with `DVD[dy][dx]`
+
+Each element in `DVD` is a **string** (a line of text). So:
+
+- `DVD[dy]` gives you a **line** of the image (like `"  #   #  "`).
+- `DVD[dy][dx]` gives you the **character** at column `dx` of row `dy`.
+
+If that character is a `"#"`, we want to draw a black pixel. Otherwise, we draw a white pixel.
+
+```py
+pixel = DVD[dy][dx]
+```
+
+### Avoid Drawing Outside the Screen
+
+Before drawing, we need to make sure the pixel we're about to draw is still **on screen**.
+
+```py
+if 0 <= x+dx < gint.DWIDTH and 0 <= y+dy < gint.DHEIGHT:
+```
+
+Let’s break it down:
+
+- `x+dx` is the **horizontal screen position** we want to draw at.
+- `y+dy` is the **vertical screen position** we want to draw at.
+- We only draw if:
+  - `x+dx` is within the screen (not less than 0 or greater than screen width)
+  - `y+dy` is within the screen (not less than 0 or greater than screen height)
+
+This condition **protects us** from trying to draw off the screen, which could cause errors or weird bugs.
+
+---
+
+
+### What does `dpixel()` do?
+
+```py
+gint.dpixel(x, y, color)
+```
+
+This draws a **single pixel** at the given `(x, y)` position in the specified `color`.
+
+### Actually Drawing the Pixel
+
+```py
+gint.dpixel(x+dx, y+dy, color if pixel == '#' else bg)
+```
+
+- If the current character is `"#"`, draw using the logo color (`color`)
+- Otherwise, use the background color (`bg`)
+
+The position on screen is calculated by adding `x` and `y` (the **top-left corner**) with `dx` and `dy` (the current pixel in the image).
+
+This way, we can move the image to any position on screen by changing `x` and `y`.
+
+---
+
+## Step 5: Initialize the Animation
+
+Now we prepare the animation.
+
+```py
+x, y = 50, 50
+dx, dy = 2, 2
+```
+
+- `x` and `y` are the **current position** of the logo on screen
+- `dx` and `dy` are the **movement speed** in pixels per frame
+  - `2` means move by 2 pixels every frame
+
+We’ll also define the **colors** used:
+
+```py
+bg = gint.C_WHITE  # Background color
+fg = gint.C_BLACK  # Foreground (logo) color
+```
+
+These are special color constants provided by `gint`.
+
+---
+
+## Step 6: The Main Loop
+
+This part is the **core** of your program — where everything comes alive and the logo starts moving around!
+
+We call this an **animation loop**. The idea is simple:  
+- Clear the screen  
+- Draw the image at its new position  
+- Show it  
+- Move it  
+- Repeat forever (or until the user exits)
+
+Here’s the basic loop:
+
+```py
+while True:
+    gint.dclear(bg)
+    draw_logo(x, y, fg, bg)
+    gint.dupdate()
+```
+
+Let’s break that down carefully.
+
+---
+
+### `gint.dclear(bg)` — Clear the screen
+
+This clears the entire screen before drawing the next frame.
+
+If we don’t do this, the previous frame would stay visible and the screen would get messy.
+
+- `bg` is the **background color**, usually white (`gint.C_WHITE`)
+
+---
+
+### `draw_logo(x, y, fg, bg)` — Draw the logo
+
+This draws the logo at position `(x, y)`.
+
+- `fg` is the foreground color (used for the `#` characters)
+- `bg` is used for the spaces
+- The image is drawn starting from the top-left corner at `(x, y)`
+
+---
+
+### `gint.dupdate()` — Display the frame
+
+This updates the screen and actually **shows what you drew**.
+
+Think of it like pressing "refresh" to make the drawing visible.
+
+Without this, the image would be drawn in memory but not appear on the screen.
+
+---
+
+### Move the logo
+
+After displaying, we move the image by updating its position:
+
+```py
+    x += dx
+    y += dy
+```
+
+This simply means:
+- `x += dx`: Move the logo horizontally by `dx` pixels
+- `y += dy`: Move the logo vertically by `dy` pixels
+
+For example, if `x = 50` and `dx = 2`, it becomes `x = 52`, and the image appears slightly more to the right on the next frame.
+
+---
+
+### Bounce off the screen edges
+
+We want the image to **bounce** when it hits the edge of the screen.
+
+Here’s how we check for that:
+
+```py
+    if x <= 0 or x + DVD_W >= gint.DWIDTH:
+        dx = -dx
+```
+
+- If the left edge (`x`) goes off the screen
+- Or if the right edge (`x + DVD_W`) goes past the screen width  
+→ Then we reverse the direction (`dx = -dx`)
+
+We do the same vertically:
+
+```py
+    if y <= 0 or y + DVD_H >= gint.DHEIGHT:
+        dy = -dy
+```
+
+This makes the logo **bounce** back the other way.
+
+> Reversing the direction is what makes the logo move back and forth.
+
+---
+
+### Check if the user wants to exit
+
+We don’t want this loop to run forever — we let the user press the **EXIT key** to stop it.
+
+```py
+    ev = gint.pollevent()
+    if ev.type == gint.KEY_EXIT:
+        break
+```
+
+- `gint.pollevent()` checks if any key is pressed (without freezing the program)
+- If the key is `KEY_EXIT`, we `break` out of the loop
+- That ends the program
+
+> This check runs **every frame**, so the program stays responsive.
+
+---
+
+## Final Code
+
+```py
+import gint
+
+DVD = [
+    "                       ",
+    "   ####    ####        ",
+    "  #       #    #       ",
+    "  #       #    #       ",
+    "  #       ######   ### ",
+    "  #       #            ",
+    "  #       #            ",
+    "   ###    #            ",
+    "                       ",
+    "  ####   #####  #   #  ",
+    "  #   #  #      #   #  ",
+    "  #   #  #      #   #  ",
+    "  #   #  #####  #   #  ",
+    "  #   #  #       # #   ",
+    "  #   #  #       # #   ",
+    "  ####   #####    #    ",
+]
+
+DVD_W = 23
+DVD_H = 16
+
+def draw_logo(x, y, color=gint.C_BLACK, bg=gint.C_WHITE):
+    for dy in range(DVD_H):
+        for dx in range(DVD_W):
+            if 0 <= x+dx < gint.DWIDTH and 0 <= y+dy < gint.DHEIGHT:
+                pixel = DVD[dy][dx]
+                gint.dpixel(x+dx, y+dy, color if pixel == '#' else bg)
+
+x, y = 50, 50
+dx, dy = 2, 2
+bg = gint.C_WHITE
+fg = gint.C_BLACK
+
+while True:
+    gint.dclear(bg)
+    draw_logo(x, y, fg, bg)
+    gint.dupdate()
+
+    x += dx
+    y += dy
+
+    if x <= 0 or x + DVD_W >= gint.DWIDTH:
+        dx = -dx
+    if y <= 0 or y + DVD_H >= gint.DHEIGHT:
+        dy = -dy
+
+    ev = gint.pollevent()
+    if ev.type == gint.KEY_EXIT:
+        break
+```
+
+---
+
+## What’s Next?
+
+- Try changing the speed (`dx`, `dy`) or logo size
+- Add colors using `C_RGB(r, g, b)` for color ClassPad models
+- Build your own pixel art!
+
+Want help with a custom animation or color gradient? Just ask on [Discord](https://discord.gg/knpcNJTzpd) or dive into the next tutorial!

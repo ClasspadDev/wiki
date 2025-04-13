@@ -1,0 +1,215 @@
+---
+title: Snake
+description: The first ClassPad game, now ported to python !  
+sidebar:
+  order: 5
+---
+
+In this tutorial, we’ll recreate the classic **Snake game**, using everything you’ve learned so far: drawing, input, and screen updates.
+
+You’ve already mastered how to draw rectangles, check key input, and update frames. Now we’ll combine all that into your **first full game**!
+
+---
+
+## How it works
+
+Here’s the basic logic behind the Snake game:
+
+1. The snake is made of a list of positions (x, y), starting with 1 segment
+2. It moves in a direction on a grid
+3. If it eats the apple, the snake grows
+4. If it runs into itself or the wall — **game over**
+5. We update and redraw everything every frame
+
+---
+
+## Grid and Layout
+
+We divide the screen into a grid:
+
+```py
+GRID_W = 20
+GRID_H = 20
+CELL = 10
+```
+
+This gives us a 20×20 grid, with each square being `10×10` pixels.
+
+We center the game on the screen using:
+
+```py
+OX = (DWIDTH - GRID_W * CELL) // 2
+OY = (DHEIGHT - GRID_H * CELL) // 2
+```
+
+So everything is aligned properly regardless of screen size.
+
+---
+
+## Snake and Apple
+
+The snake is stored as a list of coordinates:
+
+```py
+snake = [(GRID_W//2, GRID_H//2)]
+```
+
+It starts in the center of the grid.
+
+The apple is just a random position on the grid:
+
+```py
+apple = (randint(0, GRID_W-1), randint(0, GRID_H-1))
+```
+
+We make sure the apple never spawns **on top of the snake** with `place_apple()`.
+
+---
+
+## Main Loop
+
+This is the usual draw → input → update flow.
+
+### 1. Drawing
+
+We draw the background, the apple, and the snake:
+
+```py
+dclear(C_WHITE)
+draw_cell(apple[0], apple[1], C_RED)
+for x, y in snake:
+    draw_cell(x, y, C_BLACK)
+dupdate()
+```
+
+Each cell is drawn using `draw_cell()`, which uses `drect()` to draw one square.
+
+---
+
+### 2. Input
+
+We read input with `pollevent()` and use a dictionary to turn arrow keys into directions:
+
+```py
+DIRS = {
+    KEY_UP: (0, -1),
+    KEY_DOWN: (0, 1),
+    KEY_LEFT: (-1, 0),
+    KEY_RIGHT: (1, 0),
+}
+```
+
+Then we update the direction, unless the player is trying to reverse into themselves:
+
+```py
+if ev.type == KEYEV_DOWN and ev.key in DIRS:
+    new_dir = DIRS[ev.key]
+    if (new_dir[0] != -direction[0]) or (new_dir[1] != -direction[1]):
+        direction = new_dir
+```
+
+---
+
+### 3. Snake Movement
+
+We calculate the new head position by adding the direction to the current head:
+
+```py
+head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
+```
+
+Then we check for **collisions**:
+
+- If the snake hits itself or the wall → `break`
+- Otherwise, we add the new head to the front of the list
+
+```py
+if head in snake or not (0 <= head[0] < GRID_W and 0 <= head[1] < GRID_H):
+    break  # Game over
+```
+
+If the snake eats the apple, we place a new one. Otherwise, we `pop()` the tail.
+
+---
+
+## Final Code
+
+```py
+from gint import *
+from random import randint
+
+# Grid size
+GRID_W = 20
+GRID_H = 20
+CELL = 10
+
+# Position offset to center the game
+OX = (DWIDTH - GRID_W * CELL) // 2
+OY = (DHEIGHT - GRID_H * CELL) // 2
+
+# Directions: (dx, dy)
+DIRS = {
+    KEY_UP: (0, -1),
+    KEY_DOWN: (0, 1),
+    KEY_LEFT: (-1, 0),
+    KEY_RIGHT: (1, 0),
+}
+
+snake = [(GRID_W//2, GRID_H//2)]
+direction = (1, 0)  # Start moving right
+apple = (randint(0, GRID_W-1), randint(0, GRID_H-1))
+
+def draw_cell(x, y, color):
+    x1 = OX + x * CELL
+    y1 = OY + y * CELL
+    drect(x1, y1, x1 + CELL - 1, y1 + CELL - 1, color)
+
+def place_apple():
+    while True:
+        a = (randint(0, GRID_W-1), randint(0, GRID_H-1))
+        if a not in snake:
+            return a
+
+while True:
+    dclear(C_WHITE)
+
+    # Draw apple
+    draw_cell(apple[0], apple[1], C_RED)
+
+    # Draw snake
+    for x, y in snake:
+        draw_cell(x, y, C_BLACK)
+
+    dupdate()
+
+    # Read input
+    ev = pollevent()
+    if ev.type == KEYEV_DOWN and ev.key in DIRS:
+        new_dir = DIRS[ev.key]
+        # Prevent reversing
+        if (new_dir[0] != -direction[0]) or (new_dir[1] != -direction[1]):
+            direction = new_dir
+    elif ev.type == KEYEV_DOWN and ev.key == KEY_EXIT:
+        break
+
+    # Move snake
+    head = (snake[0][0] + direction[0], snake[0][1] + direction[1])
+    if head in snake or not (0 <= head[0] < GRID_W and 0 <= head[1] < GRID_H):
+        break  # Game over
+
+    snake.insert(0, head)
+    if head == apple:
+        apple = place_apple()
+    else:
+        snake.pop()
+
+```
+
+---
+
+Want to challenge yourself? Try adding:
+- A score counter
+- Difficulty that increases over time
+- A title or game over screen
+
+Need help building those? Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper) for ideas or code!

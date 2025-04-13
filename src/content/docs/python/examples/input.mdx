@@ -1,0 +1,137 @@
+---
+title: Handling Input
+description: Move a box using the arrow keys with pollevent() and keydown().
+sidebar:
+  order: 3
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+In this tutorial, you'll make a **blue box** that moves across the screen using the arrow keys.
+
+This is your first **interactive app**, and it's surprisingly easy!
+
+You’ll learn how to:
+- Detect key presses in real time
+- Use `pollevent()` and `keydown()` to check input
+- Move a shape by changing its position
+
+---
+
+## Step 1: Setup
+
+Start by importing `gint`, clearing the screen, and defining your box’s starting position:
+
+```py
+import gint
+
+x = 100
+y = 100
+speed = 4
+```
+
+- `x`, `y`: position of the box
+- `speed`: how many pixels to move per key press
+
+---
+
+## Step 2: The Game Loop
+
+This loop will run forever — we’ll:
+- Clear the screen
+- Draw the box
+- Check for input
+- Move the box if needed
+- Refresh the display
+
+```py
+while True:
+    gint.dclear(gint.C_WHITE)
+    gint.drect(x, y, x+20, y+20, gint.C_RGB(0, 0, 31))  # Blue box
+    gint.dupdate()
+```
+
+We draw the box every frame at its current position.
+
+---
+
+## Step 3: Polling for Input
+
+We now check for keys using `pollevent()`.
+
+```py
+    ev = gint.pollevent()
+```
+
+This returns an object with the type of event (`KEYEV_DOWN`, `KEYEV_UP`, etc.).
+
+Then we check if the key is held down using `keydown()`:
+
+```py
+    if gint.keydown(gint.KEY_LEFT):
+        x -= speed
+    if gint.keydown(gint.KEY_RIGHT):
+        x += speed
+    if gint.keydown(gint.KEY_UP):
+        y -= speed
+    if gint.keydown(gint.KEY_DOWN):
+        y += speed
+```
+
+This makes the box move smoothly in response to arrow keys.
+
+---
+
+## Step 4: Exit with EXIT key
+
+Let’s allow the user to quit with the EXIT key:
+
+```py
+    if ev.type == gint.KEY_EXIT:
+        break
+```
+
+If you press [EXIT], the program ends.
+
+---
+
+## Final Code
+
+```py
+import gint
+
+x = 100
+y = 100
+speed = 4
+
+while True:
+    gint.dclear(gint.C_WHITE)
+    gint.drect(x, y, x+20, y+20, gint.C_RGB(0, 0, 31))
+    gint.dupdate()
+
+    ev = gint.pollevent()
+
+    if gint.keydown(gint.KEY_LEFT):
+        x -= speed
+    if gint.keydown(gint.KEY_RIGHT):
+        x += speed
+    if gint.keydown(gint.KEY_UP):
+        y -= speed
+    if gint.keydown(gint.KEY_DOWN):
+        y += speed
+
+    if ev.type == gint.KEY_EXIT:
+        break
+```
+
+## What's next?
+
+Now that you can move a rectangle. That's cool !
+
+Next up: Let’s make it move by itself.
+
+<LinkCard
+  title="💽 Bouncing Logo"
+  href="/wiki/python/examples/bounce/"
+  description="Simple screen animation using drawing and input"
+/>

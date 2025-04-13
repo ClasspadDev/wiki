@@ -1,0 +1,139 @@
+---
+title: Drawing Your First Rectangle
+description: Step-by-step guide to draw a single shape on the screen using PythonExtra.
+sidebar:
+  order: 1
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+
+This is the most basic PythonExtra program you can write.  
+We’ll draw a single rectangle on the screen and explain **each line** as we go.
+
+You don’t need any previous experience — we’ll explain what a pixel is, how the screen works, and how to control it using `gint`.
+
+---
+
+## What you’ll learn
+
+- What is a pixel?
+- How the calculator screen works
+- How to clear the screen
+- How to draw a filled rectangle
+- How to update the screen to show your drawing
+
+---
+
+## Let’s write the code!
+
+```py
+import gint
+```
+
+This line loads the **`gint`** module, which gives us access to:
+- Drawing functions (pixels, rectangles, lines, etc.)
+- Color constants (like white and black)
+- Screen size (`gint.DWIDTH`, `gint.DHEIGHT`)
+- Input events
+
+Everything we draw will be using `gint`.
+
+---
+
+```py
+gint.dclear(gint.C_WHITE)
+```
+
+This **clears the screen** by filling it with white (`C_WHITE`).  
+It’s like starting with a blank canvas before drawing anything.
+
+If we didn’t do this, leftover graphics might still be visible.
+
+---
+
+```py
+gint.drect(50, 80, 150, 130, gint.C_BLACK)
+```
+
+This draws a **filled rectangle** on the screen.
+
+Let’s break it down:
+
+- `drect(x1, y1, x2, y2, color)`  
+- `(50, 80)` is the **top-left corner** of the rectangle
+- `(150, 130)` is the **bottom-right corner**
+- `gint.C_BLACK` is the fill color
+
+This draws a **black rectangle** from `(50, 80)` to `(150, 130)` on a white background.
+
+---
+
+### Wait, what is a pixel?
+
+A **pixel** is one tiny dot on the screen.  
+The calculator screen is made of hundreds of pixels arranged in a grid:
+
+- The **top-left** pixel is `(0, 0)`
+- The **bottom-right** pixel is `(319, 527)` on ClassPad models
+
+So `(50, 80)` means:
+- 50 pixels from the left
+- 80 pixels from the top
+
+The rectangle spans from that point to `(150, 130)` — making it 100 pixels wide and 50 pixels tall.
+
+---
+
+```py
+gint.dupdate()
+```
+
+This tells the calculator to **actually show the drawing** on the screen.
+
+Until you call `dupdate()`, everything is drawn **in memory**, not visible.  
+You can think of it like clicking "Save" — this is the moment when all your drawing becomes visible.
+
+---
+
+```py
+gint.getkey()
+```
+
+This line **waits for a key press** before the program exits.
+
+Without it, the program would run, show the rectangle for a split second, then quit.
+
+This gives the user a chance to see the screen and exit when they’re ready.
+
+---
+
+## Final code
+
+Here is the full example all together:
+
+```py
+import gint
+
+gint.dclear(gint.C_WHITE)
+gint.drect(50, 80, 150, 130, gint.C_BLACK)
+gint.dupdate()
+gint.getkey()
+```
+
+Run this on your calculator, and you should see a black rectangle appear on a white screen.  
+Press any key to exit the program.
+
+---
+
+## What's next?
+
+Now that you can draw a rectangle, try changing the numbers and colors to see how it affects the shape!
+
+Next up: Let’s try adding more shapes.
+
+<LinkCard
+  title="🎨 Colors and Shapes"
+  href="/wiki/python/examples/color-shapes/"
+  description="How to draw rectangles, lines, and circles using gint"
+/>

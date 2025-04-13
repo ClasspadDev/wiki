@@ -70,9 +70,14 @@ export default defineConfig({
 					autogenerate: { directory: 'examples' },
 				},
 				{
+					label: 'Python',
+					collapsed: false,
+					badge: { text: 'New', variant: 'tip' },
+					autogenerate: { directory: 'python', collapsed: true },
+				},
+				{
 					label: 'Developer Notes',
 					collapsed: true,
-					badge: { text: 'New', variant: 'tip' },
 					autogenerate: { directory: 'dev' },
 				}
 			],
