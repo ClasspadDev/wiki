@@ -87,7 +87,7 @@ This makes the box move smoothly in response to arrow keys.
 Let’s allow the user to quit with the EXIT key:
 
 ```py
-    if ev.type == gint.KEY_EXIT:
+    if ev.type == gint.KEYEV_DOWN and ev.key == gint.KEY_EXIT:
         break
 ```
 
@@ -120,7 +120,7 @@ while True:
     if gint.keydown(gint.KEY_DOWN):
         y += speed
 
-    if ev.type == gint.KEY_EXIT:
+    if ev.type == gint.KEYEV_DOWN and ev.key == gint.KEY_EXIT:
         break
 ```
 
