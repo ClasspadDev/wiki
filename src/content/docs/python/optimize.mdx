@@ -1,0 +1,138 @@
+---
+title: Optimization Tips
+description: Make your PythonExtra games fast and smooth!
+sidebar:
+  order: 3
+---
+
+PythonExtra is pretty fast — especially compared to Python on other platforms — but you still have to be smart about performance.
+
+There are **three big killers** when it comes to slowdowns:
+- Too much drawing
+- Bad algorithms
+- Excessive memory allocations (aka "GC abuse")
+
+Here’s how to avoid all three, with before/after examples for each one.
+
+---
+
+## 1. Avoid Overdraw
+
+Drawing every pixel of the screen every frame is expensive. It’s usually okay, but if you do this **plus** draw lots of shapes and objects — expect frame drops.
+
+### ❌ Bad: Full redraw with overdraw
+
+```py
+for _ in range(100):  # Overlapping shapes
+    drect(0, 0, DWIDTH, DHEIGHT, C_WHITE)
+    dcircle(randint(0, 320), randint(0, 528), 10, C_BLACK, C_NONE)
+dupdate()
+```
+
+### ✅ Better: Clear once, draw only changed areas
+
+```py
+dclear(C_WHITE)
+
+# Move only one thing
+drect(old_x, old_y, old_x+20, old_y+20, C_WHITE)  # Erase old
+drect(new_x, new_y, new_x+20, new_y+20, C_BLACK)  # Draw new
+dupdate()
+```
+
+Or optimize with **partial redraws** by only updating dirty regions.
+
+---
+
+## 2. Avoid unnecessary allocations
+
+Creating new objects constantly (lists, tuples, bytearrays, etc.) can **trigger garbage collection**, causing slowdowns or random stutters.
+
+### ❌ Bad: Rebuilding objects every frame
+
+```py
+def make_snake_pixels(snake):
+    return [(x * 10, y * 10) for x, y in snake]
+
+while True:
+    pixels = make_snake_pixels(snake)  # Allocates every frame!
+```
+
+### ✅ Better: Reuse or update in-place
+
+```py
+pixels = [(0, 0)] * 100  # Preallocate
+
+def update_pixels(snake):
+    for i, (x, y) in enumerate(snake):
+        pixels[i] = (x * 10, y * 10)
+
+while True:
+    update_pixels(snake)
+```
+
+---
+
+## 3. Avoid lots of tiny structures
+
+Tiny objects (like `(x, y)` tuples everywhere) create **lots of garbage**. Even if you think it’s fast, Python's GC may spike unexpectedly and cause janky frames.
+
+### ❌ Bad: Spawning thousands of 2-element tuples
+
+```py
+for i in range(1000):
+    points.append((i, i))  # GC will hate you
+```
+
+### ✅ Better: Use flat arrays or shared buffers
+
+```py
+points = [0] * 2000  # Flat (x0, y0, x1, y1, ...)
+for i in range(1000):
+    points[i*2] = i
+    points[i*2+1] = i
+```
+
+Also applies to image generation — use raw `bytes`, not nested lists.
+
+---
+
+## 4. Fix slow algorithms
+
+Sometimes the slowdown is just… math.
+
+Don’t run a full pathfinding or sort every single frame.
+
+### ❌ Bad: Sorting every frame
+
+```py
+# Called inside game loop
+def find_nearest(items):
+    return sorted(items, key=distance)[0]
+```
+
+### ✅ Better: Cache and update only when needed
+
+```py
+# Update only when items change or on timer
+if frame % 15 == 0:
+    nearest = min(items, key=distance)
+```
+
+---
+
+## TL;DR – Quick Fixes
+
+| Problem         | What to Do |
+|----------------|------------|
+| Too much draw  | Only draw what changed |
+| GC spikes      | Avoid tiny lists/tuples each frame |
+| Slowdowns      | Precompute, reuse memory |
+| Laggy logic    | Don’t do expensive sorting/pathfinding every tick |
+
+---
+
+Want to test your optimization tricks?  
+Try a frame counter or FPS logger using `gint.dtext()` and see what costs the most.
+
+Need help profiling or rewriting a janky loop? Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper)!
