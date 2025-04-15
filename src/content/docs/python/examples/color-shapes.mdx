@@ -141,12 +141,12 @@ Use `dvline()` and `dhline()` to draw fast vertical/horizontal lines.
 gray = gint.C_RGB(18, 18, 18)
 
 # Vertical "gutters"
-gint.dvline(10, 200, 240, gray)
-gint.dvline(20, 200, 240, gray)
+gint.dvline(10, gray)
+gint.dvline(gint.DWIDTH-10, gray)
 
 # Horizontal lines
-gint.dhline(10, 200, 30, gray)
-gint.dhline(10, 240, 30, gray)
+gint.dhline(10, gray)
+gint.dhline(gint.DHEIGHT-10, gray)
 ```
 
 These are perfect for drawing menus, borders, and separators.
@@ -215,10 +215,10 @@ for y in range(0, 32):
 
 # Gutter lines
 gray = gint.C_RGB(18, 18, 18)
-gint.dvline(10, 200, 240, gray)
-gint.dvline(20, 200, 240, gray)
-gint.dhline(10, 200, 30, gray)
-gint.dhline(10, 240, 30, gray)
+gint.dvline(10, gray)
+gint.dvline(gint.DWIDTH-10, gray)
+gint.dhline(10, gray)
+gint.dhline(gint.DHEIGHT-10, gray)
 
 # Box with lines
 gint.dline(150, 200, 180, 200, gint.C_BLACK)
