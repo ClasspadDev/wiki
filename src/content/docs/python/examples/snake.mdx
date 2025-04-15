@@ -42,6 +42,21 @@ OX = (DWIDTH - GRID_W * CELL) // 2
 OY = (DHEIGHT - GRID_H * CELL) // 2
 ```
 
+Then we define and draw the grid limits:
+
+```py
+C_GRAY = C_RGB(200, 200, 200)  # Light gray
+
+while True:
+    dclear(C_WHITE)
+    
+    # Draw grid border (kill zone) 
+    drect(OX-1, OY-1, OX + GRID_W*CELL, OY-1, C_GRAY)        # Top border
+    drect(OX-1, OY + GRID_H*CELL, OX + GRID_W*CELL, OY + GRID_H*CELL, C_GRAY)  # Bottom
+    drect(OX-1, OY-1, OX-1, OY + GRID_H*CELL, C_GRAY)        # Left border
+    drect(OX + GRID_W*CELL, OY-1, OX + GRID_W*CELL, OY + GRID_H*CELL, C_GRAY)  # Right
+```
+
 So everything is aligned properly regardless of screen size.
 
 ---
@@ -155,6 +170,8 @@ DIRS = {
     KEY_RIGHT: (1, 0),
 }
 
+C_GRAY = C_RGB(200, 200, 200)  # Light gray
+
 snake = [(GRID_W//2, GRID_H//2)]
 direction = (1, 0)  # Start moving right
 apple = (randint(0, GRID_W-1), randint(0, GRID_H-1))
@@ -172,6 +189,12 @@ def place_apple():
 
 while True:
     dclear(C_WHITE)
+
+    # Draw grid border (kill zone) 
+    drect(OX-1, OY-1, OX + GRID_W*CELL, OY-1, C_GRAY)        # Top border
+    drect(OX-1, OY + GRID_H*CELL, OX + GRID_W*CELL, OY + GRID_H*CELL, C_GRAY)  # Bottom
+    drect(OX-1, OY-1, OX-1, OY + GRID_H*CELL, C_GRAY)        # Left border
+    drect(OX + GRID_W*CELL, OY-1, OX + GRID_W*CELL, OY + GRID_H*CELL, C_GRAY)  # Right
 
     # Draw apple
     draw_cell(apple[0], apple[1], C_RED)
