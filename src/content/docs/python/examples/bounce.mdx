@@ -341,7 +341,7 @@ We don’t want this loop to run forever — we let the user press the **EXIT ke
 
 ```py
     ev = gint.pollevent()
-    if ev.type == gint.KEY_EXIT:
+    if ev.type == gint.KEYEV_DOWN and ev.key == gint.KEY_EXIT:
         break
 ```
 
@@ -406,7 +406,7 @@ while True:
         dy = -dy
 
     ev = gint.pollevent()
-    if ev.type == gint.KEY_EXIT:
+    if ev.type == gint.KEYEV_DOWN and ev.key == gint.KEY_EXIT:
         break
 ```
 
