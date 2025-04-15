@@ -1,0 +1,149 @@
+---
+title: Touchscreen Drawing
+description: Learn how to use the ClassPad touchscreen with PythonExtra.
+sidebar:
+  order: 6
+---
+
+In this short tutorial, you'll learn how to use the **touchscreen** to interact with your program.
+
+We’ll make a simple **drawing app**:  
+- Drag your finger to draw lines  
+- Press [EXE] to clear  
+- Press [CLEAR] to exit
+
+---
+
+## How it works
+
+ClassPad touch input is handled through the **event system**, just like keys.  
+You can listen to:
+
+- `KEYEV_TOUCH_DOWN`: when your finger touches the screen  
+- `KEYEV_TOUCH_DRAG`: while you're dragging  
+- `KEYEV_TOUCH_UP`: when you lift your finger
+
+Each event has `.x` and `.y` fields for the position (in pixels).
+
+---
+
+## Step 1: Start with a blank screen
+
+We create a function `clear()` that:
+- Clears the screen
+- Draws a helpful label at the top
+
+```py
+def clear():
+    dclear(C_WHITE)
+    dtext(2, 2, C_BLACK, "Touch: draw | EXE: clear | Clear: quit")
+```
+
+We then call it once at the beginning:
+
+```py
+clear()
+dupdate()
+```
+
+---
+
+## Step 2: Track Touch Position
+
+We use two variables to remember the last touch location:
+
+```py
+x, y = -1, -1
+```
+
+Every time the screen is touched, we save where it started.
+
+---
+
+## Step 3: Event Loop
+
+We use `pollevent()` to listen to input:
+
+```py
+ev = pollevent()
+while ev.type != KEYEV_NONE:
+    # Handle events...
+    ev = pollevent()
+```
+
+This loop catches every type of input — key presses and touches.
+
+---
+
+## Step 4: Drawing with your finger
+
+```py
+if ev.type == KEYEV_TOUCH_DOWN:
+    x, y = ev.x, ev.y
+```
+
+This saves the **starting point** when you first touch the screen.
+
+```py
+if ev.type == KEYEV_TOUCH_DRAG:
+    dline(x, y, ev.x, ev.y, C_BLACK)
+    x, y = ev.x, ev.y
+```
+
+This draws a line between the last known point and the new one, creating a fluid pen stroke.
+
+---
+
+## Step 5: Keyboard controls
+
+```py
+if ev.type == KEYEV_DOWN and ev.key == KEY_EXE:
+    clear()
+```
+
+Press [EXE] to **clear the screen** and restart drawing.
+
+```py
+if ev.type == KEYEV_DOWN and ev.key == KEY_EXIT:
+    break
+```
+
+You can optionally add this to allow quitting with [CLEAR].
+
+---
+
+## Final Code
+
+```py
+from gint import *
+
+def clear():
+    dclear(C_WHITE)
+    dtext(2, 2, C_BLACK, "Touch: draw | EXE: clear | Clear: quit")
+
+clear()
+dupdate()
+
+x, y = -1, -1
+
+while True:
+    ev = pollevent()
+    while ev.type != KEYEV_NONE:
+        if ev.type == KEYEV_DOWN and ev.key == KEY_EXE:
+            clear()
+        if ev.type == KEYEV_TOUCH_DOWN:
+            x, y = ev.x, ev.y
+        if ev.type == KEYEV_TOUCH_DRAG:
+            dline(x, y, ev.x, ev.y, C_BLACK)
+            x, y = ev.x, ev.y
+        ev = pollevent()
+    dupdate()
+```
+
+
+Want to try more touch projects? Try:
+- A **touch paint app** with colors
+- A **grid tile editor**
+- A **basic drag & drop UI**
+
+Need help with ideas? Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper)!
