@@ -5,134 +5,159 @@ sidebar:
   order: 3
 ---
 
-PythonExtra is pretty fast — especially compared to Python on other platforms — but you still have to be smart about performance.
+PythonExtra is fast enough for real-time games — **if you’re careful**.  
+But if your app starts lagging, there are three usual culprits:
 
-There are **three big killers** when it comes to slowdowns:
-- Too much drawing
-- Bad algorithms
-- Excessive memory allocations (aka "GC abuse")
+1. Drawing too much  
+2. Inefficient algorithms  
+3. Memory allocation & GC abuse
 
-Here’s how to avoid all three, with before/after examples for each one.
-
----
-
-## 1. Avoid Overdraw
-
-Drawing every pixel of the screen every frame is expensive. It’s usually okay, but if you do this **plus** draw lots of shapes and objects — expect frame drops.
-
-### ❌ Bad: Full redraw with overdraw
-
-```py
-for _ in range(100):  # Overlapping shapes
-    drect(0, 0, DWIDTH, DHEIGHT, C_WHITE)
-    dcircle(randint(0, 320), randint(0, 528), 10, C_BLACK, C_NONE)
-dupdate()
-```
-
-### ✅ Better: Clear once, draw only changed areas
-
-```py
-dclear(C_WHITE)
-
-# Move only one thing
-drect(old_x, old_y, old_x+20, old_y+20, C_WHITE)  # Erase old
-drect(new_x, new_y, new_x+20, new_y+20, C_BLACK)  # Draw new
-dupdate()
-```
-
-Or optimize with **partial redraws** by only updating dirty regions.
+This page shows how to spot those issues and fix them, with **concrete examples**.
 
 ---
 
-## 2. Avoid unnecessary allocations
+## 1. Avoid Unnecessary Overdraw
 
-Creating new objects constantly (lists, tuples, bytearrays, etc.) can **trigger garbage collection**, causing slowdowns or random stutters.
+You can easily get 20+ FPS with full-screen redraws — **as long as you’re not redrawing what doesn’t need to change.**
 
-### ❌ Bad: Rebuilding objects every frame
-
-```py
-def make_snake_pixels(snake):
-    return [(x * 10, y * 10) for x, y in snake]
-
-while True:
-    pixels = make_snake_pixels(snake)  # Allocates every frame!
-```
-
-### ✅ Better: Reuse or update in-place
+### ❌ Bad: Redrawing things you're about to overwrite
 
 ```py
-pixels = [(0, 0)] * 100  # Preallocate
+# Clear the screen, then draw a full tileset right over it
+drect(0, 0, DWIDTH-1, DHEIGHT-1, C_WHITE)
 
-def update_pixels(snake):
-    for i, (x, y) in enumerate(snake):
-        pixels[i] = (x * 10, y * 10)
-
-while True:
-    update_pixels(snake)
+for y in range(0, DHEIGHT, 16):
+    for x in range(0, DWIDTH, 16):
+        drect(x, y, x+15, y+15, C_GRAY)  # Overwrites previous draw
 ```
+
+You're wasting time filling pixels with white only to overwrite them immediately.
+
+### ✅ Better: Just draw the tiles
+
+```py
+for y in range(0, DHEIGHT, 16):
+    for x in range(0, DWIDTH, 16):
+        drect(x, y, x+15, y+15, C_GRAY)
+```
+
+Unless you *need* to clear parts of the screen (like UI or old objects), don’t redraw them.
 
 ---
 
-## 3. Avoid lots of tiny structures
+## 2. Avoid Rebuilding Data Structures
 
-Tiny objects (like `(x, y)` tuples everywhere) create **lots of garbage**. Even if you think it’s fast, Python's GC may spike unexpectedly and cause janky frames.
+Constantly creating new lists/tuples/objects every frame leads to **spikes in garbage collection**, especially if they’re small.
 
-### ❌ Bad: Spawning thousands of 2-element tuples
+### ❌ Bad: Reallocating every frame
 
 ```py
+# Builds a new list of coords every time
+pixels = [(x * 10, y * 10) for x, y in snake]
+```
+
+This creates **N tuples per frame**, and GC hates it.
+
+### ✅ Better: Use preallocated buffers (but still not perfect)
+
+```py
+# Still makes tuples, but reuses the list
+pixels = [(0, 0)] * 100
+
+for i, (x, y) in enumerate(snake):
+    pixels[i] = (x * 10, y * 10)
+```
+
+### ✅✅ Even better: Use flat `bytes` or `bytearray`
+
+```py
+# 100 pairs = 200 bytes
+buf = bytearray(200)
+
+for i, (x, y) in enumerate(snake):
+    buf[i*2] = x
+    buf[i*2+1] = y
+```
+
+- `bytes`/`bytearray` are **4x cheaper** per value than tuples  
+- Especially useful when values fit in 0–255 range (like grid coordinates or sprite IDs)  
+- You get **CPU cache friendliness** and less GC overhead
+
+---
+
+## 3. Avoid Allocating Thousands of Small Values
+
+If you're building a huge array of tiny tuples, you’re feeding the garbage collector a buffet of objects it has to track and clean.
+
+### ❌ Bad: 1,000 tiny tuples
+
+```py
+positions = [(x, x) for x in range(1000)]
+```
+
+That’s 1,000 allocations — and it gets worse if you do this in a loop.
+
+### ✅ Better: Use a flat array or shared buffer
+
+```py
+positions = bytearray(2000)
+
 for i in range(1000):
-    points.append((i, i))  # GC will hate you
+    positions[i*2] = i % 256
+    positions[i*2+1] = i // 4
 ```
 
-### ✅ Better: Use flat arrays or shared buffers
+- Uses one object instead of 1,000  
+- Fits better in memory  
+- No GC required
 
-```py
-points = [0] * 2000  # Flat (x0, y0, x1, y1, ...)
-for i in range(1000):
-    points[i*2] = i
-    points[i*2+1] = i
-```
-
-Also applies to image generation — use raw `bytes`, not nested lists.
+This trick is essential for tilemaps, image buffers, path grids, etc.
 
 ---
 
-## 4. Fix slow algorithms
+## 4. Avoid Doing Heavy Work Every Frame
 
-Sometimes the slowdown is just… math.
-
-Don’t run a full pathfinding or sort every single frame.
-
-### ❌ Bad: Sorting every frame
+### ❌ Bad: Sorting a list every tick
 
 ```py
-# Called inside game loop
-def find_nearest(items):
-    return sorted(items, key=distance)[0]
+def find_closest(entities):
+    return sorted(entities, key=distance)[0]
+
+# In the main loop
+closest = find_closest(enemies)
 ```
 
-### ✅ Better: Cache and update only when needed
+Even for 30–50 items, this adds up fast.
+
+### ✅ Better: Cache or stagger expensive work
 
 ```py
-# Update only when items change or on timer
-if frame % 15 == 0:
-    nearest = min(items, key=distance)
+if frame % 10 == 0:
+    closest = min(enemies, key=distance)
 ```
+
+Spread expensive calculations across frames, or only update when data changes.
 
 ---
 
-## TL;DR – Quick Fixes
+## TL;DR – What to Watch
 
-| Problem         | What to Do |
-|----------------|------------|
-| Too much draw  | Only draw what changed |
-| GC spikes      | Avoid tiny lists/tuples each frame |
-| Slowdowns      | Precompute, reuse memory |
-| Laggy logic    | Don’t do expensive sorting/pathfinding every tick |
+| Problem              | Avoid this                        | Do this instead                         |
+|---------------------|-----------------------------------|------------------------------------------|
+| Overdrawing         | Clearing then overdrawing         | Only draw what’s visible/changed         |
+| GC abuse            | Allocating lists/tuples constantly| Preallocate or use `bytearray`           |
+| Algorithm bottlenecks | Sorting/pathfinding every frame | Update on timer or when needed only      |
 
 ---
 
-Want to test your optimization tricks?  
-Try a frame counter or FPS logger using `gint.dtext()` and see what costs the most.
+## Extra Notes
 
-Need help profiling or rewriting a janky loop? Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper)!
+- `drect()` includes both x2/y2 — so full-screen is `drect(0, 0, DWIDTH-1, DHEIGHT-1, color)`
+- `dupdate()` is mandatory to display changes. Call it once per frame.
+- For input-heavy loops, `clearevents()` and `cleareventflips()` are your friends.
+- Partial redraws (only updating specific screen regions) **can** improve performance but are tricky. Unless you’re drawing fewer than 3 things per frame, **full redraw is simpler and usually fast enough**.
+
+---
+
+Need help diagnosing your frame drops?  
+Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-67fb8fb50e2c8191a7df1b814ad8fce9-pythonextra-helper) — just paste your loop or logic!
