@@ -77,11 +77,13 @@ export default defineConfig({
 						{ label: 'Introduction', link: '/python/introduction/' },
 						{
 							label: 'Examples',
-							autogenerate: { directory: 'python/examples', collapsed: true },
+							collapsed: true,
+							autogenerate: { directory: 'python/examples' },
 						},
 						{
 							label: 'Reference',
-							autogenerate: { directory: 'python/reference', collapsed: true },
+							collapsed: true,
+							autogenerate: { directory: 'python/reference' },
 						},
 						{ label: 'Optimize', link: '/python/optimize/' },
 					]
