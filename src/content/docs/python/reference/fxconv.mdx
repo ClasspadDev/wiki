@@ -1,0 +1,130 @@
+---
+title: fxconv
+description: Font and Image Converter
+sidebar:
+  order: 99
+---
+
+**fxconv** is a tool from the [fxSDK](https://git.planet-casio.com/Lephenixnoir/fxsdk) that converts images and fonts for use with **gint** and **PythonExtra**.
+
+It outputs `.py` files that can be directly imported into your programs.
+
+---
+
+## 📥 Download & Run
+
+You need two files:
+
+- [`fxconv.py`](https://git.planet-casio.com/Lephenixnoir/fxsdk/src/branch/master/fxconv/fxconv.py)
+- [`fxconv-main.py`](https://git.planet-casio.com/Lephenixnoir/fxsdk/src/branch/master/fxconv/fxconv-main.py)
+
+Save them into a folder and run the tool like this:
+
+```bash
+python fxconv-main.py ...
+```
+
+On the template, that would be 
+
+```bash
+python fxconv/fxconv-main.py ...
+```
+
+You should create an alias for `fxconv` that's your `python fxconv/fxconv-main.py`. That would later be used on this reference as `fxconv`.
+
+---
+
+## Converting Fonts
+
+Use the `--font` type to create a `gint.font()` object.
+
+```bash
+fxconv --font font_shmup.png -o shmup.py \
+  --py name:font_shmup charset:print grid.size:10x13 grid.padding:0 grid.border:0 proportional:true
+```
+
+| Option             | Description                                  |
+|--------------------|----------------------------------------------|
+| `--font`           | Convert an image to a bitmap font            |
+| `--py`             | Output PythonExtra format (`.py`)            |
+| `--py-compact`     | Minimize output with raw bytes (non-editable)|
+| `name:NAME`        | Name of the variable in the `.py` file       |
+| `charset:print`    | Use printable characters (ASCII 32–126)      |
+| `grid.size:WxH`    | Size of one glyph (in pixels)                |
+| `grid.padding:0`   | Spacing between glyphs                       |
+| `grid.border:0`    | Border around the grid                       |
+| `proportional:true/false` | Use variable widths or monospaced     |
+
+### Examples
+
+#### Proportional Font (like Shmup)
+
+```bash
+fxconv --font font_shmup.png -o shmup.py \
+  --py name:font_shmup charset:print grid.size:10x13 proportional:true
+```
+
+#### Monospaced Font (like Numworks)
+
+```bash
+fxconv --font numworks.png -o numworks.py \
+  --py name:font_numworks charset:print grid.size:10x16 proportional:false
+```
+
+---
+
+## Converting Images
+
+### For fx-CG and ClassPad (color)
+
+```bash
+fxconv --bopti-image myimage.png -o image.py \
+  --cg profile:p4_rgb565 name:image --py
+```
+
+### For fx-9860G (B&W)
+
+```bash
+fxconv --bopti-image myimage.png -o image.py \
+  --fx profile:mono name:image --py
+```
+
+### Compact Format (shorter file)
+
+```bash
+fxconv --bopti-image myimage.png -o image.py \
+  --cg profile:p4_rgb565 name:image --py --py-compact
+```
+
+---
+
+## Command Structure
+
+```bash
+fxconv [TYPE] input.png -o output.py [--fx|--cg] [--py] [parameters...]
+```
+
+| Type             | Description                            |
+|------------------|----------------------------------------|
+| `--font`         | Bitmap font                            |
+| `--bopti-image`  | Image for drawing (monochrome/color)   |
+
+Use `--fx` for black-and-white, `--cg` for fx-CG/fx-CP models.
+
+---
+
+## Advanced
+
+If `TYPE` is omitted, fxconv will look for a `fxconv-metadata.txt` file. That’s mostly for C add-ins and not needed with PythonExtra.
+
+---
+
+## Source and Docs
+
+[👉 fxconv on git.planet-casio](https://git.planet-casio.com/Lephenixnoir/fxsdk/src/branch/master/fxconv)
+
+[👉 fxsdk on planet-casio (french)](https://www.planet-casio.com/Fr/forums/topic13164-last-fxsdk-un-sdk-alternatif-pour-ecrire-des-add-ins.html)
+
+---
+
+Let me know if you want a visual guide or template to generate multiple fonts/images easily.
