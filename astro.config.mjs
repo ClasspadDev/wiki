@@ -74,7 +74,7 @@ export default defineConfig({
 					collapsed: false,
 					badge: { text: 'New', variant: 'tip' },
 					items: [
-						{ slug: 'python/introduction/' },
+						{ slug: 'python/introduction' },
 					        {
 					          label: 'Examples',
 					          autogenerate: { directory: 'python/examples', collapsed: true  },
@@ -83,7 +83,7 @@ export default defineConfig({
 					          label: 'Reference',
 					          autogenerate: { directory: 'python/reference', collapsed: true  },
 					        },
-					        { slug: 'python/optimize/' },
+					        { slug: 'python/optimize' },
 					]
 				},
 				{
