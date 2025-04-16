@@ -73,7 +73,18 @@ export default defineConfig({
 					label: 'Python',
 					collapsed: false,
 					badge: { text: 'New', variant: 'tip' },
-					autogenerate: { directory: 'python', collapsed: true },
+					items: [
+						{ slug: 'python/introduction/' },
+					        {
+					          label: 'Examples',
+					          autogenerate: { directory: 'python/examples', collapsed: true  },
+					        },
+						{
+					          label: 'Reference',
+					          autogenerate: { directory: 'python/reference', collapsed: true  },
+					        },
+					        { slug: 'python/optimize/' },
+					]
 				},
 				{
 					label: 'Developer Notes',
