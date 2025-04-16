@@ -1,0 +1,106 @@
+---
+title: Using Custom Fonts
+description: Load and use proportional or monospaced fonts in your program.
+sidebar:
+  order: 7
+---
+
+In this tutorial, you’ll learn how to load and use **custom fonts** with `gint.font()` and `dfont()`.
+
+This allows you to create pixel-precise typography or match styles with a game.
+
+---
+
+## Step 1: Convert a Font
+
+First, you’ll need a font converted with `fxconv`.
+
+```sh
+fxconv --font font_shmup.png -o shmup.py \
+  --py name:font_shmup charset:print \
+  grid.size:10x13 grid.padding:0 grid.border:0 \
+  proportional:true title:"Shmup"
+```
+
+This generates `shmup.py` with a `font_shmup` variable.
+
+---
+
+## Step 2: Load the Font
+
+```py
+from shmup import font_shmup
+from gint import *
+```
+
+Use `dfont(font)` to activate a font:
+
+```py
+dfont(font_shmup)
+```
+
+To return to the default:
+
+```py
+dfont(None)
+```
+
+---
+
+## Step 3: Draw Text
+
+```py
+dclear(C_WHITE)
+dtext(10, 10, C_BLACK, "Before changing font")
+
+dfont(font_shmup)
+dtext(10, 50, C_RED, "After changing font")
+
+dupdate()
+getkey()
+```
+
+The font applies to all `dtext()` and `dtext_opt()` calls after `dfont()`.
+
+---
+
+## Example: Switching Between Fonts
+
+```py
+from shmup import font_shmup
+from numworks import font_numworks
+from gint import *
+
+dclear(C_WHITE)
+
+dtext(10, 10, C_BLACK, "Before changing font")
+
+dfont(font_shmup)
+dtext(10, 30, C_BLUE, "Shmup font - Proportional")
+
+dfont(font_numworks)
+dtext(10, 50, C_RED, "Numworks font - Monospaced")
+
+dfont(None)
+dtext(10, 70, C_GREEN, "Back to default")
+
+dupdate()
+getkey()
+```
+
+---
+
+## Notes
+
+- Fonts are drawn from VRAM, so call `dupdate()` to see changes.
+- Proportional fonts use a `widths` table and `advances` array.
+- You can convert any bitmap font using a grid format.
+
+---
+
+## What's next?
+
+You can render scores, dialogue, or menus with pixel fonts.
+
+Next up: [Handling Input →](/wiki/python/examples/input/)
+```
