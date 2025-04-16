@@ -1,0 +1,52 @@
+---
+title: Custom Font Format
+description: Structure of gint.font() objects and how to access their properties.
+sidebar:
+  order: 3
+---
+
+Fonts created with `gint.font()` return an object representing a font used by `dfont()`.
+
+---
+
+## Font Attributes
+
+You can inspect the font fields like this:
+
+```py
+f = gint.font(...)
+print(f.line_height)
+print(f.glyph_width)
+```
+
+| Attribute        | Type     | Description |
+|------------------|----------|-------------|
+| `prop`           | int      | 0 = monospaced, 1 = proportional |
+| `line_height`    | int      | Total vertical space for each line |
+| `data_height`    | int      | Pixel height of glyphs |
+| `block_count`    | int      | Number of glyph encoding blocks |
+| `glyph_count`    | int      | Total number of characters |
+| `char_spacing`   | int      | Space between characters |
+| `line_distance`  | int      | Additional line spacing |
+| `blocks`         | bytes    | Glyph block map |
+| `data`           | bytes    | Glyph bitmap data |
+| `width`          | int      | (Mono) Width of each character |
+| `storage_size`   | int      | (Mono) Size of bitmap data |
+| `glyph_index`    | bytes    | (Prop) Glyph lookup table |
+| `glyph_width`    | bytes    | (Prop) Per-glyph widths |
+
+---
+
+## Mono vs Proportional Fonts
+
+- **Monospaced fonts** need `width` and `storage_size`.
+- **Proportional fonts** use `glyph_index` and `glyph_width`.
+
+---
+
+## Example: Print Metadata
+
+```py
+print("height:", font_shmup.line_height)
+print("monospaced?" if font_shmup.prop == 0 else "proportional")
+```
