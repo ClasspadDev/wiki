@@ -12,6 +12,15 @@ export default defineConfig({
 			logo: {
 				src: './src/assets/favicon.svg',
 			},
+			 head: [
+			        {
+			          tag: 'script',
+			          attrs: {
+			            src: 'https://analytics.ahrefs.com/analytics.js',
+				    'data-key': 'Kb2nywKkyR+dD+Av2GmerQ'
+			          },
+			        }
+			 ],
 			editLink: {
 				baseUrl: 'https://github.com/classpaddev/wiki/edit/main/',
 			},
