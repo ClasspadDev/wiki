@@ -1,0 +1,328 @@
+---
+title: Gint Module
+description: Full reference of gint methods and how to use them.
+sidebar:
+  order: 0
+---
+
+# `gint`: Wrapper for the gint library
+
+PythonExtra is developed with the [fxSDK](https://gitea.planet-casio.com/Lephenixnoir/fxsdk) and uses the [gint kernel](https://gitea.planet-casio.com/Lephenixnoir/gint) as a runtime. The Python module `gint` provides access to gint's internal functions for rendering, keyboard, and more. Since gint has many versatile functions with good performance, it is beneficial to use it instead of e.g. `casioplot` or `turtle`.
+
+The `gint` module tries to match its API with the original API of the C library, which is why few functions use keyword arguments or overloading. There are a few differences documented at the end of this document. For details not described in this document, one can refer to [gint's header files](https://gitea.planet-casio.com/Lephenixnoir/gint/src/branch/master/include/gint) which are always applicable unless this document explicitly says otherwise.
+
+The source for the type definitions (`.pyi` stubs) for this module can be found in the [pythonextra-template repository](https://github.com/ClasspadDev/pythonextra-template/tree/master/.typings).
+
+All constants, functions, etc. discussed here are in the `gint` module.
+
+```py
+import gint
+# or:
+from gint import *
+```
+
+## Table of Contents
+
+- [Initialization](#initialization)
+- [Keyboard Input](#keyboard-input)
+  - [Keyboard Constants](#keyboard-constants)
+  - [Keyboard Functions](#keyboard-functions)
+- [Drawing and Rendering](#drawing-and-rendering)
+  - [Display and Color Constants](#display-and-color-constants)
+  - [Display and Rendering Functions](#display-and-rendering-functions)
+- [Image and Font Objects](#image-and-font-objects)
+  - [Image Object](#image-object)
+  - [Font Object](#font-object)
+- [Differences with gint's C API](#differences-with-gints-c-api)
+
+## Initialization
+
+### `__init__() -> None`
+Initializes the `gint` environment for graphics mode. This function is called automatically when the module is imported but can be called again to reset the state. It clears the screen to white and resets the default font.
+
+## Keyboard Input
+
+Reference headers: [`<gint/keyboard.h>`](https://gitea.planet-casio.com/Lephenixnoir/gint/src/branch/master/include/gint/keyboard.h) and [`<gint/keycodes.h>`](https://gitea.planet-casio.com/Lephenixnoir/gint/src/branch/master/include/gint/keycodes.h).
+
+### Keyboard Constants
+
+#### Key Codes (`KEY_*`)
+These constants represent physical keys on the calculator.
+`KEY_F1`, `KEY_F2`, `KEY_F3`, `KEY_F4`, `KEY_F5`, `KEY_F6`,
+`KEY_SHIFT`, `KEY_OPTN`, `KEY_VARS`, `KEY_MENU`, `KEY_LEFT`, `KEY_UP`,
+`KEY_ALPHA`, `KEY_SQUARE`, `KEY_POWER`, `KEY_EXIT`, `KEY_DOWN`, `KEY_RIGHT`,
+`KEY_XOT`, `KEY_LOG`, `KEY_LN`, `KEY_SIN`, `KEY_COS`, `KEY_TAN`,
+`KEY_FRAC`, `KEY_FD`, `KEY_LEFTP`, `KEY_RIGHTP`, `KEY_COMMA`, `KEY_ARROW`,
+`KEY_7`, `KEY_8`, `KEY_9`, `KEY_DEL`,
+`KEY_4`, `KEY_5`, `KEY_6`, `KEY_MUL`, `KEY_DIV`,
+`KEY_1`, `KEY_2`, `KEY_3`, `KEY_ADD`, `KEY_SUB`,
+`KEY_0`, `KEY_DOT`, `KEY_EXP`, `KEY_NEG`, `KEY_EXE`,
+`KEY_ACON`, `KEY_HELP`, `KEY_LIGHT`,
+`KEY_X2`, `KEY_CARET`, `KEY_SWITCH`, `KEY_LEFTPAR`, `KEY_RIGHTPAR`,
+`KEY_STORE`, `KEY_TIMES`, `KEY_PLUS`, `KEY_MINUS`, `KEY_KBD`, `KEY_EQUALS`.
+
+#### Event Types (`KEYEV_*`)
+These constants describe the type of a `KeyEvent`.
+- `KEYEV_NONE`: No event.
+- `KEYEV_DOWN`: A key was pressed down.
+- `KEYEV_UP`: A key was released.
+- `KEYEV_HOLD`: A key is being held down (repeat event).
+- `KEYEV_TOUCH_DOWN`: A touch screen was pressed.
+- `KEYEV_TOUCH_UP`: A touch screen was released.
+- `KEYEV_TOUCH_DRAG`: A finger is dragging on the touch screen.
+
+#### `getkey_opt` Options (`GETKEY_*`)
+These flags are combined to configure `getkey_opt`.
+`GETKEY_MOD_SHIFT`, `GETKEY_MOD_ALPHA`, `GETKEY_BACKLIGHT`, `GETKEY_MENU`, `GETKEY_REP_ARROWS`, `GETKEY_REP_ALL`, `GETKEY_REP_PROFILE`, `GETKEY_FEATURES`, `GETKEY_NONE`, `GETKEY_DEFAULT`.
+
+### Keyboard Functions
+
+The `KeyEvent` object is central to keyboard input. It contains `.type`, `.key`, `.time`, `.shift`, `.alpha`, `.mod`, `.x`, and `.y` attributes.
+
+#### `clearevents() -> None`
+Discards all pending keyboard events from the input queue. Useful for ensuring that `keydown()` reflects the current, real-time state.
+
+#### `cleareventflips() -> None`
+Resets the tracking state for `keypressed()` and `keyreleased()`. Call this at the start of a frame before checking for single-press actions.
+```py
+# Typical game loop input setup
+gint.cleareventflips()
+gint.clearevents()
+```
+
+#### `getkey() -> KeyEvent`
+Waits for and returns a key press or repeat event. This is a blocking function.
+```py
+print("Press EXE to continue...")
+ev = gint.getkey()
+if ev.key == gint.KEY_EXE:
+    print("Continuing!")
+```
+
+#### `getkey_opt(options: int, timeout_ms: int | None) -> KeyEvent`
+A configurable, blocking version of `getkey()`. `options` is a sum of `GETKEY_*` flags. `timeout_ms` sets a maximum wait time; if it expires, a `KEYEV_NONE` event is returned.
+```py
+# Wait for 2 seconds for any key, repeating all keys
+opts = gint.GETKEY_DEFAULT | gint.GETKEY_REP_ALL
+ev = gint.getkey_opt(opts, 2000)
+if ev.type == gint.KEYEV_NONE:
+    print("Timeout!")
+```
+
+#### `keydown(key: int) -> bool`
+Checks if a specific `key` is currently held down. Returns `True` if pressed, `False` otherwise. Should be used after processing events.
+```py
+# After a pollevent() loop
+if gint.keydown(gint.KEY_LEFT):
+    player_x -= 1
+```
+
+#### `keydown_all(keys: list[int]) -> bool`
+Returns `True` if all keys in the list are currently pressed.
+```py
+if gint.keydown_all(gint.KEY_SHIFT, gint.KEY_UP):
+    print("Jumping high!")
+```
+
+#### `keydown_any(keys: list[int]) -> bool`
+Returns `True` if any of the keys in the list are currently pressed.
+```py
+if gint.keydown_any(gint.KEY_LEFT, gint.KEY_RIGHT):
+    print("Player is moving horizontally.")
+```
+
+#### `keypressed(key: int) -> bool`
+Returns `True` if the `key` has transitioned from up to down since the last `cleareventflips()`.
+```py
+if gint.keypressed(gint.KEY_OPTN):
+    open_menu()
+```
+
+#### `keyreleased(key: int) -> bool`
+Returns `True` if the `key` has transitioned from down to up since the last `cleareventflips()`.
+```py
+if gint.keyreleased(gint.KEY_EXE):
+    stop_charging_power_shot()
+```
+
+#### `keycode_digit(keycode: int) -> int`
+Returns the integer value for a digit key (`0` for `KEY_0`, etc.) or -1 for non-digit keys.
+```py
+ev = gint.getkey()
+digit = gint.keycode_digit(ev.key)
+if digit != -1:
+    print(f"You pressed the number {digit}")
+```
+
+#### `keycode_function(keycode: int) -> int`
+Returns the number for an F-key (`1` for `KEY_F1`, etc.) or -1 for non-F-keys.
+
+#### `pollevent() -> KeyEvent`
+Retrieves the oldest event from the queue without waiting. If the queue is empty, returns a `KEYEV_NONE` event. This is the main function for non-blocking input in a game loop.
+```py
+# In a game loop
+while True:
+    ev = gint.pollevent()
+    if ev.type == gint.KEYEV_NONE:
+        break  # No more events this frame
+    # Process event...
+```
+
+## Drawing and Rendering
+
+Reference header: [`<gint/display.h>`](https://gitea.planet-casio.com/Lephenixnoir/gint/src/branch/master/include/gint/display.h).
+
+### Display and Color Constants
+
+- **Display Size:** `DWIDTH`, `DHEIGHT`.
+- **Colors:** `C_WHITE`, `C_BLACK`, `C_RED`, `C_GREEN`, `C_BLUE`.
+- **Operators and Transparency:** `C_NONE`, `C_INVERT`.
+- **Gray Mode Colors (B&W only):** `C_LIGHT`, `C_DARK`, `C_LIGHTEN`, `C_DARKEN`.
+- **Text Alignment:** `DTEXT_LEFT`, `DTEXT_CENTER`, `DTEXT_RIGHT`, `DTEXT_TOP`, `DTEXT_MIDDLE`, `DTEXT_BOTTOM`.
+
+### Display and Rendering Functions
+
+#### `C_RGB(r: int, g: int, b: int) -> int`
+(Color models only) Creates a 16-bit RGB565 color value. `r`, `g`, and `b` components range from 0 to 31.
+```py
+my_purple = gint.C_RGB(20, 5, 31)
+```
+
+#### `dcircle(x: int, y: int, r: int, fill_color: int, border_color: int) -> None`
+Draws a circle centered at `(x, y)` with radius `r`. `fill_color` and `border_color` can be `C_NONE`.
+```py
+gint.dcircle(100, 100, 30, gint.C_RED, gint.C_BLACK)
+```
+
+#### `dclear(color: int) -> None`
+Fills the entire VRAM with a single `color`.
+```py
+gint.dclear(gint.C_WHITE)
+```
+
+#### `dellipse(x1: int, y1: int, x2: int, y2: int, fill_color: int, border_color: int) -> None`
+Draws an ellipse within the bounding box defined by `(x1, y1)` and `(x2, y2)`.
+
+#### `dgetpixel(x: int, y: int) -> int`
+Returns the color of the pixel at `(x, y)` from the VRAM. Returns -1 if out of bounds.
+
+#### `dhline(y: int, color: int) -> None`
+Draws a full-width horizontal line at `y`.
+
+#### `dline(x1: int, y1: int, x2: int, y2: int, color: int) -> None`
+Draws a straight line from `(x1, y1)` to `(x2, y2)`.
+
+#### `dpixel(x: int, y: int, color: int) -> None`
+Draws a single pixel at `(x, y)`.
+
+#### `dpoly(vertices: list[int], fill_color: int, border_color: int) -> None`
+Draws a polygon. `vertices` is a flat list of coordinates `[x0, y0, x1, y1, ...]`.
+```py
+# A blue triangle with a black border
+gint.dpoly([50, 10, 10, 80, 90, 80], gint.C_BLUE, gint.C_BLACK)
+```
+
+#### `drect(x1: int, y1: int, x2: int, y2: int, color: int) -> None`
+Draws a filled rectangle between the inclusive corners `(x1, y1)` and `(x2, y2)`.
+
+#### `drect_border(x1, y1, x2, y2, fill_color, border_width, border_color) -> None`
+Draws a rectangle with an inner border of `border_width` pixels.
+
+#### `dupdate() -> None`
+Transfers the VRAM content to the physical display, making drawings visible.
+
+#### `dvline(x: int, color: int) -> None`
+Draws a full-height vertical line at `x`.
+
+#### `dwindow_get() -> tuple[int, int, int, int]`
+Returns the current clipping window as `(left, top, right, bottom)`.
+
+#### `dwindow_set(left: int, top: int, right: int, bottom: int) -> None`
+Sets a clipping rectangle. All subsequent drawing operations will be confined to this area.
+```py
+# Only draw in a 100x50 box at (20, 20)
+gint.dwindow_set(20, 20, 120, 70)
+# This line will be clipped
+gint.dline(0, 45, gint.DWIDTH, 45, gint.C_BLACK)
+# Restore full screen drawing
+gint.dwindow_set(0, 0, gint.DWIDTH, gint.DHEIGHT)
+```
+
+#### `dfont(font: GintFont | None) -> None`
+Sets the current font for all text functions. Pass `None` to reset to the default font.
+
+#### `dsize(text: str, font: GintFont | None) -> tuple[int, int]`
+Returns the `(width, height)` of a string if rendered with the specified `font`.
+```py
+tw, th = gint.dsize("Hello!", None)
+print(f"Text is {tw} pixels wide and {th} pixels high.")
+```
+
+#### `dnsize(text: str, size: int, font: GintFont | None) -> tuple[int, int]`
+Like `dsize`, but only measures the first `size` bytes of the UTF-8 encoded string.
+
+#### `drsize(text: str, font: GintFont | None, width: int) -> tuple[int, int]`
+Calculates how much of a `text` fits in a given pixel `width`. Returns `(byte_offset, actual_width)`.
+```py
+text = "This is a very long sentence."
+# How much fits in 100 pixels?
+offset, used_w = gint.drsize(text, None, 100)
+# This will not work correctly for multi-byte unicode
+visible_part = text[:offset]
+gint.dtext(10, 10, gint.C_BLACK, visible_part)
+```
+
+#### `dtext(x: int, y: int, fg_color: int, text: str) -> None`
+Draws `text` at `(x, y)` using the current font. This is a simplified version of `dtext_opt`.
+
+#### `dtext_opt(x, y, fg, bg, halign, valign, text, size) -> None`
+Draws text with advanced alignment, an optional background color `bg`, and a C-level size parameter.
+```py
+# Centered title
+gint.dtext_opt(
+    gint.DWIDTH // 2, 10,
+    gint.C_BLACK, gint.C_NONE,
+    gint.DTEXT_CENTER, gint.DTEXT_TOP,
+    "My Game", -1
+)
+```
+
+#### `dimage(x: int, y: int, img: image) -> None`
+Draws a `gint.image` object at `(x, y)`.
+
+#### `dsubimage(x, y, img, left, top, width, height) -> None`
+Draws a sub-region of an image. The `(left, top, width, height)` rectangle from `img` is drawn at `(x, y)`.
+```py
+# Draw a 16x16 tile from a spritesheet at (32, 0)
+gint.dsubimage(100, 100, my_spritesheet, 32, 0, 16, 16)
+```
+
+#### Image Constructors
+These functions construct `gint.image` objects. They are Python-specific helpers, best used with data from `fxconv`.
+- `image_rgb565(width, height, data)`
+- `image_rgb565a(width, height, data)` (with 1-bit alpha)
+- `image_p8_rgb565(width, height, data, palette)` (256-color palette)
+- `image_p8_rgb565a(width, height, data, palette)` (255-color + alpha)
+- `image_p4_rgb565(width, height, data, palette)` (16-color palette)
+- `image_p4_rgb565a(width, height, data, palette)` (15-color + alpha)
+
+## Image and Font Objects
+
+### `image` Object
+Represents a graphical image. It is typically created with `fxconv` or one of the `image_*` constructors. It has the following attributes: `.format`, `.flags`, `.color_count`, `.width`, `.height`, `.stride`, `.data`, and `.palette`.
+
+### `font` Object
+Represents a custom font. It is created with the `gint.font()` constructor and used with `dfont()`. It has many attributes reflecting its properties:
+- **General:** `.prop`, `.line_height`, `.data_height`, `.block_count`, `.glyph_count`, `.char_spacing`, `.line_distance`, `.blocks`, `.data`.
+- **Monospaced-specific:** `.width`, `.storage_size`.
+- **Proportional-specific:** `.glyph_index`, `.glyph_width`.
+
+## Differences with gint's C API
+
+The Python wrapper for `gint` is designed to be close to the C API, but some differences exist for convenience and practicality in a Python environment.
+- **Image Constructors**: Functions like `image_rgb565()` are Python-specific helpers. In C, you would manually fill a `bopti_image_t` struct.
+- **dfont()**: The Python version does not return the previously set font.
+- **dsubimage()**: The `flags` parameter is omitted.
+- **dwindow_set()**: Does not return the old window settings. Use `dwindow_get()` first if you need to restore them.
+- **Timeouts**: Asynchronous volatile flags for timeouts (like in `getkey_opt`) are replaced with synchronous millisecond integer delays.
+- **dgray()**: Returns a boolean instead of an integer error code.
