@@ -1,0 +1,214 @@
+---
+title: turtle
+description: "A guide to the turtle graphics module for drawing shapes and patterns with a virtual turtle."
+sidebar:
+  order: 10
+---
+
+# `turtle`: Fun with Graphics
+
+The `turtle` module provides a simple and intuitive way to draw graphics. Imagine a small robot turtle that you can command to move around a canvas, leaving a trail behind it. You can change its direction, color, and whether it draws or not. It's a fantastic way to learn programming concepts by creating visual art.
+
+To get started, you just need to import the module:
+
+```py
+import turtle
+```
+
+> Note: You need to download the [turtle.py](/python/turtle.py) file to the same location that you run your program... 
+
+## Contents
+
+- [Turtle Motion](#turtle-motion)
+- [Pen Control](#pen-control)
+- [Turtle State](#turtle-state)
+- [Screen Control](#screen-control)
+- [Color Control](#color-control)
+- [Other Commands](#other-commands)
+
+## Turtle Motion
+
+These commands control how the turtle moves around the screen.
+
+### `forward(distance)` or `fd(distance)`
+Moves the turtle forward by the specified `distance` in its current direction.
+
+```py
+# Move forward 100 steps
+turtle.forward(100)
+```
+
+### `backward(distance)` or `back(distance)` or `bk(distance)`
+Moves the turtle backward by the specified `distance`, opposite to its current direction.
+
+```py
+# Move back 50 steps
+turtle.backward(50)
+```
+
+### `right(angle)` or `rt(angle)`
+Turns the turtle to its right by the specified `angle` in degrees.
+
+```py
+# Turn right by 90 degrees
+turtle.right(90)
+```
+
+### `left(angle)` or `lt(angle)`
+Turns the turtle to its left by the specified `angle` in degrees.
+
+```py
+# Turn left by 45 degrees
+turtle.left(45)
+```
+
+### `goto(x, y)` or `setpos(x, y)` or `setposition(x, y)`
+Moves the turtle to an absolute position on the screen. The center of the screen is `(0, 0)`.
+
+```py
+# Go directly to the top-right area
+turtle.goto(100, 50)
+```
+
+### `setx(x)`
+Moves the turtle to the specified `x` coordinate, keeping its current `y` coordinate.
+
+### `sety(y)`
+Moves the turtle to the specified `y` coordinate, keeping its current `x` coordinate.
+
+### `setheading(angle)` or `seth(angle)`
+Sets the turtle's orientation to an absolute `angle`.
+- `0` degrees points to the East (right).
+- `90` degrees points to the North (up).
+- `180` degrees points to the West (left).
+- `270` degrees points to the South (down).
+
+```py
+# Make the turtle face upwards
+turtle.setheading(90)
+```
+
+### `circle(radius, extent=360)`
+Draws a circle or an arc. `radius` determines the circle's size. `extent` (in degrees) determines how much of the circle to draw.
+
+```py
+# Draw a full circle with a radius of 50
+turtle.circle(50)
+
+# Draw a semicircle
+turtle.circle(50, 180)
+```
+
+### `home()`
+Moves the turtle to the center of the screen `(0, 0)` and sets its heading to `0` degrees (East).
+
+## Pen Control
+
+These commands control the turtle's pen.
+
+### `penup()` or `pu()` or `up()`
+Lifts the pen up. The turtle will move without drawing.
+
+### `pendown()` or `pd()` or `down()`
+Puts the pen down. The turtle will draw as it moves.
+
+### `pensize(width)` or `width(width)`
+Sets the thickness of the line drawn by the turtle. A `width` of 1 is the default. The maximum is 5.
+
+```py
+# Make the line 3 pixels thick
+turtle.pensize(3)
+```
+
+### `isdown()`
+Returns `True` if the pen is down (drawing), and `False` if it's up.
+
+## Turtle State
+
+These commands manage the turtle's appearance and position.
+
+### `hideturtle()` or `ht()`
+Makes the turtle invisible. This is useful when you want to see only the drawing.
+
+### `showturtle()` or `st()`
+Makes the turtle visible again.
+
+### `isvisible()`
+Returns `True` if the turtle is currently visible.
+
+### `shape(name)`
+Changes the appearance of the turtle. Available shapes are `"classic"` (the default) and `"turtle"`.
+```py
+# Change the turtle's look
+turtle.shape("turtle")
+```
+
+### `speed(speed)`
+Sets the turtle's animation speed. `speed` can be:
+- A number from 1 (slowest) to 10 (fast).
+- `0` (fastest) means no animation; the drawing appears instantly.
+- A string: `'slowest'`, `'slow'`, `'normal'`, `'fast'`, `'fastest'`.
+
+```py
+# Set a medium speed
+turtle.speed(6)
+
+# Make the drawing happen instantly
+turtle.speed(0)
+```
+
+### `position()` or `pos()`
+Returns the turtle's current `(x, y)` coordinates.
+
+### `xcor()`
+Returns the turtle's current `x` coordinate.
+
+### `ycor()`
+Returns the turtle's current `y` coordinate.
+
+### `heading()`
+Returns the turtle's current heading in degrees.
+
+### `distance(x, y)`
+Returns the distance from the turtle to the point `(x, y)`.
+
+### `towards(x, y)`
+Returns the angle (in degrees) from the turtle's current position to the point `(x, y)`. Useful with `setheading()`.
+```py
+# Make the turtle face the top-left corner
+angle_to_corner = turtle.towards(-150, 80)
+turtle.setheading(angle_to_corner)
+```
+
+## Screen Control
+
+### `clear()`
+Erases all drawings from the screen but leaves the turtle at its current position and state.
+
+### `reset()`
+This is a complete reset. It clears the screen, moves the turtle back to the center `(0, 0)`, and resets all its settings (color, pensize, etc.) to their defaults.
+
+## Color Control
+
+### `pencolor(*color)`
+Sets the color of the line the turtle draws. You can specify a color in several ways:
+- As a color name string: `"red"`, `"blue"`, `"green"`, etc.
+- As an RGB tuple of floats from 0.0 to 1.0: `(1.0, 0.5, 0.0)`.
+
+```py
+# Set pen color by name
+turtle.pencolor("blue")
+
+# Set pen color with RGB values (for an orange color)
+turtle.pencolor(1.0, 0.65, 0.0)
+```
+
+## Other Commands
+
+### `write(text)`
+Writes `text` on the screen at the turtle's current position.
+```py
+turtle.penup()
+turtle.goto(0, 50)
+turtle.write("Hello, Turtle!")
+```
