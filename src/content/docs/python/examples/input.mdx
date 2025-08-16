@@ -95,22 +95,80 @@ If you press [EXIT], the program ends.
 
 ---
 
-## Final Code
+
+### What's the Difference? `keydown` vs. `keypressed`
+
+For now you used `keydown()` to move the box. This works perfectly for continuous actions like movement because `keydown()` is **true for every single frame your finger is holding the key down**.
+
+But what if you want an action to happen only **once** when you press a key?
+-   Jumping in a platformer
+-   Firing a single laser
+-   Opening a menu
+
+If you used `keydown()` for these, you'd jump 30 times a second or fire a constant beam of lasers! This is why there is `keypressed()`, that is like a light switch:
+-   `gint.keydown()` is asking: "Is the light switch currently in the 'on' position?" You can ask this anytime, and it will be true as long as the switch is on.
+-   `gint.keypressed()` is asking: "Did someone just **flick** the switch on?" This is only true for the one brief moment the action happens.
+
+### The Technical Difference and the Game Loop
+
+To make `keypressed()` work, `gint` needs you to mark the beginning of your frame's input check. This is done with a special function called `cleareventflips()`.
+
+The correct game loop structure for using *both* `keydown` and `keypressed` looks like this:
 
 ```py
+# Render game...
+
+# --- INPUT HANDLING ---
+# 1. Mark the start of a new input check. This is our "reference point".
+cleareventflips()
+
+# 2. Process all hardware events that happened since the last check.
+#    This updates gint's internal state about what keys are up or down.
+clearevents() # or a loop with pollevent()
+
+# 3. Now, ask your questions about the state.
+if keypressed(KEY_ACTION):
+    # Do something ONCE
+    pass
+if keydown(KEY_LEFT):
+    # Do something CONTINUOUSLY
+    pass
+
+# Simulate game...
+```
+
+Let's modify use this to add some actions !
+
+## Step 5: Adding a One-Shot Action
+
+We'll keep the smooth movement using `keydown()`, but we'll add a new feature: **pressing the [EXE] key will instantly change the box's color.** This should only happen once per press.
+
+First, let's create a variable for the color.
+
+```python
 import gint
 
 x = 100
 y = 100
 speed = 4
+box_color = gint.C_RGB(0, 0, 31) # Start as blue
+```
 
+Next, we'll update the game loop to use the new input structure and check for `keypressed()`.
+
+```python
 while True:
+    # --- RENDER ---
     gint.dclear(gint.C_WHITE)
-    gint.drect(x, y, x+20, y+20, gint.C_RGB(0, 0, 31))
+    # Use the color variable here
+    gint.drect(x, y, x+20, y+20, box_color)
     gint.dupdate()
 
-    ev = gint.pollevent()
+    # --- HANDLE INPUT ---
+    gint.cleareventflips()
+    gint.clearevents() # Replaces the single pollevent()
 
+    # Check for continuous movement with keydown()
     if gint.keydown(gint.KEY_LEFT):
         x -= speed
     if gint.keydown(gint.KEY_RIGHT):
@@ -120,9 +178,67 @@ while True:
     if gint.keydown(gint.KEY_DOWN):
         y += speed
 
+    # Check for a single color change with keypressed()
+    if gint.keypressed(gint.KEY_EXE):
+        # Toggle between blue and red
+        if box_color == gint.C_RGB(0, 0, 31):
+            box_color = gint.C_RGB(31, 0, 0) # Red
+        else:
+            box_color = gint.C_RGB(0, 0, 31) # Blue
+
+    # Check for exit (you could use gint.keydown(gint.KEY_EXIT) too )
     if ev.type == gint.KEYEV_DOWN and ev.key == gint.KEY_EXIT:
         break
 ```
+
+### Final Code
+
+```python
+import gint
+
+# --- Game State ---
+x = 100
+y = 100
+speed = 4
+box_color = gint.C_RGB(0, 0, 31) # Start as blue
+
+# --- Game Loop ---
+while True:
+    # 1. Render the current state of the game
+    gint.dclear(gint.C_WHITE)
+    gint.drect(x, y, x+20, y+20, box_color)
+    gint.dupdate()
+
+    # 2. Handle all input for the next frame
+    gint.cleareventflips()
+    gint.clearevents()
+
+    # Continuous actions
+    if gint.keydown(gint.KEY_LEFT):
+        x -= speed
+    if gint.keydown(gint.KEY_RIGHT):
+        x += speed
+    if gint.keydown(gint.KEY_UP):
+        y -= speed
+    if gint.keydown(gint.KEY_DOWN):
+        y += speed
+
+    # Single, one-shot action
+    if gint.keypressed(gint.KEY_EXE):
+        if box_color == gint.C_RGB(0, 0, 31):
+            box_color = gint.C_RGB(31, 0, 0)
+        else:
+            box_color = gint.C_RGB(0, 0, 31)
+
+    # Exit condition
+    if gint.keydown(gint.KEY_EXIT):
+        break
+```
+
+Now, when you run this, holding the arrow keys moves the box smoothly, but holding the [EXE] key will only change the color once.
+You have to release it and press it again for the color to change back.
+
+You've successfully handled both continuous and discrete input !
 
 ## What's next?
 
