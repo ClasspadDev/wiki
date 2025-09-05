@@ -1,0 +1,36 @@
+---
+
+import favicon from '../../assets/favicon.svg?raw';
+
+const main = 'classpaddev.github.io/wiki/';
+const self = '/' + (Astro.locals.starlightRoute.locale || 'en') + '/getting-started/';
+---
+
+
+<span class="site-title sl-flex">
+    <div class="favicon" set:html={favicon}></div>
+	<a class="cp-logo" href={main}>ClassPad<span>.Dev</span></a>
+</span>
+
+
+<style>
+    .cp-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--cp-white);
+    }
+    .cp-logo span {
+        color: var(--cp-accent);
+    }
+
+    .favicon {
+        display: none;
+        height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y));
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: 0 50%;
+        min-width: 40px;
+    }
+</style>

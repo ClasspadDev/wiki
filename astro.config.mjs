@@ -1,5 +1,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { sidebar } from './astro.sidebar';
+import { starlightPluginLlmsTxt } from './config/plugins/llms-txt';
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,102 +14,39 @@ export default defineConfig({
 			logo: {
 				src: './src/assets/favicon.svg',
 			},
-			 head: [
+			components: {
+				SiteTitle: './src/components/starlight/SiteTitle.astro',
+			},
+			head: [
 			        {
 			          tag: 'script',
 			          attrs: {
 			            src: 'https://analytics.ahrefs.com/analytics.js',
-				    'data-key': 'Kb2nywKkyR+dD+Av2GmerQ'
+				    	'data-key': 'Kb2nywKkyR+dD+Av2GmerQ'
 			          },
-			        }
+			        },
+					{
+						tag: 'link',
+						attrs: {
+							href: "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@700&display=swap"
+						},
+					}
 			 ],
 			editLink: {
 				baseUrl: 'https://github.com/classpaddev/wiki/edit/main/',
 			},
-			social: {
-				github: 'https://github.com/classpaddev/wiki',
-				discord: 'https://discord.gg/knpcNJTzpd',
-			},
-			sidebar: [
-				{
-					label: 'Get Started',
-					items: [
-						{ label: 'Introduction', link: '/getting-started/introduction/' },
-						{ label: 'Building', link: '/getting-started/building/' },
-					],
-				},
-				// {
-				// 	label: 'Guides',
-				// 	collapsed: true,
-				// 	autogenerate: { directory: 'guides' },
-				// 	items: [
-				// 		// Each item here is one entry in the navigation menu.
-				// 		{ label: 'Example Guide', link: '/guides/example/' },
-				// 	],
-				// },
-				{
-					label: 'Reference',
-					collapsed: true,
-					items: [
-						{
-							label: '📱 GUI',
-							collapsed: true,
-							autogenerate: { directory: 'reference/gui' },
-
-						},
-						{
-							label: '📟 OS',
-							collapsed: true,
-							autogenerate: { directory: 'reference/os' },
-
-						},
-						{
-							label: '🧮 CPU',
-							collapsed: true,
-							autogenerate: { directory: 'reference/cpu' },
-
-						}
-					]
-				},
-				{
-					label: 'Tutorials',
-					autogenerate: { directory: 'tutorials' },
-				},
-				{
-					label: 'Examples',
-					collapsed: true,
-					autogenerate: { directory: 'examples' },
-				},
-				{
-					label: 'Python',
-					collapsed: false,
-					badge: { text: 'New', variant: 'tip' },
-					items: [
-						{ label: 'Introduction', link: '/python/introduction/' },
-						{
-							label: 'Examples',
-							collapsed: true,
-							autogenerate: { directory: 'python/examples' },
-						},
-						{
-							label: 'Reference',
-							collapsed: true,
-							autogenerate: { directory: 'python/reference' },
-						},
-						{ label: 'Optimize', link: '/python/optimize/' },
-					]
-				},
-				{
-					label: 'Developer Notes',
-					collapsed: true,
-					autogenerate: { directory: 'dev' },
-				}
+			defaultLocale: 'en',
+			social: [
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/classpaddev/wiki' },
+				{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/knpcNJTzpd' },
 			],
+			sidebar: sidebar,
 			lastUpdated: true,
 			favicon: './src/assets/favicon.svg',
 			customCss: [
 				'./src/custom.css'
-			]
+			],
+			plugins: [starlightPluginLlmsTxt()]
 		}),
 	],
 });
