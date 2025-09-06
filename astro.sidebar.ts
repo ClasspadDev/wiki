@@ -11,58 +11,70 @@ import { group } from './config/sidebar';
  *
  */
 export const sidebar = [
-        {
-            label: 'Get Started',
-            items: [
-                { label: 'Introduction', link: '/getting-started/introduction/' },
-                { label: 'Building', link: '/getting-started/building/' },
-            ],
-        },
-        // {
-        // 	label: 'Guides',
-        // 	collapsed: true,
-        // 	autogenerate: { directory: 'guides' },
-        // 	items: [
-        // 		// Each item here is one entry in the navigation menu.
-        // 		{ label: 'Example Guide', link: '/guides/example/' },
-        // 	],
-        // },
-        {
-            label: 'Reference',
-            collapsed: true,
+        group('HHK', {
             items: [
                 {
-                    label: '📱 GUI',
+                    label: 'Get Started',
+                    items: [
+                        { label: 'Introduction', link: '/getting-started/introduction/' },
+                        { label: 'Building', link: '/getting-started/building/' },
+                    ],
+                },
+                // {
+                // 	label: 'Guides',
+                // 	collapsed: true,
+                // 	autogenerate: { directory: 'guides' },
+                // 	items: [
+                // 		// Each item here is one entry in the navigation menu.
+                // 		{ label: 'Example Guide', link: '/guides/example/' },
+                // 	],
+                // },
+                {
+                    label: 'Reference',
                     collapsed: true,
-                    autogenerate: { directory: 'reference/gui' },
+                    items: [
+                        {
+                            label: '📱 GUI',
+                            collapsed: true,
+                            autogenerate: { directory: 'reference/gui' },
 
+                        },
+                        {
+                            label: '📟 OS',
+                            collapsed: true,
+                            autogenerate: { directory: 'reference/os' },
+
+                        },
+                        {
+                            label: '🧮 CPU',
+                            collapsed: true,
+                            autogenerate: { directory: 'reference/cpu' },
+
+                        },
+                        {
+                            label: '🖩 CALC',
+                            collapsed: true,
+                            autogenerate: { directory: 'reference/calc' },
+
+                        }
+                    ]
                 },
                 {
-                    label: '📟 OS',
-                    collapsed: true,
-                    autogenerate: { directory: 'reference/os' },
-
+                    label: 'Tutorials',
+                    autogenerate: { directory: 'tutorials' },
                 },
                 {
-                    label: '🧮 CPU',
+                    label: 'Examples',
                     collapsed: true,
-                    autogenerate: { directory: 'reference/cpu' },
-
+                    autogenerate: { directory: 'examples' },
                 }
             ]
-        },
-        {
-            label: 'Tutorials',
-            autogenerate: { directory: 'tutorials' },
-        },
-        {
-            label: 'Examples',
+        }),
+        group('HH3', {
+            items: []
+        }),
+        group('Python', {
             collapsed: true,
-            autogenerate: { directory: 'examples' },
-        },
-        {
-            label: 'Python',
-            collapsed: false,
             badge: { text: 'New', variant: 'tip' },
             items: [
                 { label: 'Introduction', link: '/python/introduction/' },
@@ -73,15 +85,18 @@ export const sidebar = [
                 },
                 {
                     label: 'Reference',
-                    collapsed: true,
                     autogenerate: { directory: 'python/reference' },
                 },
                 { label: 'Optimize', link: '/python/optimize/' },
             ]
-        },
-        {
-            label: 'Developer Notes',
+        }),
+        group('Misc', {
             collapsed: true,
-            autogenerate: { directory: 'dev' },
-        }
+            items: [
+                {
+                    label: 'Developer Notes',
+                    autogenerate: { directory: 'dev' },
+                }
+            ]
+        })
     ] satisfies StarlightUserConfig['sidebar'];

@@ -1,0 +1,200 @@
+---
+title: Calc
+description: Functions for drawing graphics on the calculator screen
+---
+
+:::tip[Graphics Methods]
+These methods provide low-level graphics capabilities for drawing on the calculator's LCD screen.
+
+They should be used within a properly initialized environment with `calcInit()` and `calcEnd()` calls, and require manual `LCD_Refresh()` to display changes.
+
+Check them on the [Usage](#usage) and [original SDK Code](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/calc/calc.hpp)
+:::
+
+
+## Overview
+The calculator graphics system provides functions for drawing pixels, lines, triangles, and filling the screen. All coordinates are in pixels, with (0,0) at the top-left corner of the screen.
+
+The system uses a VRAM (Video RAM) array to store pixel data, which must be refreshed to the LCD using `LCD_Refresh()` from `sdk/os/lcd.hpp`.
+
+## Global Variables
+
+### Video RAM
+```cpp
+extern uint16_t *vram;
+```
+Pointer to the video memory array where pixel data is stored. Must be initialized with `calcInit()` or `LCD_GetVRAMAddress()`.
+
+### Screen Dimensions
+```cpp
+extern int width;
+extern int height;
+```
+The width and height of the screen in pixels. Automatically initialized by `calcInit()`.
+
+## Graphics Methods
+
+### Draw Pixel
+```cpp
+void setPixel(int x, int y, uint32_t color);
+```
+Sets a single pixel at coordinates (x, y) to the specified color. Includes bounds checking to prevent drawing outside the screen. Colors can be specified using the `color(r, g, b)` macro or in 565 format.
+
+### Draw Line
+```cpp
+void line(int x1, int y1, int x2, int y2, uint16_t color);
+```
+Draws a line from point (x1, y1) to point (x2, y2) using Bresenham's line algorithm. The color parameter specifies the line color.
+
+### Draw Filled Triangle
+```cpp
+void triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint16_t colorFill, uint16_t colorLine);
+```
+Draws a filled triangle with vertices at (x0, y0), (x1, y1), and (x2, y2). The triangle is filled with `colorFill` and outlined with `colorLine`.
+
+### Fill Screen
+```cpp
+void fillScreen(uint16_t color);
+```
+Fills the entire screen with the specified color.
+
+## Color Functions
+
+### RGB Color Conversion
+```cpp
+uint16_t color(uint8_t R, uint8_t G, uint8_t B);
+```
+Converts RGB values (0-255 each) to 16-bit 565 color format.
+
+## Initialization Methods
+
+### Initialize Calculator Environment
+```cpp
+void calcInit();
+```
+Initializes the calculator graphics environment:
+- Gets VRAM address with `LCD_GetVRAMAddress()`
+- Gets screen size with `LCD_GetSize()`
+- Backs up current VRAM content with `LCD_VRAMBackup()`
+
+### End Calculator Environment
+```cpp
+void calcEnd();
+```
+Restores the calculator environment to its initial state:
+- Restores VRAM content with `LCD_VRAMRestore()`
+- Refreshes the LCD display with `LCD_Refresh()`
+
+## Keyboard Methods
+
+### Get Key State
+```cpp
+void getKey(uint32_t *key1, uint32_t *key2);
+```
+Reads the current state of the keyboard into two 32-bit values. Each bit represents a specific key.
+
+### Test Key State
+```cpp
+bool testKey(uint32_t key1, uint32_t key2, Keys1 key);
+bool testKey(uint32_t key1, uint32_t key2, Keys2 key);
+```
+Tests if a specific key is currently pressed. Takes the key state values from `getKey()` and a key identifier from the `Keys1` or `Keys2` enums.
+
+## Key Enums
+
+### Keys1 Enum
+```cpp
+enum Keys1 {
+    KEY_SHIFT       = 0x80000000,
+    KEY_CLEAR       = 0x00020000, // The Power key
+    KEY_BACKSPACE   = 0x00000080,
+    KEY_LEFT        = 0x00004000,
+    KEY_RIGHT       = 0x00008000,
+    KEY_Z           = 0x00002000,
+    KEY_POWER       = 0x00000040, // The exponent key
+    KEY_DIVIDE      = 0x40000000,
+    KEY_MULTIPLY    = 0x20000000,
+    KEY_SUBTRACT    = 0x10000000,
+    KEY_ADD         = 0x08000000,
+    KEY_EXE         = 0x04000000,
+    KEY_EXP         = 0x00000004,
+    KEY_3           = 0x00000008,
+    KEY_6           = 0x00000010,
+    KEY_9           = 0x00000020,
+};
+```
+
+### Keys2 Enum
+```cpp
+enum Keys2 {
+    KEY_KEYBOARD    = 0x80000000,
+    KEY_UP          = 0x00800000,
+    KEY_DOWN        = 0x00400000,
+    KEY_EQUALS      = 0x00000080,
+    KEY_X           = 0x00000040,
+    KEY_Y           = 0x40000000,
+    KEY_LEFT_BRACKET= 0x00000020,
+    KEY_RIGHT_BRACKET= 0x00000010,
+    KEY_COMMA       = 0x00000008,
+    KEY_NEGATIVE    = 0x00000004,
+    KEY_0           = 0x04000000,
+    KEY_DOT         = 0x00040000,
+    KEY_1           = 0x08000000,
+    KEY_2           = 0x00080000,
+    KEY_4           = 0x10000000,
+    KEY_5           = 0x00100000,
+    KEY_7           = 0x20000000,
+    KEY_8           = 0x00200000,
+};
+```
+
+## Color Format
+
+Colors can be specified in two ways:
+1. **RGB Macro**: `color(red, green, blue)` where each component is 0-255
+2. **565 Format**: 16-bit value in RGB565 format (5 bits red, 6 bits green, 5 bits blue)
+
+## Usage 
+```cpp
+#include <sdk/calc/calc.hpp>
+#include <sdk/os/lcd.hpp>
+
+// Initialize the calculator environment
+calcInit();
+
+// Fill screen with blue background
+fillScreen(color(0, 0, 255));
+
+// Draw a red line from top-left to bottom-right
+line(0, 0, width-1, height-1, color(255, 0, 0));
+
+// Draw a filled green triangle with black outline
+triangle(50, 50, 100, 50, 75, 100, color(0, 255, 0), color(0, 0, 0));
+
+// Draw individual pixels in a pattern
+for(int i = 0; i < 100; i += 10) {
+    setPixel(150 + i, 150, color(255, 255, 0)); // Yellow pixels
+}
+
+// Draw a colorful rectangle using pixels
+for(int x = 0; x < 50; x++) {
+    for(int y = 0; y < 50; y++) {
+        setPixel(200 + x, 200 + y, color(x * 5, y * 5, 128));
+    }
+}
+
+// Update the display to show all graphics
+LCD_Refresh();
+
+// Wait for user input
+while(true) {
+    uint32_t key1, key2;
+    getKey(&key1, &key2);
+    if(testKey(key1, key2, KEY_CLEAR)) {
+        break;
+    }
+}
+
+// Restore the calculator environment
+calcEnd();
+```

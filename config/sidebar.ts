@@ -16,12 +16,11 @@ type NavDict = Record<NavKey, string>;
  * `src/content/nav/*` files.
  */
 export function group(
-	key: NavKey,
+	label: string,
 	group: Omit<StarlightManualSidebarGroup, 'label'> | Omit<StarlightAutoSidebarGroup, 'label'>
 ): StarlightManualSidebarGroup | StarlightAutoSidebarGroup {
 	return {
-		label: enLabels[key] ?? key,
-		translations: translations[key] ?? key,
+		label: label,
 		...group,
 	};
 }

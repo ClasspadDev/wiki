@@ -1,4 +1,206 @@
 ---
 title: Drawing Shapes
 description: Creating Your First App - Drawing on the Classpad screen
+sidebar:
+  order: 2
 ---
+
+# Drawing Shapes on Your Classpad Calculator
+
+This tutorial will guide you through drawing various shapes on your Classpad calculator screen using C++. We'll build upon the "Hello World" app you created earlier.
+
+## Prerequisites
+
+Make sure you have completed the [Hello World tutorial](/wiki/tutorials/hello-world) before proceeding. Your `main.cpp` file should look similar to the final code from that tutorial.
+
+## Step 1: Understanding the Drawing Functions
+
+Before we start drawing, let's understand the key functions available for creating shapes:
+
+1. **`setPixel(x, y, color)`** - Draws a single pixel at coordinates (x, y)
+2. **`line(x1, y1, x2, y2, color)`** - Draws a line between two points
+3. **`triangle(x0, y0, x1, y1, x2, y2, colorFill, colorLine)`** - Draws a filled triangle with outline
+4. **`fillScreen(color)`** - Fills the entire screen with a color
+
+For more details about them, please [check the reference](/wiki/reference/calc/calc/)
+
+## Step 2: Setting Up Your Canvas
+
+Start with the basic app structure from the Hello World tutorial. Replace the text drawing code with shape drawing code:
+
+```cpp
+#include <appdef.hpp>
+#include <sdk/calc/calc.hpp>
+#include <sdk/os/lcd.hpp>
+#include <sdk/os/debug.hpp>
+
+APP_NAME("Shape Drawing")
+APP_DESCRIPTION("Drawing various shapes")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+
+extern "C"
+void main() {
+    calcInit(); // Initialize the screen
+    
+    // Clear screen with black background
+    fillScreen(color(0, 0, 0));
+    
+    /* TODO: Your shape drawing code goes here ... */
+    
+    calcEnd(); // Restore the screen to the initial state
+}
+```
+
+## Step 3: Drawing Pixels
+
+Let's start with the most basic element - individual pixels. Add this code where the TODO comment is:
+
+```cpp
+// Draw a pattern of pixels
+for (int i = 0; i < 100; i += 10) {
+    setPixel(50 + i, 50, color(255, 255, 255)); // White pixels
+    setPixel(50, 50 + i, color(255, 0, 0));     // Red pixels
+}
+```
+
+This creates two lines of pixels - one horizontal and one vertical.
+
+## Step 4: Drawing Lines
+
+Now let's draw some lines using the `line()` function:
+
+```cpp
+// Draw various lines
+line(10, 10, 100, 100, color(255, 0, 0));     // Red diagonal line
+line(150, 50, 250, 50, color(0, 255, 0));     // Green horizontal line
+line(200, 100, 200, 200, color(0, 0, 255));   // Blue vertical line
+line(50, 150, 250, 200, 0b1111100000000000);  // Line using 565 color format
+```
+
+Lines can be drawn using either RGB color values or the 565 color format.
+
+## Step 5: Drawing Triangles
+
+Triangles are more complex shapes that can be filled and outlined:
+
+```cpp
+// Draw filled triangles
+triangle(30, 30, 80, 30, 55, 80, color(255, 255, 0), color(255, 0, 255));
+//           P0      P1      P2      Fill Color        Line Color
+
+// Draw another triangle
+triangle(100, 150, 200, 150, 150, 250, color(0, 255, 255), color(255, 255, 255));
+```
+
+Each triangle requires three points (P0, P1, P2) and two colors - one for filling and one for the outline.
+
+## Step 6: Creating Color Patterns
+
+Let's create a colorful pattern using nested loops:
+
+```cpp
+// Draw a colorful rectangle using pixels
+for (int x = 0; x < 100; x++) {
+    for (int y = 0; y < 100; y++) {
+        setPixel(100 + x, 300 + y, color(x * 2, y * 2, 100));
+    }
+}
+```
+
+This creates a 100x100 pixel rectangle with a color gradient.
+
+## Step 7: Updating the Screen
+
+After drawing all your shapes, you need to refresh the screen to see them:
+
+```cpp
+LCD_Refresh(); // Update the screen to show all drawn shapes
+```
+
+## Step 8: Adding User Interaction
+
+To keep your app running until the user exits, add the key input loop:
+
+```cpp
+// Wait for user to press CLEAR key to exit
+while(true) {
+    uint32_t key1, key2;
+    getKey(&key1, &key2);
+    if(testKey(key1, key2, KEY_CLEAR)) {
+        break;
+    }
+}
+```
+
+## Complete Example Code
+
+Here's the complete code for your shape drawing app:
+
+```cpp
+#include <appdef.hpp>
+#include <sdk/calc/calc.hpp>
+#include <sdk/os/lcd.hpp>
+#include <sdk/os/debug.hpp>
+
+APP_NAME("Shape Drawing")
+APP_DESCRIPTION("Drawing various shapes")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+
+extern "C"
+void main() {
+    calcInit(); // Initialize the screen
+
+    // Clear screen with black background
+    fillScreen(color(0, 0, 0));
+
+    // Draw individual pixels
+    for (int i = 0; i < 100; i += 10) {
+        setPixel(50 + i, 50, color(255, 255, 255)); // White pixels
+        setPixel(50, 50 + i, color(255, 0, 0));     // Red pixels
+    }
+
+    // Draw various lines
+    line(10, 10, 100, 100, color(255, 0, 0));     // Red diagonal line
+    line(150, 50, 250, 50, color(0, 255, 0));     // Green horizontal line
+    line(200, 100, 200, 200, color(0, 0, 255));   // Blue vertical line
+    line(50, 150, 250, 200, 0b1111100000000000);  // Line using 565 color format
+
+    // Draw filled triangles
+    triangle(30, 30, 80, 30, 55, 80, color(255, 255, 0), color(255, 0, 255));
+    triangle(100, 150, 200, 150, 150, 250, color(0, 255, 255), color(255, 255, 255));
+
+    // Draw a colorful rectangle using pixels
+    for (int x = 0; x < 100; x++) {
+        for (int y = 0; y < 100; y++) {
+            setPixel(100 + x, 300 + y, color(x * 2, y * 2, 100));
+        }
+    }
+
+    // Update the screen to show all drawn shapes
+    LCD_Refresh();
+
+    // Wait for user to press CLEAR key to exit
+    while(true) {
+        uint32_t key1, key2;
+        getKey(&key1, &key2);
+        if(testKey(key1, key2, KEY_CLEAR)) {
+            break;
+        }
+    }
+
+    calcEnd(); // Restore the screen to the initial state
+}
+```
+
+
+## Next Steps
+
+Congratulations! You've learned how to draw various shapes on your Classpad !
+
+Now that you know how to draw shapes, try:
+- Creating more complex patterns
+- Drawing multiple shapes in different colors
+- Making interactive drawings that respond to key presses
+- Creating simple games using these drawing functions
