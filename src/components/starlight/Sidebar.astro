@@ -34,6 +34,7 @@ const isCurrent = (sidebar: SidebarEntry[]): boolean =>
 	<TabbedContent class="tabbed-sidebar">
 		<Fragment slot="tab-list">
 			{
+                //@ts-ignore
 				sidebar.map(({ label, entries }, index) => (
 					<TabListItem id={makeId(label)} initial={isCurrent(entries)} class="tab-item">
 						<Icon class="icon" name={getIcon(index)} /> {label}
@@ -42,6 +43,7 @@ const isCurrent = (sidebar: SidebarEntry[]): boolean =>
 			}
 		</Fragment>
 		{
+            //@ts-ignore
 			sidebar.map(({ label, entries }) => (
 				<TabPanel id={makeId(label)} initial={isCurrent(entries)}>
 					<SidebarSublist sublist={entries} />
