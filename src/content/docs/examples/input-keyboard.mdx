@@ -5,14 +5,14 @@ sidebar:
   order: 3
 ---
 
-This tutorial will guide you through creating a "TouchRectangle" demo for your Classpad calculator using C++.
+This tutorial will guide you through handling keyboard input on your Classpad calculator using C++.
 Even if you're new to C development, we'll take it step by step.
 
 ## Step 1: Empty base
 
 Start with the ["Application Template"](/wiki/getting-started/introduction/#instant-coding-using-online-codespace).
 
-Go to your codespace and open the "**main.cpp**" file. Delete all of its content (Ctrl-a → Delete) and start by adding only the needed imports :
+Go to your codespace and open the `main.cpp` file. Ensure it have the needed imports :
 
 ```c++
 #include <appdef.hpp>
@@ -23,20 +23,186 @@ Go to your codespace and open the "**main.cpp**" file. Delete all of its content
 ```
 
 Here, we'll need:
-- [`input`](/wiki/reference/os/input/) to manage the key and touchscreen events
-- [`lcd`](/wiki/reference/os/lcd/) to draw on the screen
-- [`debug`](/wiki/reference/os/debug/) to do `Debug_Printf` when debugging your application
+- `<appdef.hpp>`: Defines app properties like name and version
+- [`<sdk/calc/calc.hpp>`](/wiki/reference/calc/calc/) to manage the calculator environment and graphics
+- [`<sdk/os/input.hpp>`](/wiki/reference/os/input/) to manage the key events
+- [`<sdk/os/lcd.hpp>`](/wiki/reference/os/lcd/) to draw on the screen
+- [`<sdk/os/debug.hpp>`](/wiki/reference/os/debug/) to do `Debug_Printf` when debugging your application
+
+## Step 2: Set Up Your App Information
+
+Add your app's basic information:
+
+```c++
+APP_NAME("TouchRectangle")
+APP_DESCRIPTION("Move a rectangle based on touch and key input.")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+```
+
+## Step 3: Define Constants and Variables
+
+Add constants for colors, rectangle size, and movement:
+
+```c++
+#define COLOR_BACKGROUND RGB_TO_RGB565(0, 0, 0)
+#define COLOR_RECTANGLE RGB_TO_RGB565(0x1F, 0, 0)
+
+#define RECT_SIZE 20
+#define MOVE_STEP 5
+
+extern uint16_t *vram;
+int lcdWidth, lcdHeight;
+int rectX, rectY;
+```
+
+These constants define:
+- `COLOR_BACKGROUND`: Black background color
+- `COLOR_RECTANGLE`: Red rectangle color
+- `RECT_SIZE`: Size of the rectangle in pixels
+- `MOVE_STEP`: How many pixels to move with each key press
+
+## Step 4: Create Drawing Functions
+
+Create functions to draw the rectangle and update the screen:
+
+```c++
+void drawRectangle(int x, int y, uint16_t color) {
+  for (int i = x; i < x + RECT_SIZE; ++i) {
+    for (int j = y; j < y + RECT_SIZE; ++j) {
+      if (i >= 0 && i < lcdWidth && j >= 0 && j < lcdHeight) {
+        vram[i + (j + 24) * lcdWidth] = color;
+      }
+    }
+  }
+}
+
+void draw() {
+  LCD_ClearScreen();
+  drawRectangle(rectX, rectY, COLOR_RECTANGLE);
+  LCD_Refresh();
+}
+```
+
+The `drawRectangle` function draws a filled rectangle at position (x, y) with the specified color.
+The `draw` function clears the screen, draws the rectangle, and refreshes the display.
+
+## Step 5: Initialize the App
+
+Set up the main function with initialization code:
 
 
-:::caution
-This guide is WiP. We still need to write the steps
-:::
+```c++
+extern "C"
+void main() {
+  LCD_VRAMBackup();
+  vram = LCD_GetVRAMAddress();
+  LCD_GetSize(&lcdWidth, &lcdHeight);
 
-## Final Code
-You can drag a rectangle on screen and move it with the arrow keys.
-Use the "Clear" button to exit.
+  rectX = lcdWidth / 2 - RECT_SIZE / 2;
+  rectY = lcdHeight / 2 - RECT_SIZE / 2;
+  
+  /* TODO: Add input handling loop here */
+  
+  LCD_VRAMRestore();
+  LCD_Refresh();
+}
+```
 
-```cpp
+This code:
+- Backs up the current VRAM content
+- Gets the VRAM address and screen dimensions
+- Centers the rectangle on the screen
+
+## Step 6: Implement Input Handling
+
+
+This loop will:
+- Draws the current state
+- Waits for input events
+- Handles touch events by moving the rectangle to the touch position
+- Handles key events by moving the rectangle with arrow keys
+- Exits when the CLEAR key is pressed
+- Keeps the rectangle within screen boundaries
+
+### Input Events
+The app uses `GetInput()` to wait for events:
+- `EVENT_TOUCH`: Touch screen events
+- `EVENT_KEY`: Keyboard events
+
+### Touch Handling
+When the user touches the screen:
+- `TOUCH_DOWN`: Initial touch
+- `TOUCH_HOLD_DRAG`: Continued touch with movement
+
+### Key Handling
+The app responds to these keys:
+- `KEYCODE_UP`: Move rectangle up
+- `KEYCODE_DOWN`: Move rectangle down
+- `KEYCODE_LEFT`: Move rectangle left
+- `KEYCODE_RIGHT`: Move rectangle right
+- `KEYCODE_POWER_CLEAR`: Exit the app
+
+### Code
+
+Add the main input handling loop:
+
+```c++
+  struct InputEvent event;
+  bool running = true;
+  
+  while (running) {
+    draw();
+
+    GetInput(&event, 0xFFFFFFFF, 0x10);
+
+    switch (event.type) {
+    case EVENT_TOUCH:
+      if (event.data.touch_single.direction == TOUCH_DOWN ||
+          event.data.touch_single.direction == TOUCH_HOLD_DRAG) {
+        rectX = event.data.touch_single.p1_x;
+        rectY = event.data.touch_single.p1_y;
+      }
+      break;
+
+    case EVENT_KEY:
+      switch (event.data.key.keyCode) {
+        case KEYCODE_UP:
+          rectY -= MOVE_STEP;
+          break;
+        case KEYCODE_RIGHT:
+          rectX += MOVE_STEP;
+          break;
+        case KEYCODE_DOWN:
+          rectY += MOVE_STEP;
+          break;
+        case KEYCODE_LEFT:
+          rectX -= MOVE_STEP;
+          break;
+        case KEYCODE_POWER_CLEAR:
+          running = false;
+          break;
+      }
+      break;
+    }
+
+    // Ensure the rectangle stays within the screen boundaries
+    if (rectX < 0)
+      rectX = 0;
+    if (rectY < 0)
+      rectY = 0;
+    if (rectX + RECT_SIZE > lcdWidth)
+      rectX = lcdWidth - RECT_SIZE;
+    if (rectY + RECT_SIZE > lcdHeight)
+      rectY = lcdHeight - RECT_SIZE;
+  }
+```
+
+## Complete Example Code
+
+Here's the complete code for your TouchRectangle app:
+
+```c++
 #include <appdef.hpp>
 #include <sdk/calc/calc.hpp>
 #include <sdk/os/debug.hpp>
@@ -74,6 +240,7 @@ void draw() {
   LCD_Refresh();
 }
 
+extern "C"
 void main() {
   LCD_VRAMBackup();
   vram = LCD_GetVRAMAddress();
@@ -135,3 +302,21 @@ void main() {
   LCD_Refresh();
 }
 ```
+
+## Step 7: Build and Run Your App
+
+1. Save your `main.cpp` file
+2. Open the terminal and run `make bin`
+3. Download the generated `.bin` file
+4. Transfer it to your calculator
+5. Launch it from the Hollyhock-2 Launcher
+
+## Next Steps
+
+Congratulations! You've created an interactive app that responds to both touch and keyboard input.
+
+Now try:
+- Adding more shapes that respond to different keys
+- Creating a simple game with multiple moving objects
+- Implementing more complex touch gestures
+- Adding visual feedback for different input types
