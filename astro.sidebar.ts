@@ -71,7 +71,15 @@ export const sidebar = [
             ]
         }),
         group('HH3', {
-            items: []
+            items: [
+                {
+                    label: 'Get Started',
+                    items: [
+                        { label: 'Introduction', link: '/hh3/getting-started/introduction/' },
+                        { label: 'Building', link: '/hh3/getting-started/building/' },
+                    ],
+                },
+            ]
         }),
         group('Python', {
             collapsed: true,
