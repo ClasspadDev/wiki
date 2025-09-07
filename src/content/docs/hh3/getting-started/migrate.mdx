@@ -1,0 +1,80 @@
+---
+title: Migrating to V3
+description: Learn how to migrate your existing project to the V3 SDK.
+
+sidebar:
+  order: 3
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+Migrating your Classpad HHK (v2) project to **HH3** (v3) require a few tweaks to your codebase.
+
+## What Needs to Be Done
+
+### Update Environment Files
+Update configuration files to reflect the new SDK requirements:
+- **Makefile**: Adjust compiler flags and target settings.
+- **CI Configurations**: Update build pipelines to use the new toolchain.
+- **Devcontainer**: Modify container setup to include V3 dependencies.
+- **clangd**: Regenerate `compile_commands.json` and restart clangd for proper IDE support.
+
+### Update Main Function Signature
+Change the main function from:
+```cpp
+extern "C" void main()
+```
+to:
+```cpp
+int main()
+```
+
+### Rename Header Files
+Rename header files from `.hpp` to `.h`, **except** for GUI-related headers.
+
+### Review `calcInit` and `calcEnd`
+Check if `calcInit` and `calcEnd` are still needed. In most cases, they are no longer required and can be removed.
+
+### Apply Rename Changes
+Update any usage of renamed functions or constants:
+- `Debug_*` → `Debug*`
+- `LCD_*` → `LCD*`
+- `Mem_*` → `Mem*`
+- And others as noted in the migration guide.
+
+### Refactor to Use libc / libstdc++
+Take advantage of the new support for libc and libstdc++ by refactoring code to use standard library functions where appropriate.
+
+### Embed Binary Files into the ELF
+Consider embedding binary assets directly into the ELF file instead of loading them separately to simplify deployment.
+
+### Address New Compiler Warnings and Errors
+Review and fix any new warnings or errors reported by the updated compiler.
+
+### VRAM Backup Handling
+If your app loads into VRAM:
+- You no longer need a special launcher.
+- Load directly into `vbak`.
+- Override `calcInit` and `calcEnd` (they are weak by default) to implement custom VRAM backup logic and avoid overwriting your own data.
+
+## Known Issues
+
+- **PEG (System) UI** is currently not working.
+- **Input_GetKeyState** is not functional in this version.
+
+## Example Update Snippet
+
+Before:
+```cpp
+extern "C" void main() {
+    Debug_PrintString("Hello World");
+}
+```
+
+After:
+```cpp
+int main() {
+    DebugPrintString("Hello World");
+    return 0;
+}
+```

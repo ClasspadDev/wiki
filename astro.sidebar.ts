@@ -74,10 +74,11 @@ export const sidebar = [
             items: [
                 {
                     label: 'Get Started',
-                    items: [
-                        { label: 'Introduction', link: '/hh3/getting-started/introduction/' },
-                        { label: 'Building', link: '/hh3/getting-started/building/' },
-                    ],
+                    autogenerate: { directory: 'hh3/getting-started' },
+                    // items: [
+                    //     { label: 'Introduction', link: '/hh3/getting-started/introduction/' },
+                    //     { label: 'Building', link: '/hh3/getting-started/building/' },
+                    // ],
                 },
             ]
         }),
