@@ -18,19 +18,200 @@ Update configuration files to reflect the new SDK requirements:
 - **CI Configurations**: Update build pipelines to use the new toolchain.
 - **Devcontainer**: Modify container setup to include V3 dependencies.
 - **clangd**: Regenerate `compile_commands.json` and restart clangd for proper IDE support.
+- **.gitignore**: Update to include new build artifacts:
+  ```
+  *.bin
+  *.elf
+  *.hh3
+  *.map
+
+  # temporary files under WSL
+  *~
+  .*~
+  ```
+### Remove linker.ld
+The `linker.ld` file can be safely removed as the SDK now handles linking automatically.
+
+
+### Update the Makefile
+Replace your old Makefile with the new structure:
+
+**Before:**
+```makefile
+APP_NAME:=tetris
+
+ifndef SDK_DIR
+$(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
+endif
+
+AS:=sh4-elf-as
+AS_FLAGS:=
+
+CC:=sh4-elf-gcc
+CC_FLAGS:=-ffreestanding -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+
+CXX:=sh4-elf-g++
+CXX_FLAGS:=-ffreestanding -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -O2 -I $(SDK_DIR)/include/
+
+LD:=sh4-elf-ld
+LD_FLAGS:=-nostdlib --no-undefined
+
+READELF:=sh4-elf-readelf
+OBJCOPY:=sh4-elf-objcopy
+
+AS_SOURCES:=$(wildcard *.s)
+CC_SOURCES:=$(wildcard *.c)
+CXX_SOURCES:=$(wildcard *.cpp)
+OBJECTS:=$(AS_SOURCES:.s=.o) $(CC_SOURCES:.c=.o) $(CXX_SOURCES:.cpp=.o)
+
+APP_ELF:=$(APP_NAME).hhk
+
+all: $(APP_ELF) Makefile
+
+clean:
+	rm -f $(OBJECTS) $(APP_ELF)
+
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker.ld
+	$(LD) -T linker.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
+	$(OBJCOPY) --set-section-flags .hollyhock_name=contents,strings,readonly $(APP_ELF) $(APP_ELF)
+	$(OBJCOPY) --set-section-flags .hollyhock_description=contents,strings,readonly $(APP_ELF) $(APP_ELF)
+	$(OBJCOPY) --set-section-flags .hollyhock_author=contents,strings,readonly $(APP_ELF) $(APP_ELF)
+	$(OBJCOPY) --set-section-flags .hollyhock_version=contents,strings,readonly $(APP_ELF) $(APP_ELF)
+```
+
+**After:**
+```makefile
+APP_NAME:=tetris
+
+ifndef SDK_DIR
+$(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
+endif
+
+AS:=sh4a_nofpueb-elf-gcc
+AS_FLAGS:=
+
+FUNCTION_FLAGS=-flto -ffat-lto-objects -ffunction-sections -fdata-sections -O2 -gdwarf-5
+
+CC:=sh4a_nofpueb-elf-gcc
+CC_FLAGS:=$(FUNCTION_FLAGS) -Wall -Wextra -I $(SDK_DIR)/include/
+
+CXX:=sh4a_nofpueb-elf-g++
+CXX_FLAGS:=$(FUNCTION_FLAGS) -Wall -Wextra -I $(SDK_DIR)/include/
+
+LD:=sh4a_nofpueb-elf-g++
+LD_FLAGS:=$(FUNCTION_FLAGS) -Wl,--gc-sections -L$(SDK_DIR)
+
+READELF:=sh4a_nofpueb-elf-readelf
+OBJCOPY:=sh4a_nofpueb-elf-objcopy
+STRIP:=sh4a_nofpueb-elf-strip
+
+AS_SOURCES:=$(wildcard *.S)
+CC_SOURCES:=$(wildcard *.c)
+CXX_SOURCES:=$(wildcard *.cpp)
+OBJECTS:=$(AS_SOURCES:.S=.o) $(CC_SOURCES:.c=.o) $(CXX_SOURCES:.cpp=.o)
+
+APP_ELF:=$(APP_NAME).elf
+APP_OUT:=$(APP_NAME).hh3
+
+elf: $(APP_ELF) Makefile
+hh3: $(APP_OUT) Makefile
+all: $(APP_ELF) $(APP_OUT) Makefile
+
+.DEFAULT_GOAL := all
+
+clean:
+	rm -f $(OBJECTS) $(APP_ELF) $(APP_ELF).map $(APP_OUT)
+
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/libsdk.a
+	$(LD) -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS) -lsdk
+
+$(APP_OUT): $(APP_ELF)
+	$(STRIP) -o $@ $^
+```
+
+### Update Include Headers
+Rename header extensions from `.hpp` to `.h`, **except** for GUI-related headers.
+
+**Before:**
+```cpp
+#include <appdef.hpp>
+#include <sdk/os/debug.hpp>
+#include <sdk/os/input.hpp>
+#include <sdk/os/lcd.hpp>
+#include <sdk/os/mem.hpp>
+```
+
+**After:**
+```cpp
+#include <appdef.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/input.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/mem.h>
+```
+
+### Modernize Code Syntax
+Update deprecated syntax patterns:
+- `char *num = "0000"` → `char num[] = "0000"`
+- `for (int x = ...` → `for (auto x = ...`
+- Use `static_cast<type>(value)` instead of C-style casts
+- Use proper types: `int32_t` → `int`, etc.
+
 
 ### Update Main Function Signature
-Change the main function from:
+Change the main function:
+
+**Before:**
 ```cpp
-extern "C" void main()
-```
-to:
-```cpp
-int main()
+extern "C" void main() {
+    // code
+}
 ```
 
-### Rename Header Files
-Rename header files from `.hpp` to `.h`, **except** for GUI-related headers.
+**After:**
+```cpp
+int main() {
+    // code
+    return 0;
+}
+```
+Or for full environment access:
+```cpp
+int main(int argc, char **argv, char **envp) {
+    // code
+    return 0;
+}
+```
+
+### Remove Obsolete Functions
+- Remove `LCD_VRAMBackup()` and `LCD_VRAMRestore()`
+- Remove `calcInit()` and `calcEnd()` calls
+- Remove global VRAM declarations like `uint16_t *vram;`
+
+### Update Memory Operations
+Replace old memory functions:
+- `memset` → `Mem_Memset`
+- And other similar memory operations
+
+### Add App Definitions
+Ensure your main file contains proper app metadata:
+```cpp
+APP_NAME("Your App Demo")
+APP_DESCRIPTION("Displays a demo on the ClassPad.")
+APP_AUTHOR("your_name")
+APP_VERSION("1.0.0")
+```
+
+### Update Struct Names
+Rename structures to match new conventions:
+- `InputEvent` → `Input_Event`
+- `InputScancode` → `Input_Scancode`
+
+### Use New Features
+Take advantage of V3 improvements:
+- Use `__builtin_unreachable();` for unreachable code paths
+- Add `return 0;` at the end of main function
+- Initialize LFSR directly: `uint16_t lfsr = 0x453A;`
 
 ### Review `calcInit` and `calcEnd`
 Check if `calcInit` and `calcEnd` are still needed. In most cases, they are no longer required and can be removed.
@@ -66,6 +247,9 @@ If your app loads into VRAM:
 
 Before:
 ```cpp
+#include <appdef.hpp>
+#include <sdk/os/debug.hpp>
+
 extern "C" void main() {
     Debug_PrintString("Hello World");
 }
@@ -73,6 +257,14 @@ extern "C" void main() {
 
 After:
 ```cpp
+#include <appdef.h>
+#include <sdk/os/debug.h>
+
+APP_NAME("Hello World App")
+APP_DESCRIPTION("Displays Hello World")
+APP_AUTHOR("Developer")
+APP_VERSION("1.0.0")
+
 int main() {
     DebugPrintString("Hello World");
     return 0;
