@@ -1,0 +1,216 @@
+---
+title: Calc
+description: Functions for drawing graphics and handling input on the calculator.
+---
+
+:::tip[Important Changes from V2]
+This library has been updated for easier C development. The main changes are:
+    *   `calcInit()` and `calcExit()` are now called **automatically**. You **do not** need to add them to your `main` function.
+    *   The screen dimensions (`width`, `height`) and video memory pointer (`vram`) are now compile-time constants and can be used immediately.
+    *   Helper functions like `setPixel` and `color` are `inline`, meaning they are very fast.
+Check them on the [Usage](#usage) and [original SDK Code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/calc/calc.h)
+:::
+
+
+## Overview
+The `calc.h` library provides functions for drawing pixels, lines, triangles, and handling keyboard input. All drawing coordinates are in pixels, with (0,0) located at the top-left corner of the screen.
+
+The system draws directly to a VRAM (Video RAM) buffer. To make any changes visible on screen, you must call `LCD_Refresh()` from `sdk/os/lcd.h`.
+
+## Global Constants
+
+### Video RAM
+```c
+static uint16_t * const vram = (uint16_t *)0x8c000000;
+```
+A direct pointer to the video memory buffer where pixel data is stored. You can use this to manipulate pixels directly, though `setPixel` is recommended for safety.
+
+### Screen Dimensions
+```c
+static const unsigned int width = 320;
+static const unsigned int height = 528;
+```
+The fixed width and height of the screen in pixels. These are available as constants.
+
+## Graphics Methods
+
+### Draw Pixel
+```c
+static inline void setPixel(unsigned int x, unsigned int y, uint32_t color);
+```
+Sets a single pixel at coordinates (x, y) to the specified color. Includes bounds checking to prevent drawing outside the screen. Colors can be specified using the `color(r, g, b)` macro or in 565 format.
+
+### Draw Line
+```c
+void line(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, uint16_t color);
+```
+Draws a line from point (x1, y1) to point (x2, y2) using an efficient algorithm.
+
+### Draw Vertical Line
+```c
+void vline(unsigned int x, unsigned int y1, unsigned int y2, uint16_t color);
+```
+Draws a fast vertical line from (x, y1) to (x, y2). This is more efficient than using `line()` for vertical lines.
+
+### Draw Filled Triangle
+```c
+void triangle(unsigned int x0, unsigned int y0, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2, uint16_t colorFill, uint16_t colorLine);
+```
+Draws a filled triangle with vertices at (x0, y0), (x1, y1), and (x2, y2). The triangle is filled with `colorFill` and outlined with `colorLine`.
+
+### Fill Screen
+```c
+void fillScreen(uint16_t color);
+```
+Fills the entire screen with a single, solid color.
+
+## Color Functions
+
+### RGB Color Conversion
+```c
+static inline uint16_t color(uint8_t R, uint8_t G, uint8_t B);
+```
+An `inline` function that converts 8-bit RGB values (0-255 each) to the 16-bit RGB565 color format required by the screen.
+
+## Automatic Initialization
+
+### Initialize and Exit
+```c
+void calcInit(void); // Called automatically before main()
+void calcExit(void); // Called automatically after main()
+```
+These functions manage the calculator's state. `calcInit` backs up the screen content before your app runs, and `calcExit` restores it when your app closes.
+
+They are implemented as a GCC constructor and destructor, which means **they are executed automatically**. You do not need to (and should not) call them yourself.
+
+## Keyboard Methods
+
+### Get Key State
+```cpp
+void getKey(uint32_t *key1, uint32_t *key2);
+```
+Reads the current state of the keyboard into two 32-bit values. Each bit represents a specific key.
+
+### Testing for a Key Press
+In C, you test for a key by performing a bitwise AND (`&`) with the key's enum value.
+```c
+uint32_t key1, key2;
+getKey(&key1, &key2);
+
+if (key1 & KEY_EXE) {
+    // The EXE key is being pressed
+}
+```
+C++ users can use the `testKey()` inline helper function provided in the header for a cleaner syntax.
+
+```cpp
+bool testKey(uint32_t key1, uint32_t key2, Keys1 key);
+bool testKey(uint32_t key1, uint32_t key2, Keys2 key);
+```
+
+## Key Enums
+
+### Keys1 Enum
+```c
+enum Keys1 {
+    KEY_SHIFT       = 0x80000000,
+    KEY_CLEAR       = 0x00020000, // The Power key
+    KEY_BACKSPACE   = 0x00000080,
+    KEY_LEFT        = 0x00004000,
+    KEY_RIGHT       = 0x00008000,
+    KEY_Z           = 0x00002000,
+    KEY_POWER       = 0x00000040, // The exponent key
+    KEY_DIVIDE      = 0x40000000,
+    KEY_MULTIPLY    = 0x20000000,
+    KEY_SUBTRACT    = 0x10000000,
+    KEY_ADD         = 0x08000000,
+    KEY_EXE         = 0x04000000,
+    KEY_EXP         = 0x00000004,
+    KEY_3           = 0x00000008,
+    KEY_6           = 0x00000010,
+    KEY_9           = 0x00000020,
+};
+```
+
+### Keys2 Enum
+```c
+enum Keys2 {
+    KEY_KEYBOARD    = 0x80000000,
+    KEY_UP          = 0x00800000,
+    KEY_DOWN        = 0x00400000,
+    KEY_EQUALS      = 0x00000080,
+    KEY_X           = 0x00000040,
+    KEY_Y           = 0x40000000,
+    KEY_LEFT_BRACKET= 0x00000020,
+    KEY_RIGHT_BRACKET= 0x00000010,
+    KEY_COMMA       = 0x00000008,
+    KEY_NEGATIVE    = 0x00000004,
+    KEY_0           = 0x04000000,
+    KEY_DOT         = 0x00040000,
+    KEY_1           = 0x08000000,
+    KEY_2           = 0x00080000,
+    KEY_4           = 0x10000000,
+    KEY_5           = 0x00100000,
+    KEY_7           = 0x20000000,
+    KEY_8           = 0x00200000,
+};
+```
+
+## Color Format
+
+Colors can be specified in two ways:
+1.  **RGB Macro**: `color(red, green, blue)` where each component is 0-255.
+2.  **565 Format**: A raw 16-bit `uint16_t` value in RGB565 format (5 bits red, 6 bits green, 5 bits blue).
+
+## Usage 
+This example demonstrates how to use the drawing and keyboard functions in a standard C application. Notice that `calcInit()` and `calcExit()` are **not** present in the code.
+
+```c
+#include <appdef.h>
+#include <sdk/calc/calc.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/debug.h>
+
+int main() {
+    // Fill screen with a dark blue background
+    fillScreen(color(0, 0, 128));
+
+// Draw a red line from top-left to bottom-right
+    // Use the global 'width' and 'height' constants
+    line(0, 0, width - 1, height - 1, color(255, 0, 0));
+
+    // Draw a fast yellow vertical line
+    vline(20, 50, 200, color(255, 255, 0));
+
+    // Draw a filled green triangle with a white outline
+    triangle(50, 50, 150, 50, 100, 150, color(0, 255, 0), color(255, 255, 255));
+
+    // Draw individual pixels in a pattern
+    for(int i = 0; i < 100; i += 10) {
+        setPixel(150 + i, 150, color(255, 255, 0)); // Yellow pixels
+    }
+
+    // Draw a colorful rectangle using pixels
+    for(int x = 0; x < 50; x++) {
+        for(int y = 0; y < 50; y++) {
+            setPixel(200 + x, 200 + y, color(x * 5, y * 5, 128));
+        }
+    }
+
+    // Update the display to show all graphics
+    LCD_Refresh();
+
+    // Wait for the user to press the CLEAR key to exit
+    while(1) {
+        uint32_t key1, key2;
+        getKey(&key1, &key2);
+        
+        // Test for the CLEAR key using bitwise AND
+        if (key1 & KEY_CLEAR) {
+            break;
+        }
+    }
+
+    return 0;
+}
+```

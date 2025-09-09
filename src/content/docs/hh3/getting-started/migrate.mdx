@@ -10,6 +10,11 @@ import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
 
 Migrating your Classpad HHK (v2) project to **HH3** (v3) require a few tweaks to your codebase.
 
+
+:::caution
+The old GUI classes are not yet supported on V3. Please consider using the uGFX or uGUI as an alternative.
+:::
+
 ## What Needs to Be Done
 
 ### Update Environment Files
@@ -215,13 +220,6 @@ Take advantage of V3 improvements:
 
 ### Review `calcInit` and `calcEnd`
 Check if `calcInit` and `calcEnd` are still needed. In most cases, they are no longer required and can be removed.
-
-### Apply Rename Changes
-Update any usage of renamed functions or constants:
-- `Debug_*` → `Debug*`
-- `LCD_*` → `LCD*`
-- `Mem_*` → `Mem*`
-- And others as noted in the migration guide.
 
 ### Refactor to Use libc / libstdc++
 Take advantage of the new support for libc and libstdc++ by refactoring code to use standard library functions where appropriate.

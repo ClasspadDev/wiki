@@ -80,6 +80,51 @@ export const sidebar = [
                     //     { label: 'Building', link: '/hh3/getting-started/building/' },
                     // ],
                 },
+                 {
+                    label: 'Reference',
+                    collapsed: true,
+                    items: [
+                        // {
+                        //     label: '📱 GUI',
+                        //     collapsed: true,
+                        //     autogenerate: { directory: 'hh3/reference/gui' },
+
+                        // },
+                        {
+                            label: '📟 OS',
+                            collapsed: true,
+                            autogenerate: { directory: 'hh3/reference/os' },
+
+                        },
+                        {
+                            label: '🧮 CPU',
+                            collapsed: true,
+                            autogenerate: { directory: 'hh3/reference/cpu' },
+
+                        },
+                        {
+                            label: '🖩 CALC',
+                            collapsed: true,
+                            autogenerate: { directory: 'hh3/reference/calc' },
+
+                        },
+                        {
+                            label: '📚 LIBS',
+                            collapsed: true,
+                            autogenerate: { directory: 'hh3/reference/libraries' },
+
+                        } 
+                    ]
+                },
+                {
+                    label: 'Tutorials',
+                    autogenerate: { directory: 'hh3/tutorials' },
+                },
+                {
+                    label: 'Examples',
+                    collapsed: true,
+                    autogenerate: { directory: 'hh3/examples' },
+                }
             ]
         }),
         group('Python', {
