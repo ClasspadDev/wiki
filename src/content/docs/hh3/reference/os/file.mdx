@@ -1,0 +1,256 @@
+---
+title: Files
+description: Functions for interacting with the calculator's file system.
+---
+
+The file operations API provides a set of functions to interact with the calculator's file system, similar to Unix.
+
+The storage accessible when the calculator is connected to a PC can be found under the path `\\fls0\` (remember to escape the backslashes in C strings). It is also possible to read from `\\drv0\` if you have a SDCard and made a hardware mod on the calculator.
+
+The storage can be **slow** and sometimes **unreliable** for large files or frequent read/writes.
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to the [original SDK Code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/file.h) if you need more details.
+:::
+
+
+## Methods
+
+### Basic file operations
+
+Most of the file operations are similar to Unix and use the same concepts (file descriptors, etc.).
+
+#### Open 
+
+```c
+int File_Open(const char *path, int flags);
+```
+Opens a file on the file system. The argument `flags` is a bitwise OR'd combination of flags. Common flags are:
+- `FILE_OPEN_READ`
+- `FILE_OPEN_WRITE`
+- `FILE_OPEN_CREATE`
+- `FILE_OPEN_APPEND`
+
+See the header for the full list of [open flags](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/file.h#L135).
+
+#### Read 
+
+```c
+int File_Read(int fd, void *buf, int count);
+```
+Reads up to `count` bytes from a file and stores them in `buf`. 
+
+If `count` bytes cannot be read, as many bytes as possible are read. `fd` is a file descriptor obtained from `File_Open()`. Returns the number of bytes read on success, or a negative error code on failure.
+
+#### Write 
+
+```c
+int File_Write(int fd, const void *buf, int count);
+```
+Writes `count` bytes from `buf` to a file. `fd` is a file descriptor obtained from `File_Open()`. Returns the number of bytes written on success, or a negative error code on failure.
+
+#### Close 
+
+```c
+int File_Close(int fd);
+```
+Closes an open file. `fd` is a file descriptor obtained from `File_Open()`. Returns 0 on success, or a negative error code on failure.
+
+#### Remove 
+
+```c
+int File_Remove(const char *path);
+```
+Deletes a file or directory. `path` is the path to the file or directory to be deleted. Returns 0 on success, or a negative error code on failure.
+
+#### Rename 
+
+```c
+int File_Rename(const char *oldPath, const char *newPath);
+```
+Renames a file or directory from `oldPath` to `newPath`. Returns 0 on success, or a negative error code on failure.
+
+#### Create directory
+
+```c
+int File_Mkdir(const char *path);
+```
+Creates a directory at the specified `path`. Returns 0 on success, or a negative error code on failure.
+
+### Find handles
+
+#### Find First
+```c
+int File_FindFirst(const char_const16_t *path, int *findHandle, char_const16_t *name, struct File_FindInfo *findInfoBuf);
+```
+Starts a find operation, locating files matching a specific path.
+
+Can be used to list the contents of a directory with a wildcard. For example, `L"\\\\fls0\\*"` matches all files and directories on the flash storage (not recursive). `path` must be a wide-character string (prefixed with `L`).
+
+To find subsequent matches, call `File_FindNext`. **You must close the handle with `File_FindClose` when finished.**
+- `path`: The wide-character path to search. May contain wildcards.
+- `findHandle`: A pointer to an integer where the find handle will be stored.
+- `name`: A buffer to store the name of the found file/directory.
+- `findInfoBuf`: A pointer to a struct to store information about the found file.
+
+#### Find Next
+
+```c
+int File_FindNext(int findHandle, char_const16_t *name, struct File_FindInfo *findInfoBuf);
+```
+Continues a find operation to locate the next matching file.
+
+#### Close find session
+
+```c
+int File_FindClose(int findHandle);
+```
+Closes a find handle. Very bad things happen if a find handle is not closed.
+
+#### File_FindInfo struct
+
+Information about a file/directory, as returned from `File_FindFirst` or `File_FindNext`:
+- `type`: File (`EntryTypeFile`) or Directory (`EntryTypeDirectory`)
+- `size`: Size of the entry in bytes (`uint32_t`). Zero for directories.
+
+:::caution
+Some of the find internals are still unknown. You can [help us find out!](/wiki/dev/helping#studying-the-rom)
+:::
+
+### Advanced file operations
+
+#### Seek
+
+```c
+int File_Lseek(int fd, int offset, enum File_Whence whence);
+```
+Repositions the read/write file offset. See the [whence values](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/file.h#L56) for details.
+
+#### File_Stat
+
+```c
+int File_Stat(const char *path, struct File_Stat *buf);
+```
+Retrieves information about a file from its `path` into the `buf` structure. Returns 0 on success, or a negative error code on failure.
+
+The `File_Stat` structure contains:
+- `fileSize`: The size of the file, in bytes (`uint32_t`)
+- `creationDate`, `creationTime` (`uint16_t`)
+- `lastModifiedDate`, `lastModifiedTime` (`uint16_t`)
+- `lastAccessedDate` (`uint16_t`)
+
+See the header for [more info on the date format](https://github.com/SnailMath/hollyhock-2/blob/master/sdk/include/sdk/os/file.h#L183).
+
+```c
+int File_Fstat(int fd, struct File_Stat *buf);
+```
+Works the same as `File_Stat` but uses an open file descriptor.
+
+
+#### Memory address
+
+```c
+int File_GetAddr(int fd, int offset, const void **addr);
+```
+Retrieves the memory address of an open file's data.
+- `fd`: The file descriptor of an open file.
+- `offset`: An offset to apply to the pointer.
+- `addr`: A pointer to store the resulting address.
+
+Returns 0 on success, or a negative error code (e.g., `FILE_EINVAL`) on failure.
+
+## Helper Functions for Date and Time
+
+The following `inline` helper functions can be used to extract meaningful values from the `File_Stat` structure's date and time fields:
+- `File_StatDateYear`, `File_StatDateMonth`, `File_StatDateDay`
+- `File_StatTimeHour`, `File_StatTimeMinute`, `File_StatTimeSecond`
+
+## Usage
+
+### Reading 256 Bytes from a File
+
+```c
+#include <sdk/os/file.h>
+#include <stdint.h>
+
+int fd = File_Open("\\\\fls0\\test.txt", FILE_OPEN_READ);
+if (fd < 0) {
+    // An error occurred
+    return -1;
+}
+
+uint8_t buf[256];
+int ret = File_Read(fd, buf, sizeof(buf));
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+File_Close(fd);
+```
+
+### Writing 16 Bytes to a New File
+
+```c
+#include <sdk/os/file.h>
+#include <stdint.h>
+
+int fd = File_Open("\\\\fls0\\out.bin", FILE_OPEN_WRITE | FILE_OPEN_CREATE);
+if (fd < 0) {
+    // An error occurred
+    return -1;
+}
+
+uint8_t buf[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF};
+int ret = File_Write(fd, buf, sizeof(buf));
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+File_Close(fd);
+```
+
+### Appending a Line to a File
+
+```c
+#include <sdk/os/file.h>
+#include <string.h>
+
+int fd = File_Open("\\\\fls0\\log.txt", FILE_OPEN_WRITE | FILE_OPEN_APPEND | FILE_OPEN_CREATE);
+if (fd < 0) {
+    // An error occurred
+    return -1;
+}
+
+const char *line = "This is a new line.\n";
+int ret = File_Write(fd, line, strlen(line));
+if (ret < 0) {
+    // An error occurred calling close
+}
+
+File_Close(fd);
+```
+
+### Checking if a File is Empty
+
+```c
+#include <sdk/os/file.h>
+#include <stdbool.h>
+
+int fd = File_Open("\\\\fls0\\check.txt", FILE_OPEN_READ);
+if (fd < 0) {
+    // An error occurred
+    return -1;
+}
+
+struct File_Stat fileStat;
+int ret = File_Fstat(fd, &fileStat);
+if (ret < 0) {
+    // An error occurred
+    File_Close(fd);
+    return -1;
+}
+
+bool isEmpty = (fileStat.fileSize == 0);
+
+File_Close(fd);
+```

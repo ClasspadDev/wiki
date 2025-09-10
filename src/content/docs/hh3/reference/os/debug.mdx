@@ -1,0 +1,99 @@
+---
+title: Debug
+description: Functions useful during debugging
+---
+
+:::tip[For Debugging Only]
+These methods provide a simple way to print text and numbers to the screen, but they are not intended for building a user interface. They draw directly to the video memory, so you must call `LCD_Refresh()` to see any output.
+
+For final applications, please consider using proper GUI elements instead of `Debug_Printf`.
+
+Check the updated [Usage](#usage) and the [source SDK code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/debug.h).
+:::
+
+
+## Overview
+The debug methods allow you to print text and numbers on a simple character grid. Some functions use an internal cursor, which can be set with `Debug_SetCursorPosition`. The units are character cells, not pixels, so setting the cursor to `(1,1)` refers to the second character on the second line.
+
+Other functions, like `Debug_Printf`, bypass the cursor at `(1,1)` means the second line second character.
+
+## Methods
+
+### Cursor Position
+```c
+int Debug_SetCursorPosition(unsigned int x, unsigned int y);
+void Debug_GetCursorPosition(unsigned int *x, unsigned int *y);
+```
+`x` and `y` are the position of the internal text cursor. `Debug_PrintString` will print text starting at this location.
+
+### Print String
+```c
+bool Debug_PrintString(const char *string, bool invert);
+```
+Prints a `string` at the current cursor position. The `invert` parameter controls the color scheme: `false` for black-on-white, `true` for white-on-black.
+
+### Print Advanced String
+```c
+void Debug_Printf(unsigned int x, unsigned int y, bool invert, int zero, const char *format, ...);
+```
+Prints a formatted string at the specified character coordinates `(x, y)`, ignoring the internal cursor. The `zero` parameter must always be `0`.
+
+Supports most format specifiers:
+- `%s` for strings
+- `%d` for integers
+- `%x` for hexadecimal
+
+### Print Hex Numbers
+```c
+void Debug_PrintNumberHex_Nibble(uint8_t value, unsigned int x, unsigned int y);
+void Debug_PrintNumberHex_Byte(uint8_t value, unsigned int x, unsigned int y);
+void Debug_PrintNumberHex_Word(uint16_t value, unsigned int x, unsigned int y);
+void Debug_PrintNumberHex_Dword(uint32_t value, unsigned int x, unsigned int y);
+```
+Prints the hexadecimal representation of a number at the specified coordinates `(x, y)`.
+- **nibble**: 4-bit number
+- **byte**: 8-bit number
+- **word**: 16-bit number
+- **dword**: 32-bit number
+
+### Wait for a Key
+```c
+int Debug_WaitKey();
+```
+Waits until a key is pressed, then returns a number representing the key. It primarily reacts to number keys (returning 0x30-0x39) and the Power/Clear key (returning 0x98).
+
+:::tip[Behaviour Change]
+With HH3, it also returns on touch events.
+:::
+
+More details about its return and behavior in the [SDK source code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/debug.h#L126)
+
+
+
+
+## Usage 
+```c
+#include <sdk/os/debug.h>
+#include <sdk/os/lcd.h>
+
+// Print "Hello, world!" at (0, 0) in black on white
+Debug_SetCursorPosition(0, 0);
+Debug_PrintString("Hello, world!", false);
+
+// Print "Inverted text" at (1, 1) in white on black
+Debug_SetCursorPosition(1, 1);
+Debug_PrintString("Inverted text", true);
+
+// Print the hex number 0x1322 at coordinates (3, 7) directly
+Debug_PrintNumberHex_Word(0x1322, 3, 7);
+
+// Print small text with a format string
+Debug_Printf(10, 10, false, 0, "Just one number : %d", 42);
+Debug_Printf(20, 20, false, 0, "Format are still %s in %d!", "cool", 2025);
+
+// Draw the changes we made to VRAM onto the LCD
+LCD_Refresh();
+
+// Block until the user presses a key
+Debug_WaitKey();
+```
