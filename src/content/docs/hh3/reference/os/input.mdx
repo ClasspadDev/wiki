@@ -1,0 +1,242 @@
+---
+title: Input
+description: Functions used to retrieve user input via the touch screen or keypad.
+---
+
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to the [original SDK Code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/input.h) for more details.
+:::
+
+If you need to handle real-time user interaction with keys or the touchscreen, the `GetInput` function is the primary method for polling input events. It uses a single event structure, making it easy to manage any type of input in one place.
+
+## Constants
+
+The `GetInput` system relies on several enums. Reading the [original SDK Code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/input.h) is recommended for a complete list of all available values.
+
+### Event Types
+The `GetInput` function returns an event with a `type` that will be one of the `Input_EventType` values:
+- `EVENT_KEY`
+- `EVENT_ACTBAR_RESIZE`
+- `EVENT_ACTBAR_SWAP`
+- `EVENT_ACTBAR_ROTATE`
+- `EVENT_ACTBAR_ESC`
+- `EVENT_ACTBAR_SETTINGS`
+- `EVENT_TOUCH`
+- `EVENT_TIMER`
+- `EVENT_NONE`
+
+### Key States
+For a `EVENT_KEY` type, the `direction` will be one of the `Input_KeyEventType` values:
+
+- `KEY_PRESSED`
+- `KEY_HELD`
+- `KEY_RELEASED`
+
+### Key Codes
+Here are some of the most commonly used key codes from the `Input_Keycode` enum:
+- `KEYCODE_UP`
+- `KEYCODE_RIGHT`
+- `KEYCODE_DOWN`
+- `KEYCODE_LEFT`
+- `KEYCODE_POWER_CLEAR`
+- ...
+
+The full list is available in the [SDK source](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/input.h#L40).
+
+### Touch Event Types
+For an `EVENT_TOUCH` type, the `direction` will be one of the `Input_TouchEventType` values:
+- `TOUCH_DOWN`
+- `TOUCH_HOLD_DRAG`
+- `TOUCH_ACT_BAR`
+- `TOUCH_UP`
+
+## Structure
+
+### Input_Event 
+
+`GetInput` populates a `struct Input_Event`, which contains a `type` field to identify the event. Based on the type, you can then safely access the corresponding data in the `data` union. Please refer to the [SDK source](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/input.h#L147) for the complete definition.
+
+## Methods
+
+### GetInput
+
+Polls for any input events.
+
+```c
+int GetInput(struct Input_Event *event, uint32_t unknown1, uint32_t unknown2);
+```
+
+
+- **Parameters:**
+    - `event`: A pointer to a `struct Input_Event` where the event data will be stored.
+    - `unknown1`: An unknown value (must be `0xFFFFFFFF`).
+    - `unknown2`: An unknown value (must be `0x10`).
+- **Returns:**
+    - Always returns `0`.
+
+### Input_GetKeyState
+
+Returns true if the specified key is currently held down.
+
+```c
+bool Input_GetKeyState(enum Input_Scancode scanCode);
+```
+
+- **Parameters:**
+  - `scanCode`: The scancode of the key to check (from the `Input_Scancode` enum).
+- **Returns:**
+  - `true` if the key is down, `false` otherwise.
+
+### Input_IsAnyKeyDown
+
+Returns true if any key on the keyboard is currently held down.
+
+```c
+bool Input_IsAnyKeyDown();
+```
+
+- **Returns:**
+  - `true` if any key is pressed, `false` otherwise.
+
+
+## Usage
+
+You should create an event loop to continuously poll for and handle events. A `switch` statement is recommended for managing the different event types.
+
+```c
+#include <sdk/os/input.h>
+#include <string.h> // For memset
+
+// ...
+struct Input_Event event;
+
+GetInput(&event, 0xFFFFFFFF, 0x10);
+
+switch (event.type) {
+    case EVENT_TOUCH:
+        if (event.data.touch_single.direction == TOUCH_DOWN ||
+            event.data.touch_single.direction == TOUCH_HOLD_DRAG
+        ) {
+            // Update coordinates based on touch
+            rectX = event.data.touch_single.p1_x;
+            rectY = event.data.touch_single.p1_y;
+        }
+        break;
+        // ...
+
+    case EVENT_KEY:
+        if (event.data.key.direction == KEY_PRESSED) {
+        switch (event.data.key.keyCode) {
+            case KEYCODE_POWER_CLEAR:
+                    // Exit the app
+                running = false;
+                break;
+                // ... handle other keys
+            }
+        }
+        break;
+
+    default:
+      break;
+}
+// ...
+```
+
+### TouchRectangle
+
+TouchRectangle is a demo app where you can drag a rectangle on screen and move it with the arrow keys.
+Use the "Clear" button to exit.
+
+```c
+#include <appdef.h>
+#include <sdk/calc/calc.h>
+#include <sdk/os/input.h>
+#include <sdk/os/lcd.h>
+#include <stdbool.h>
+
+APP_NAME("TouchRectangle")
+APP_DESCRIPTION("Move a rectangle based on touch and key input.")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+
+#define COLOR_BACKGROUND RGB_TO_RGB565(0, 0, 0)
+#define COLOR_RECTANGLE RGB_TO_RGB565(0x1F, 0, 0)
+
+#define RECT_SIZE 20
+#define MOVE_STEP 5
+
+int rectX, rectY;
+
+void drawRectangle(unsigned int x, unsigned int y, uint16_t color) {
+  for (unsigned int i = x; i < x + RECT_SIZE; ++i) {
+    for (unsigned int j = y; j < y + RECT_SIZE; ++j) {
+      if (i < width && j < height) {
+        setPixel(i, j, color);
+        // or, direct vram access
+        // vram[i + (j + 24) * width] = color;
+      }
+    }
+  }
+}
+
+void draw() {
+  LCD_ClearScreen();
+  drawRectangle(rectX, rectY, COLOR_RECTANGLE);
+  LCD_Refresh();
+}
+
+int main() {
+  unsigned int rectX = width / 2 - RECT_SIZE / 2;
+  unsigned int rectY = height / 2 - RECT_SIZE / 2;
+
+  struct Input_Event event;
+  bool running = true;
+  while (running) {
+    draw();
+
+    GetInput(&event, 0xFFFFFFFF, 0x10);
+
+    switch (event.type) {
+    case EVENT_TOUCH:
+      if (event.data.touch_single.direction == TOUCH_DOWN ||
+          event.data.touch_single.direction == TOUCH_HOLD_DRAG) {
+        rectX = event.data.touch_single.p1_x;
+        rectY = event.data.touch_single.p1_y;
+      }
+      break;
+
+    case EVENT_KEY:
+      switch (event.data.key.keyCode) {
+        case KEYCODE_UP:
+          rectY -= MOVE_STEP;
+          break;
+        case KEYCODE_RIGHT:
+          rectX += MOVE_STEP;
+          break;
+        case KEYCODE_DOWN:
+          rectY += MOVE_STEP;
+          break;
+        case KEYCODE_LEFT:
+          rectX -= MOVE_STEP;
+          break;
+        case KEYCODE_POWER_CLEAR:
+          running = false;
+        default:
+          break;
+        }
+      break;
+    default:
+      break;
+    }
+
+    // Ensure the rectangle stays within the screen boundaries
+    if (rectX + RECT_SIZE > width)
+      rectX = width - RECT_SIZE;
+    if (rectY + RECT_SIZE > height)
+      rectY = height - RECT_SIZE;
+  }
+
+  return 0;
+}
+```
