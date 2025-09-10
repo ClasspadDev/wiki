@@ -1,0 +1,195 @@
+---
+title: Drawing Shapes
+description: Creating Your First App - Drawing on the Classpad screen
+sidebar:
+  order: 2
+---
+
+This tutorial will guide you through drawing various shapes on your Classpad calculator screen using the C/C++ SDK. We'll build upon the "Hello World" app you created earlier.
+
+## Prerequisites
+
+Make sure you have completed the [Hello World tutorial](/wiki/hh3/examples/hello-world/) before proceeding. Your starting code should be similar to the final code from that tutorial.
+
+## Step 1: Understanding the Drawing Functions
+
+Before we start drawing, let's understand the key functions available for creating shapes from the `<sdk/calc/calc.h>` library:
+
+1.  **`setPixel(x, y, color)`** - Draws a single pixel at coordinates (x, y).
+2.  **`line(x1, y1, x2, y2, color)`** - Draws a line between two points.
+3.  **`triangle(x0, y0, x1, y1, x2, y2, colorFill, colorLine)`** - Draws a filled triangle with an outline.
+4.  **`fillScreen(color)`** - Fills the entire screen with a color.
+
+For more details about them, please [check the reference](/wiki/hh3/reference/calc/calc/).
+
+## Step 2: Setting Up Your Canvas
+
+Start with the basic app structure from the Hello World tutorial. We will replace the "Hello World" text with our shape-drawing code. Your initial `main.c` file should look like this:
+
+```c
+#include <appdef.h>
+#include <sdk/calc/calc.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/debug.h>
+
+APP_NAME("Shape Drawing")
+APP_DESCRIPTION("Drawing various shapes")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+
+int main() {
+    // Clear screen with a black background
+    fillScreen(color(0, 0, 0));
+    
+    /* Your shape drawing code goes here... */
+    
+    // Refresh the screen to show the drawings
+    LCD_Refresh();
+
+    // Wait for a key press before exiting
+    Debug_WaitKey();
+    
+    return 0;
+}
+```
+
+## Step 3: Drawing Pixels
+
+Let's start with the most basic element: individual pixels. Add this code inside `main()`, before `LCD_Refresh()`:
+
+```c
+// Draw a pattern of pixels
+for (int i = 0; i < 100; i += 10) {
+    setPixel(50 + i, 50, color(255, 255, 255)); // White pixels
+    setPixel(50, 50 + i, color(255, 0, 0));     // Red pixels
+}
+```
+
+This code uses a `for` loop to create two perpendicular lines of dots: one white and horizontal, one red and vertical.
+
+## Step 4: Drawing Lines
+
+Now let's draw some solid lines using the `line()` function:
+
+```c
+// Draw various lines
+line(10, 10, 100, 100, color(255, 0, 0));     // Red diagonal line
+line(150, 50, 250, 50, color(0, 255, 0));     // Green horizontal line
+line(200, 100, 200, 200, color(0, 0, 255));   // Blue vertical line
+line(50, 150, 250, 200, 0b1111100000000000);  // Line using raw 565 color format
+```
+
+This demonstrates how to draw lines in different directions and colors. The last line shows how you can use a raw 16-bit color value directly instead of the `color()` helper.
+
+## Step 5: Drawing Triangles
+
+Triangles are more complex shapes that can be filled and outlined with different colors:
+
+```c
+// Draw filled triangles
+triangle(30, 30, 80, 30, 55, 80, color(255, 255, 0), color(255, 0, 255));
+//           P0      P1      P2      Fill Color        Line Color
+
+// Draw another triangle
+triangle(100, 150, 200, 150, 150, 250, color(0, 255, 255), color(255, 255, 255));
+```
+
+Each triangle requires three points (P0, P1, P2) and two colors: one for the fill and one for the outline.
+
+## Step 6: Creating Color Patterns
+
+You can create interesting visual effects by changing colors inside a loop. Let's draw a rectangle with a color gradient:
+
+```cpp
+// Draw a colorful rectangle using pixels
+for (int x = 0; x < 100; x++) {
+    for (int y = 0; y < 100; y++) {
+        setPixel(100 + x, 300 + y, color(x * 2, y * 2, 100));
+    }
+}
+```
+
+This uses nested `for` loops to iterate over a 100x100 pixel area, changing the color of each pixel based on its coordinates.
+
+## Step 7: Adding a Key Wait Loop
+
+The `Debug_WaitKey()` from the Hello World tutorial is great, but for more control, we can create our own loop that waits for a specific key, like the `CLEAR` key. Replace `Debug_WaitKey();` with this loop:
+
+```cpp
+// Wait for user to press CLEAR key to exit
+while(true) {
+    uint32_t key1, key2;
+    getKey(&key1, &key2);
+    if (testKey(key1, key2, KEY_CLEAR)) {
+        break;
+    }
+}
+```
+
+## Complete Example Code
+
+Here's the complete code for your shape drawing app:
+
+```c
+#include <appdef.h>
+#include <sdk/calc/calc.h>
+#include <sdk/os/lcd.h>
+#include <sdk/os/debug.h>
+
+APP_NAME("Shape Drawing")
+APP_DESCRIPTION("Drawing various shapes")
+APP_AUTHOR("Your Name")
+APP_VERSION("1.0.0")
+
+int main() {
+    // Clear screen with black background
+    fillScreen(color(0, 0, 0));
+
+    // Draw individual pixels
+    for (int i = 0; i < 100; i += 10) {
+        setPixel(50 + i, 50, color(255, 255, 255)); // White pixels
+        setPixel(50, 50 + i, color(255, 0, 0));     // Red pixels
+    }
+
+    // Draw various lines
+    line(10, 10, 100, 100, color(255, 0, 0));     // Red diagonal line
+    line(150, 50, 250, 50, color(0, 255, 0));     // Green horizontal line
+    line(200, 100, 200, 200, color(0, 0, 255));   // Blue vertical line
+    line(50, 150, 250, 200, 0b1111100000000000);  // Line using 565 color format
+
+    // Draw filled triangles
+    triangle(30, 30, 80, 30, 55, 80, color(255, 255, 0), color(255, 0, 255));
+    triangle(100, 150, 200, 150, 150, 250, color(0, 255, 255), color(255, 255, 255));
+
+    // Draw a colorful rectangle using pixels
+    for (int x = 0; x < 100; x++) {
+        for (int y = 0; y < 100; y++) {
+            setPixel(100 + x, 300 + y, color(x * 2, y * 2, 100));
+        }
+    }
+
+    // Update the screen to show all drawn shapes
+    LCD_Refresh();
+
+    // Wait for user to press CLEAR key to exit
+    while(true) {
+        uint32_t key1, key2;
+        getKey(&key1, &key2);
+        if(testKey(key1, key2, KEY_CLEAR)) {
+            break;
+        }
+    }
+    return 0;
+}
+```
+
+
+## Next Steps
+
+Congratulations! You've learned how to draw various shapes on your Classpad !
+
+Now that you know how to draw shapes, try:
+- Creating more complex patterns
+- Drawing multiple shapes in different colors
+- Making interactive drawings that respond to key presses
+- Creating simple games using these drawing functions
