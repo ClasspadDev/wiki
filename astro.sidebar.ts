@@ -150,6 +150,11 @@ export const sidebar = [
                 {
                     label: 'Developer Notes',
                     autogenerate: { directory: 'dev' },
+                },
+                {
+                    label: 'Hardware',
+                    collapsed: true,
+                    autogenerate: { directory: 'hardware' },
                 }
             ]
         })
