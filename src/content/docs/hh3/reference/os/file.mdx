@@ -149,6 +149,10 @@ Works the same as `File_Stat` but uses an open file descriptor.
 
 #### Memory address
 
+:::warning 
+Avoid using it. When file are fragmented getaddr only gets you the first fragment
+:::
+
 ```c
 int File_GetAddr(int fd, int offset, const void **addr);
 ```
