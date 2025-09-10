@@ -1,0 +1,274 @@
+---
+title: Serial
+description: Functions used for sending and receiving serial data.
+---
+
+Serial communication functions allow for sending and receiving data through the 3pin serial port (the small 2.5mm jack port).
+
+
+The functions provided here are similar to those on the Casio fx-CG50 calculator and takes inspiration from the implementations found in the [libfxcg library](https://github.com/Jonimoose/libfxcg/blob/master/include/fxcg/serial.h). For more technical details, the [Prizm Wiki](https://prizm.cemetech.net/Syscalls/Serial/Serial_Open/) is an excellent resource.
+
+## Methods
+
+### Open Serial
+
+Opens the 3-pin serial port with the specified parameters.
+
+```c
+int Serial_Open(const struct Serial_Settings *mode);
+```
+
+- **Parameters**: `mode` - A pointer to a `struct Serial_Settings` that defines the connection parameters. This struct should be filled with values from the provided enums (e.g., `SERIAL_BITRATE_9600`, `SERIAL_PARITY_NONE`).
+- **Returns**: 
+  - `0` on success.
+  - `3` if the port is already open.
+
+The `Serial_Settings` struct is defined as:
+```c
+struct Serial_Settings {
+    uint8_t zero;
+    enum Serial_Bitrate bitrate;
+    enum Serial_Parity parity;
+    enum Serial_Data_Length data_length;
+    enum Serial_Stop_Bits stop_bits;
+    uint8_t zero2;
+};
+```
+
+See [Prizm's Serial_Open](https://prizm.cemetech.net/Syscalls/Serial/Serial_Open/) for more info.
+
+### Is Serial Open
+
+Checks if the serial port is currently open.
+
+```c
+int Serial_IsOpen(void);
+```
+
+- **Returns**: A non-zero value if the serial port is open, `0` otherwise.
+
+### Close Serial
+
+Closes the serial port.
+
+```c
+int Serial_Close(bool abortPending);
+```
+
+- **Parameters**: `abortPending` - If `true`, aborts any pending transmissions.
+- **Returns**: `0` on success.
+
+### Read Serial
+
+Reads a specified number of bytes from the serial port's receive buffer.
+
+```c
+int Serial_Read(unsigned char *out, int sz, short *count);
+```
+
+- **Parameters**:
+  - `out` - Pointer to the buffer to store the read data.
+  - `sz` - Number of bytes to read.
+  - `count` - Pointer to a variable to store the number of bytes actually read.
+- **Returns**: `0` on success.
+
+### Read Serial Single Byte
+
+Reads a single byte from the serial port.
+
+```c
+extern "C"
+int Serial_ReadSingle(unsigned char *out);
+```
+
+- **Parameters**: `out` - Pointer to store the read byte.
+- **Returns**: `0` on success.
+
+### Peek Serial
+
+Peeks at a byte in the serial buffer without removing it.
+
+```c
+extern "C"
+int Serial_Peek(int idx, unsigned char *out);
+```
+
+- **Parameters**:
+  - `idx` - The index of the byte to peek at.
+  - `out` - Pointer to store the peeked byte.
+- **Returns**: `0` on success.
+
+### Poll Serial RX
+
+Polls the receive buffer for available data.
+
+```c
+int Serial_PollRX(void);
+```
+
+- **Returns**: The number of bytes available in the receive buffer.
+
+### Clear Serial RX
+
+Clears (discards) all data in the receive buffer.
+
+```c
+int Serial_ClearRX(void);
+```
+
+- **Returns**: `0` on success.
+
+### Write Serial
+
+Writes a specified number of bytes to the serial port's transmit buffer.
+
+```c
+int Serial_Write(const unsigned char *buf, int count);
+```
+
+- **Parameters**:
+  - `buf` - Pointer to the buffer containing the data to be sent.
+  - `count` - Number of bytes to send.
+- **Returns**: `0` on success.
+
+
+See [Prizm's Serial_Write](https://prizm.cemetech.net/Syscalls/Serial/Serial_Write/) for more info.
+
+### Write Serial Single Byte
+
+Writes a single byte to the serial port.
+
+```c
+int Serial_WriteSingle(unsigned char x);
+```
+
+- **Parameters**: `x` - The byte to be sent.
+- **Returns**: `0` on success.
+
+### Write Unbuffered Serial
+
+Writes a single byte to the serial port without buffering.
+
+```c
+int Serial_WriteUnbuffered(unsigned char x);
+```
+
+- **Parameters**: `x` - The byte to be sent.
+- **Returns**: `0` on success.
+
+### Poll Serial TX
+
+Polls the transmit buffer for available space.
+
+```c
+int Serial_PollTX(void);
+```
+
+- **Returns**: The number of bytes of free space in the transmit buffer.
+
+### Clear Serial TX
+
+Clears (discards) all data waiting in the transmit buffer.
+
+```c
+int Serial_ClearTX(void);
+```
+
+- **Returns**: `0` on success.
+
+## Usage
+
+:::tip[Note]
+You will need a compatible 3-pin serial (2.5mm jack) adapter and another device (like an Arduino, Raspberry Pi, or PC with a serial port) to communicate. Check the [Comunication with Serial](#) guide for more informations. 
+:::
+
+### Opening and Closing the Serial Port
+
+```c
+#include <appdef.h>
+#include <sdk/os/serial.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/lcd.h>
+#include <string.h> // For memset
+
+void example_serial_open_close() {
+    struct Serial_Settings settings;
+    memset(&settings, 0, sizeof(settings)); // Important to zero out the struct first
+
+    // Configure for 9600 bps, 8-N-1 (8 data bits, no parity, 1 stop bit)
+    settings.bitrate = SERIAL_BITRATE_9600;
+    settings.parity = SERIAL_PARITY_NONE;
+    settings.data_length = SERIAL_DATA_LENGTH_8BIT;
+    settings.stop_bits = SERIAL_STOP_BITS_1;
+
+    int result = Serial_Open(&settings);
+    if (result == 0) {
+        Debug_Printf(0, 0, false, 0, "Serial port opened.");
+    } else if (result == 3) {
+        Debug_Printf(0, 0, false, 0, "Serial port already open.");
+    }
+
+    LCD_Refresh();
+    Debug_WaitKey();
+
+    result = Serial_Close(true); // Close and abort pending transmissions
+    if (result == 0) {
+        Debug_Printf(0, 1, false, 0, "Serial port closed.");
+    }
+    
+    LCD_Refresh();
+    Debug_WaitKey();
+}
+```
+
+### Sending and Receiving Data
+
+This example sends "Hello, Serial!" and then waits to receive up to 20 bytes back.
+
+```c
+#include <appdef.h>
+#include <sdk/os/serial.h>
+#include <sdk/os/debug.h>
+#include <sdk/os/lcd.h>
+#include <string.h>
+
+void example_serial_communication() {
+    struct Serial_Settings settings;
+    memset(&settings, 0, sizeof(settings)); // Important to zero out the struct first
+    settings.bitrate = SERIAL_BITRATE_9600;
+    settings.parity = SERIAL_PARITY_NONE;
+    settings.data_length = SERIAL_DATA_LENGTH_8BIT;
+    settings.stop_bits = SERIAL_STOP_BITS_1;
+    
+    if (Serial_Open(&settings) != 0) {
+        Debug_Printf(0, 0, false, 0, "Failed to open serial.");
+        LCD_Refresh();
+        Debug_WaitKey();
+        return;
+    }
+
+    // Send data
+    unsigned char send_data[] = "Hello, Serial!";
+    Serial_Write(send_data, sizeof(send_data) - 1); // -1 to not send null terminator
+    Debug_Printf(0, 0, false, 0, "Sent: %s", send_data);
+
+    // Wait for a response (in a real app, this should have a timeout)
+    Debug_Printf(0, 1, false, 0, "Waiting for response...");
+    LCD_Refresh();
+    while (Serial_PollRX() == 0) {
+        // Do nothing, just wait for data to arrive
+    }
+
+    // Read response
+    unsigned char recv_data[21];
+    short count = 0;
+    Serial_Read(recv_data, 20, &count);
+    recv_data[count] = '\0'; // Null-terminate the received string
+
+    Debug_Printf(0, 2, false, 0, "Received %d bytes: %s", count, recv_data);
+    LCD_Refresh();
+    Debug_WaitKey();
+
+    Serial_Close(true);
+}
+```
