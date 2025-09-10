@@ -1,0 +1,207 @@
+---
+title: MCS
+description: Functions for retrieving and setting data in the MCS (Memory Control System).
+---
+
+The MCS (Memory Control System) provides functions for managing persistent variables efficiently. It allows you to create, retrieve, and modify different variable types stored in a dedicated memory space.
+
+:::tip[Need code ?]
+You can jump right to the [👨‍💻 Usage](#usage) or refer to the [original SDK Code](https://github.com/ClasspadDev/hollyhock-3/blob/master/sdk/include/sdk/os/mcs.h) for more details.
+:::
+
+
+This system is much more reliable than the main storage (`\\fls0\`)  and is faster for frequent reads and a few writes, and it's better to store small configuration and other data that needs to be read and wrote from frequently, but also required to be persistent and not simply on memory. It would be for example a good choice to save best score of your game into the MCS, or some user configuration of your app.
+
+
+## Methods
+
+### Create Folder
+
+Creates a folder in the MCS.
+
+```c
+enum MCS_Error MCS_CreateFolder(const char *folder, uint8_t *folderIndex);
+```
+
+- **Parameters**:
+  - `folder`: The name of the folder to create.
+  - `folderIndex`: A pointer to store an index for the folder.
+- **Returns**:
+  - `MCS_OK` if the folder was created successfully.
+  - `MCS_FOLDER_EXISTS` if the folder already exists.
+
+### Get Variable
+
+Retrieves information about a variable stored in the MCS.
+
+```c
+enum MCS_Error MCS_GetVariable(
+	const char *folder, const char *name,
+	enum MCS_VariableType *variableType, char **name2, void **data, uint32_t *size
+);
+```
+
+- **Parameters**:
+  - `folder`: The folder where the variable is located.
+  - `name`: The name of the variable.
+  - `variableType`: A pointer to store the variable's type.
+  - `name2`: A pointer to a `char*` that will point to the variable's name.
+  - `data`: A pointer to a `void*` that will point to the variable's data.
+  - `size`: A pointer to store the size of the variable's data.
+- **Returns**:
+  - `MCS_OK` if the variable exists.
+  - `MCS_NO_VARIABLE` if the variable does not exist.
+  - `MCS_NO_FOLDER` if the folder does not exist.
+
+### Set Variable
+
+Sets the value of a variable in the MCS. Creates the variable if it doesn't exist.
+
+```c
+enum MCS_Error MCS_SetVariable(
+	const char *folder, const char *name,
+	enum MCS_VariableType variableType, uint32_t size, void *data
+);
+```
+
+- **Parameters**:
+  - `folder`: The folder containing the variable.
+  - `name`: The name of the variable to set.
+  - `variableType`: The type of the variable (e.g., `VARTYPE_STR`).
+  - `size`: The size of the data being stored.
+  - `data`: A pointer to the data to copy into the variable.
+- **Returns**:
+  - `MCS_OK` if the variable was set successfully.
+  - `MCS_NO_FOLDER` if the specified folder does not exist.
+
+### Create List
+
+Creates a list variable in the MCS.
+
+```c
+enum MCS_Error MCS_List_Create(
+	const char *folder, const char *name,
+	uint32_t size, uint16_t length, enum MCS_VariableType variableType
+);
+```
+
+- **Parameters**:
+  - `folder`: The folder to create the list in.
+  - `name`: The desired name of the list.
+  - `size`: The size of each element in the list.
+  - `length`: The number of elements in the list.
+  - `variableType`: The type of the elements the list will hold (e.g., `VARTYPE_STR`).
+- **Returns**:
+  - `MCS_OK` on success.
+  - `MCS_NO_FOLDER` if the requested folder does not exist.
+
+### Set List Element
+
+Sets an element of an existing list in the MCS.
+
+```c
+enum MCS_Error MCS_List_Set(
+	const char *folder, const char *name,
+	uint32_t size, unsigned int index, enum MCS_VariableType variableType, void *data
+);
+```
+
+- **Parameters**:
+  - `folder`: The folder containing the list.
+  - `name`: The name of the list.
+  - `size`: The size of the data being stored in the element.
+  - `index`: The index of the element to modify.
+  - `variableType`: The type of data being stored in the element.
+  - `data`: A pointer to the data to copy into the list element.
+- **Returns**:
+  - `MCS_OK` on success.
+  - `MCS_NO_FOLDER` if the requested folder does not exist.
+  - `MCS_NO_VARIABLE` if the variable does not exist.
+  - `MCS_NOT_LIST` if the variable was not a list.
+  - `MCS_INDEX_OOB` if the index was out of bounds.
+
+## Usage
+
+CPBoy uses it internally to manage game boy saves. It have its own wrapper for [writing to mcs](https://github.com/QBos07/CPBoy/blob/3ed9a9fb91d78f37bcf55f6e10399e7c4a8aa5ea/src/helpers/fileio.cpp#L10) and [reading from mcs](https://github.com/QBos07/CPBoy/blob/3ed9a9fb91d78f37bcf55f6e10399e7c4a8aa5ea/src/helpers/fileio.cpp#L35)
+
+CPDoom also uses [similar techniques with the MCS](https://github.com/QBos07/CPDoom/blob/fc9a4c2d131ef2597ac3b2d8a6a5aac946728d36/src/doom/i_mcs.cpp#L22)
+
+
+### Creating a Folder and Setting a Variable
+
+```c
+#include <sdk/os/debug.h>
+#include <sdk/os/mcs.h>
+#include <string.h>
+
+void example_create_folder_and_set_variable() {
+    uint8_t folderIndex;
+    const char *folderName = "MyFolder";
+    const char *varName = "MyString";
+    const char *data = "Hello, MCS!";
+    
+    // Create a folder in the MCS
+    if (MCS_CreateFolder(folderName, &folderIndex) == MCS_OK) {
+        Debug_Printf(0, 0, false, 0, "Folder created.");
+    } else {
+        Debug_Printf(0, 0, false, 0, "Folder already exists.");
+    }
+
+    // Set a string variable in the folder
+    if (MCS_SetVariable(folderName, varName, VARTYPE_STR, strlen(data) + 1, (void*)data) == MCS_OK) {
+        Debug_Printf(0, 1, false, 0, "Variable set.");
+    }
+}
+```
+
+### Retrieving a Variable
+
+```c
+#include <sdk/os/debug.h>
+#include <sdk/os/mcs.h>
+
+void example_get_variable() {
+    const char *folderName = "MyFolder";
+    const char *varName = "MyString";
+    enum MCS_VariableType variableType;
+    char *retrievedName;
+    void *retrievedData;
+    uint32_t size;
+
+    // Retrieve the variable
+    if (MCS_GetVariable(folderName, varName, &variableType, &retrievedName, &retrievedData, &size) == MCS_OK) {
+        if (variableType == VARTYPE_STR) {
+            Debug_Printf(0, 0, false, 0, "Retrieved: %s", (char*)retrievedData);
+        }
+    } else {
+        Debug_Printf(0, 0, false, 0, "Failed to retrieve variable.");
+    }
+}
+```
+
+### Creating and Modifying a List
+
+```c
+#include <sdk/os/debug.h>
+#include <sdk/os/mcs.h>
+
+void example_create_and_modify_list() {
+    const char *folderName = "MyGame";
+    const char *listName = "HighScores";
+    uint8_t folderIndex;
+    const uint8_t length = 3;
+    int scores[3] = {1500, 1200, 950};
+    
+    if (MCS_CreateFolder(folderName, &folderIndex) == MCS_OK) {
+        // Create a list variable in the MCS
+        if (MCS_List_Create(folderName, listName, sizeof(int), length, VARTYPE_LIST) == MCS_OK) {
+            Debug_Printf(0,0,false,0, "List created successfully.\n");
+        }
+
+        // Set an element in the list
+        for (int i = 0; i < length; i++) {
+            auto _ = MCS_List_Set(folderName, listName, sizeof(int), i, VARTYPE_OBCD, &scores[i]);
+        }
+    }
+}
+```
