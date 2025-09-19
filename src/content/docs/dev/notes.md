@@ -3,7 +3,27 @@ title: Memory Mapping
 description: Internal memory mapping of the fx-CP400
 ---
 
-Here's some of the mapping I know about :
+## Mapping Table
+
+| Region         | Start         | End           | Size     | Notes                            |
+|----------------|---------------|---------------|----------|----------------------------------|
+| Boot ROM       | `0x0000_0000` | -             | -        | Initial boot code                |
+| Main RAM       | `0x8C00_0000` | `0x8CFF_FFFF` | 16 MB    | OS + apps + heap                 |
+| Cached ROM     | `0x8000_0000` | `0x81FF_FFFF` | 512 MB   | Cached access                    |
+| MCS FS         | `0x8E00_0000` | -             | -        | Filesystem (avoid overwriting!)  |
+| Uncached ROM   | `0xA000_0000` | `0xA1FF_FFFF` | 512 MB   | Direct, no cache                 |
+| CPG            | `0xA415_0000` | `0xA415_FFFF` | 64 KB    | Clock control                    |
+| Touch?         | `0xA405_0100` | -             | -        | Touch register at `0xA405_01F3`  |
+| Display DMAC   | `0xB400_0000` | -             | -        | Display DMA controller           |
+| **XRAM**       | `0xE500_7000` | `0xE500_9000` | **8 KB** | Fast data RAM (Bank 1)           |
+| **YRAM**       | `0xE501_7000` | `0xE501_9000` | **8 KB** | Fast data RAM (Bank 2)           |
+| **IL Memory**  | `0xE520_0000` | `0xE520_4000` | **16 KB**| Fast instruction RAM             |
+| Direct I/O     | `0xFEC0_0000` | `0xFEFF_FFFF` | 4 MB     | Hardware registers               |
+| **RS Memory**  | `0xFD80_0000` | `0xFD80_07FF` | **2 KB** | CRITICAL. Retained during standby |
+
+---
+
+Here's some informations gathered about the mapping :
 
 - boot rom is at `0x0000_0000`, it's taken from the first part of the flashed rom
 
