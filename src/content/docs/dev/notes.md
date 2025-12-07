@@ -50,3 +50,15 @@ Here's some informations gathered about the mapping :
 When [loading a .bin program](https://github.com/SnailMath/hollyhock-2/blob/master/launcher/bins.cpp#L178), it is copied at `0x8cff_0000` and the PC jump to this offset 
 
 > For hollyhock, we usually use the end of the ram, that space is usually occupied by the mcs file system, but if it's not fully full, then it should work. Just note that the hollyhock launcher is running from ram, so it can't overwrite itself...`8C00_0000` to `8CFF_FFFF` is ram, we use [`8CFE_0000`](https://github.com/SnailMath/hollyhock-2/blob/master/patches/file_loader/file_loader.s#L134) for the launcher (from the run.bin file) and [`8CFF_0000`](https://github.com/SnailMath/hollyhock-2/blob/master/launcher/bins.cpp#L178) for [programs](https://github.com/TheRainbowPhoenix/CPAppTemplate/blob/main/linker_bin.ld#L4), just look at the launcher how big it is, you can squeeze out a bit if you start your program at `8CFE_8000`....
+
+
+## Trible Screen Buffer
+
+A large, **continuous** memory area is dynamically available on the RAM.
+Though it is allocated dynamically, a static pointer to it can be found at the address `0x8c2233a0` (`MenuIcons::m_gpBitmap`).
+
+You can safely use this area for continuous data structure, such as dynamically loaded code, non-persistent data, or huge data structures. This provides over 560 kB of fixed buffer space, which is excellent for loading large programs in an environment without a MMU (Memory Management Unit).
+
+![Trible Screen Buffer](/wiki/img/triple_screen.png)
+
+
