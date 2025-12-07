@@ -52,7 +52,7 @@ When [loading a .bin program](https://github.com/SnailMath/hollyhock-2/blob/mast
 > For hollyhock, we usually use the end of the ram, that space is usually occupied by the mcs file system, but if it's not fully full, then it should work. Just note that the hollyhock launcher is running from ram, so it can't overwrite itself...`8C00_0000` to `8CFF_FFFF` is ram, we use [`8CFE_0000`](https://github.com/SnailMath/hollyhock-2/blob/master/patches/file_loader/file_loader.s#L134) for the launcher (from the run.bin file) and [`8CFF_0000`](https://github.com/SnailMath/hollyhock-2/blob/master/launcher/bins.cpp#L178) for [programs](https://github.com/TheRainbowPhoenix/CPAppTemplate/blob/main/linker_bin.ld#L4), just look at the launcher how big it is, you can squeeze out a bit if you start your program at `8CFE_8000`....
 
 
-## Trible Screen Buffer
+## Triple Screen Buffer
 
 A large, **continuous** memory area is dynamically available on the RAM.
 Though it is allocated dynamically, a static pointer to it can be found at the address `0x8c2233a0` (`MenuIcons::m_gpBitmap`).
