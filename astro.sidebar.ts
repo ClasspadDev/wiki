@@ -132,6 +132,7 @@ export const sidebar = [
             badge: { text: 'New', variant: 'tip' },
             items: [
                 { label: 'Introduction', link: '/python/introduction/' },
+                { label: 'Installation Guide/', link: '/python/installation-guide/' },
                 {
                     label: 'Examples',
                     collapsed: true,
