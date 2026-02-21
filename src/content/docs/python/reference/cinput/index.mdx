@@ -1,0 +1,53 @@
+---
+title: CInput
+description: Welcome to the CInput docs. Let's build some sick UIs for your ClassPad!
+sidebar:
+  order: 11
+---
+
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
+
+CInput is a quick and efficient way to create modern-looking input interface for your program in python. It handles all the stressful stuff like on-screen keyboards, scrollable lists, theming, and touch events, so you can focus on building legit add-ins without sweating the pixels position. 
+
+Whether you're crafting a physics solver or just a custom note-taking app, CInput makes your app look premium out of the box.
+
+## Download CInput
+
+CInput is a single file library that's used to simplify common user inputs.
+Latest stable version can [be downloaded on the Python store](https://classpaddev.github.io/python/store/index.html?type=utility)
+Development release and real apps using it can be found in the [MiscPythonExtra repository](https://github.com/TheRainbowPhoenix/MiscPythonExtra/blob/master/cinput.py)
+
+## Get Started
+
+If you're new to cinput, read the tutorials. It'll take you from a blank screen to a fully interactive app in zero time.
+
+<CardGrid>
+    <LinkCard
+        title="1. The Basics: Input & Lists"
+        href="./tutorial/01-basics"
+        description="Jump right in: How to pop up keyboards, grab user input, and build scrolling in a few lines."
+    />
+    <LinkCard
+        title="2. Building an App Menu"
+        href="./tutorial/02-app-menu"
+        description="Learn how to hook up menus and multiple inputs into a single app shell."
+    />
+    <LinkCard
+        title="3. Advanced Custom Activities"
+        href="./tutorial/03-activities"
+        description="Learn to create dynamic lists and custom solver interfaces using the activity model."
+    />
+    <LinkCard
+        title="The Reference Manual"
+        href="./reference"
+        description="The deep dive. Check out all the props, methods, and layout tricks to customize your CInput widgets."
+    />
+</CardGrid>
+
+## Wait, Why CInput?
+
+Because nobody wants to hardcode `dtext` coordinates all day! You just call `cinput.input()` and boom, a themed on-screen keyboard drops in. You need the user to pick an option? `cinput.pick()` throws up a scrollable list. It's built for touch, it's fast, and it looks clean.
+
+:::tip[Stay Frosty]
+Got questions about tweaking themes or building custom activities? Join [💬 the ClassPad Club](https://discord.gg/knpcNJTzpd)! We're always sharing wild new projects and solving bugs together. Build cool stuff and flex it on your calculator!
+:::
