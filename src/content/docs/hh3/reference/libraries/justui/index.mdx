@@ -1,0 +1,46 @@
+---
+title: JustUI Documentation
+description: Welcome to the JustUI documentation for ClassPad and fx-CG50
+sidebar:
+  order: 0
+---
+
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+Welcome to the **JustUI** documentation! JustUI is a powerful, event-driven user interface library designed for Casio calculators running `gint`. It abstracts away pixel-by-pixel rendering and provides elegant, flexible layouts using VBoxes, HBoxes, and Stacks, alongside interactive touch-friendly components.
+
+The library is also used on other calculator, so you may already be familiar with its syntax.
+
+## Start Learning
+
+If you are new to JustUI, we highly recommend starting with the tutorial. It will guide you step-by-step from an empty screen to a fully functioning multi-tab graphical application.
+
+<CardGrid>
+    <LinkCard
+        title="🎓 JustUI Tutorial"
+        href="/tutorial"
+        description="Learn the basics of JustUI by building a multi-tab application from scratch with code examples."
+    />
+    <LinkCard
+        title="📚 Reference Manual"
+        href="/reference"
+        description="Deep dive into JustUI's layout engine, event dispatching, focus hierarchy, touchscreen support, and custom widgets."
+    />
+</CardGrid>
+
+## Project Templates
+
+The quickest way to start building your own JustUI add-in for HollyHock-3 (V3) is by using our ready-made template. It includes all the necessary CMake links so you can start writing layout code instantly.
+
+<CardGrid>
+    <LinkCard
+        title="🚀 JustUI V3 Template"
+        href="https://github.com/TheRainbowPhoenix/JustUI-template"
+        description="A complete starter template configured for JustUI on HollyHock-3. Clone this to jumpstart your development!"
+    />
+</CardGrid>
+
+:::tip[Community Support]
+Got questions about JustUI? The **ClassPad community** is here to help!
+Connect with developers, share your projects, and report bugs by joining our **[💬 Discord community](https://discord.gg/knpcNJTzpd)**! 
+:::

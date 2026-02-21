@@ -1,0 +1,334 @@
+---
+title: "Getting Started with JustUI"
+description: "A comprehensive tutorial on building user interfaces with JustUI from scratch."
+sidebar:
+  order: 1
+---
+
+# Getting Started with JustUI
+
+JustUI is a powerful interface library that heavily simplifies user development for Casio calculators running gint. Imagine building standard apps with elegant layouts and interactions without writing the pixel logic yourself!
+
+In this tutorial, you'll learn how to start from a simple blank screen and build a full multi-tabbed application with labels, buttons, and even a built-in file browser.
+
+## Contents
+- [Prerequisites](#prerequisites)
+- [Step 1: Application Setup](#step-1-application-setup)
+- [Step 2: Basic Layouts and Labels](#step-2-basic-layouts-and-labels)
+- [Step 3: Interactive Buttons](#step-3-interactive-buttons)
+- [Step 4: Stacked Tabs](#step-4-stacked-tabs)
+- [Step 5: File Lists](#step-5-file-lists)
+- [Step 6: The Event Loop](#step-6-the-event-loop)
+- [The Full Demo](#the-full-demo)
+
+---
+
+## Prerequisites
+
+Before starting, make sure your CMake project is correctly configured to use JustUI. In your `CMakeLists.txt`, add:
+
+```cmake
+find_package(JustUI 1.0 REQUIRED)
+target_link_libraries(myaddin Gint::Gint JustUI::JustUI)
+```
+
+*(You can refer to the template add-in for an already configured environment!)*
+
+---
+
+## Step 1: Application Setup
+
+We start our program like any other `gint` add-in, but instead of using `dclear` and `dupdate` forever, we let JustUI handle the screen natively.
+
+To begin, create the **scene**, the root element that holds everything in your UI:
+
+```c
+#include <gint/display.h>
+#include <gint/keyboard.h>
+#include <justui/jscene.h>
+// ...
+
+int main(void) {
+    // Create the main scene (fullscreen)
+    jscene *scene = jscene_create_fullscreen(NULL);
+
+    // Later: Add UI components
+
+    // Usually scenes clean up all their children automatically
+    jwidget_destroy(scene);
+    return 1;
+}
+```
+
+---
+
+## Step 2: Basic Layouts and Labels
+
+A fundamental concept of JustUI is **Layouts**. Rather than giving absolute X and Y pixel values coordinates to every object, you place elements into `vbox` (vertical) or `hbox` (horizontal) boxes! Let's arrange our primary scene as a vertical box:
+
+```c
+#include <justui/jlayout.h>
+
+jlayout_set_vbox(scene)->spacing = 0;
+```
+
+With the scene set up, let's create our first child component, a label!
+
+```c
+#include <justui/jlabel.h>
+
+jlabel_create("Welcome to JustUI!", scene);
+jlabel_create("Let's build an app.", scene);
+```
+Since the `scene` is a `vbox`, the secondary label will automatically stack below the first label!
+
+---
+
+## Step 3: Interactive Buttons
+
+Let's organize another horizontal layout box inside the scene to hold buttons side by side. For visual clarity on ClassPad touchscreens, you always want to add heavy padding.
+
+```c
+#include <justui/jbutton.h>
+
+// Create a container for our buttons
+jwidget *buttons = jwidget_create(scene);
+jlayout_set_hbox(buttons)->spacing = 6;
+jwidget_set_padding(buttons, 8, 8, 8, 8); // Top, Right, Bottom, Left
+
+jbutton *btn_exit = jbutton_create("Exit App", buttons);
+// Pad the buttons generously for touchscreens
+jwidget_set_padding(btn_exit, 12, 16, 12, 16); 
+```
+
+---
+
+## Step 4: Stacked Tabs
+
+An advanced feature in JustUI is the **Stack Layout`. Similar to `vbox` or `hbox`, the `stack` holds multiple child widgets, but only displays *one at a time* — making it perfect for app tabs!
+
+```c
+// The main area tracking multiple UI states
+jwidget *stack = jwidget_create(scene);
+jlayout_set_stack(stack);
+jwidget_set_stretch(stack, 1, 1, false);     // Stretch to fill space!
+
+// Tab 1 will be added to the stack
+jwidget *tab1 = jwidget_create(stack);
+jlabel_create("This is Tab 1.", tab1);
+
+// Tab 2 will ALSO be added to the stack
+jwidget *tab2 = jwidget_create(stack);
+jlabel_create("This is Tab 2.", tab2);
+```
+
+By telling the scene to switch, you flip between tabs instantly!
+
+```c
+jscene_show_and_focus(scene, tab1); // Reveals 'tab1' entirely
+```
+
+---
+
+## Step 5: File Lists
+
+Need your user to pick a file from their calculator? There is already a built component in the engine waiting for you! 
+
+```c
+#include <justui/jfileselect.h>
+
+// Initialize a list on a specific container tab
+jfileselect *fileselect = jfileselect_create(tab3);
+jfileselect_set_show_file_size(fileselect, true);
+jwidget_set_stretch(fileselect, 1, 1, false);
+
+// Default directory
+jfileselect_browse(fileselect, "/");
+```
+
+---
+
+## Step 6: The Event Loop
+
+JustUI is ultimately event-loop driven. Rather than `getkey()`, use `jscene_run(scene)`.
+
+The engine automatically updates visual states on the widgets when users tap or hover them. You just have to check for special actions (like a completed click!).
+
+```c
+bool running = true;
+while(running) {
+    jevent e = jscene_run(scene);
+
+    if (e.type == JSCENE_PAINT) {
+        dclear(C_WHITE);
+        jscene_render(scene);
+        dupdate();
+    }
+    // Listen to button states
+    else if (e.type == JBUTTON_TRIGGERED) {
+        if (e.source == btn_exit) { // Matches our exit button!
+            running = false;
+        }
+    }
+    // Listen to file selection events
+    else if (e.type == JFILESELECT_VALIDATED) {
+        char const *path = jfileselect_selected_file(fileselect);
+        if (path) {
+            printf("Selected: %s\n", path);
+        }
+    }
+    // Also accept hardware exits safely
+    else if (e.type == JWIDGET_KEY && e.key.type == KEYEV_DOWN) {
+        if (e.key.key == KEY_CLEAR || e.key.key == KEY_HOME) {
+            running = false;
+        }
+    }
+}
+```
+
+---
+
+## The Full Demo
+
+Putting it all together, we can assemble a truly complete calculator application with minimal effort. Have a look at how this code looks together!
+
+```c
+#include <gint/display.h>
+#include <gint/keyboard.h>
+#include <justui/jscene.h>
+#include <justui/jlabel.h>
+#include <justui/jbutton.h>
+#include <justui/jfileselect.h>
+#include <justui/jlayout.h>
+#include <justui/jwidget.h>
+#include <stdio.h>
+
+int main(void)
+{
+    // Create the main scene (fullscreen)
+    jscene *scene = jscene_create_fullscreen(NULL);
+    jlayout_set_vbox(scene)->spacing = 0;
+    
+    // ==========================================
+    // STACKED TABS
+    // ==========================================
+    jwidget *stack = jwidget_create(scene);
+    jlayout_set_stack(stack);
+    jwidget_set_stretch(stack, 1, 1, false);
+
+    // ------------- TAB 1: Welcome -------------
+    jwidget *tab1 = jwidget_create(stack);
+    jlayout_set_vbox(tab1)->spacing = 10;
+    jwidget_set_padding(tab1, 15, 15, 15, 15);
+    
+    jlabel_create("Welcome to JustUI ClassPad!", tab1);
+    jlabel_create("This is Tab 1.", tab1);
+
+    // ------------- TAB 2: Interactive -------------
+    jwidget *tab2 = jwidget_create(stack);
+    jlayout_set_vbox(tab2)->spacing = 15;
+    jwidget_set_padding(tab2, 15, 15, 15, 15);
+
+    jlabel_create("Features (Tab 2)", tab2);
+    jbutton *btn_action = jbutton_create("Click Me!", tab2);
+    jwidget_set_padding(btn_action, 15, 20, 15, 20); 
+    jlabel *t2_status = jlabel_create("Button not clicked yet.", tab2);
+
+    // ------------- TAB 3: File Browser -------------
+    jwidget *tab3 = jwidget_create(stack);
+    jlayout_set_vbox(tab3)->spacing = 0;
+    
+    jfileselect *fileselect = jfileselect_create(tab3);
+    jfileselect_set_show_file_size(fileselect, true);
+    jwidget_set_stretch(fileselect, 1, 1, false);
+    
+    // ==========================================
+    // BOTTOM NAVIGATION BAR
+    // ==========================================
+    jwidget *buttons = jwidget_create(scene);
+    jlayout_set_hbox(buttons)->spacing = 6;
+    jwidget_set_stretch(buttons, 1, 0, false);
+    jwidget_set_padding(buttons, 8, 8, 8, 8);
+
+    jbutton *b_tab1 = jbutton_create("Tab 1", buttons);
+    jwidget_set_padding(b_tab1, 12, 12, 12, 12);
+
+    jbutton *b_tab2 = jbutton_create("Tab 2", buttons);
+    jwidget_set_padding(b_tab2, 12, 12, 12, 12);
+
+    jbutton *b_tab3 = jbutton_create("Tab 3", buttons);
+    jwidget_set_padding(b_tab3, 12, 12, 12, 12);
+    
+    jwidget *spacer = jwidget_create(buttons);
+    jwidget_set_stretch(spacer, 1, 0, false);
+
+    jbutton *b_exit = jbutton_create("Exit", buttons);
+    jwidget_set_padding(b_exit, 12, 16, 12, 16);
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+    jfileselect_browse(fileselect, "/");
+    jscene_show_and_focus(scene, tab1);
+    jbutton_set_disabled(b_tab1, true);
+
+    int action_count = 0;
+    bool running = true;
+
+    // ==========================================
+    // EVENT LOOP
+    // ==========================================
+    while(running) {
+        jevent e = jscene_run(scene);
+
+        if (e.type == JSCENE_PAINT) {
+            dclear(C_WHITE);
+            jscene_render(scene);
+            dupdate();
+        }
+        else if (e.type == JBUTTON_TRIGGERED) {
+            if (e.source == b_exit) {
+                running = false;
+            }
+            else if (e.source == b_tab1) {
+                jscene_show_and_focus(scene, tab1);
+                jbutton_set_disabled(b_tab1, true);
+                jbutton_set_disabled(b_tab2, false);
+                jbutton_set_disabled(b_tab3, false);
+            }
+            else if (e.source == b_tab2) {
+                jscene_show_and_focus(scene, tab2);
+                jbutton_set_disabled(b_tab1, false);
+                jbutton_set_disabled(b_tab2, true);
+                jbutton_set_disabled(b_tab3, false);
+            }
+            else if (e.source == b_tab3) {
+                jscene_show_and_focus(scene, tab3);
+                jbutton_set_disabled(b_tab1, false);
+                jbutton_set_disabled(b_tab2, false);
+                jbutton_set_disabled(b_tab3, true);
+            }
+            else if (e.source == btn_action) {
+                action_count++;
+                static char buf[64];
+                sprintf(buf, "Clicked %d times!", action_count);
+                jlabel_set_text(t2_status, buf);
+            }
+        }
+        else if (e.type == JFILESELECT_VALIDATED) {
+            char const *path = jfileselect_selected_file(fileselect);
+            if (path) printf("Selected: %s\n", path);
+        }
+        else if (e.type == JWIDGET_KEY && e.key.type == KEYEV_DOWN) {
+            if (e.key.key == KEY_CLEAR || e.key.key == KEY_HOME) {
+                running = false;
+            }
+        }
+    }
+
+    jwidget_destroy(scene);
+    return 1;
+}
+```
+
+Now you're fully equipped to design fast, touch-friendly graphical applications in C!

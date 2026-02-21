@@ -1,0 +1,126 @@
+---
+title: "JustUI Reference Manual"
+description: "A comprehensive reference of JustUI concepts including hierarchy, layouts, events, focus, widgets, and touchscreen support."
+sidebar:
+  order: 2
+---
+
+# JustUI Reference Manual
+
+This document serves as the combined reference guide for the JustUI framework on gint. It collates knowledge on widget hierarchy, the layout engine, event dispatching, keyboard/touch focus, and available widget types.
+
+---
+
+## 1. Widget Hierarchy
+
+### The Tree Hierarchy
+Every widget in JustUI has a parent, forming a strict tree hierarchy. The widgets that share a common parent are called the children of that parent.
+
+The motivation for this hierarchy is to have groups of widgets behave as one. A complex UI element can consist of many sub-widgets, but group them together as children of a parent to expose only the parent interface. When creating a widget (e.g., `jlabel_create()`), the parent is specified as the last parameter.
+
+The ancestor of all widgets is called the *root* of the scene, typically a `jscene`, which manages event handling and keyboard input.
+
+### Managing Ownership
+Every widget *owns* its children with regards to memory allocation. When a widget is destroyed, its children are destroyed along with it. Thus, a single `jwidget_destroy()` call on the root `jscene` will safely free all widgets in the UI.
+
+---
+
+## 2. Space Distribution and Layout
+
+Layout is the process through which space is allocated to widgets, which are then sized and positioned.
+
+### Content vs Containers
+- **Content widgets** (labels, inputs, etc.) display the interface and receive events. They usually do their own rendering.
+- **Containers** organize other widgets so they align cleanly without overlapping.
+
+### Layout Types
+1. **Vertical / Horizontal Boxes** (`vbox`, `hbox`): Arrange children in a column or row. Children receive their natural size, and remaining space is proportionally distributed based on *stretch* parameters.
+2. **Stacks** (`stack`): Arranges all widgets on top of each other, but only *one* is visible at an active time. Perfect for tabs.
+3. **Grids**: Arranges widgets in a 2D grid format.
+
+### The Layout Process
+1. **Size estimation (Bottom-up)**: Children declare desired dimensions, allowing parents to determine their minimum necessary size.
+2. **Space distribution (Top-down)**: The root distributes available physical space to children. Extra space is provided to widgets based on their stretch hints (`jwidget_set_stretch`).
+
+Users can restrict widget size using `jwidget_set_minimum_size`, `jwidget_set_maximum_size`, or `jwidget_set_fixed_size`.
+
+---
+
+## 3. Scenes, Events, and Focus
+
+### The Focus System
+Every widget has a focus policy:
+- `REJECT`: Ignores keyboard input (Default).
+- `ACCEPT`: Receives input and prevents children from viewing it.
+- `SCOPE`: Can receive focus and also manage a *target* child to pass focus down.
+
+Widgets have three focus states based on two flags:
+- **No focus**: Not targeted.
+- **Inactive focus**: Targeted by parent scope, but parent currently lacks focus (e.g., input field on a hidden tab).
+- **Active focus**: Targeted, and currently receiving live user input.
+
+### Changing Focus
+Focus is moved by changing a scope's target (`jwidget_scope_set_target`). Affected widgets receive `JWIDGET_FOCUS_CHANGED`.
+To immediately shift active focus and ensure the widget's branch is visible, use:
+```c
+jscene_show_and_focus(scene, widget);
+```
+
+---
+
+## 4. Touchscreen Support
+
+Because ClassPad devices rely heavily on touch interfaces, JustUI naturally binds touch interactions into the standard event system.
+
+### Native Touch Widgets
+Native JustUI widgets are touch-aware automatically:
+- **`jbutton`**: Responds to touch seamlessly (changing its background color for idle, active, and focused states). Triggered on release.
+- **`jscrolledlist` / `jfileselect`**: Users can tap to select and drag to scroll seamlessly.
+
+*Tip for Touch UI:* Always ensure interactive widgets have large hitboxes. Use `jwidget_set_padding(widget, 10, 15, 10, 15);` liberally so fingers comfortably hit the item!
+
+### Custom Touch Processing
+If you are building custom widgets or interacting purely via the event loop, touch interactions arrive exactly like keyboard events via `pollevent()` or `jscene_run()`:
+
+- `KEYEV_TOUCH_DOWN`: Finger touches the screen.
+- `KEYEV_TOUCH_DRAG`: Finger drags across the screen.
+- `KEYEV_TOUCH_UP`: Finger lifts.
+
+Each of these events populates `.x` and `.y` with absolute screen coordinates.
+
+---
+
+## 5. Built-in Widget Types
+
+JustUI provides `jwidget` as the base structure, with derived types casting down to generic `void *` pointers for polymorphic operations.
+
+- **`jscene`**: The root manager. Dispatches events, repaints automatically, and tracks input natively.
+- **`jlabel`**: Displays single/multi-line text with various alignment and wrapping modes.
+- **`jinput`**: A single-line text input field supporting shifts/alphas locking.
+- **`jbutton`**: A touch-friendly interactable button with an idle/focused/active visual state.
+- **`jpainted`**: An empty widget shell where you define the `render` function. Excellent for custom graphics!
+- **`jframe`**: A scrolling frame that clips child rendering.
+- **`jlist` / `jscrolledlist`**: High-performance browsable lists where the user delegates rendering logic.
+- **`jfileselect`**: A complex widget providing out-of-the-box system file browsing.
+
+## 6. Creating Custom Widgets (Polymorphism)
+
+Widgets with custom states must start with a `jwidget` structure. To integrate into JustUI's layout and rendering pipeline, you provide a `jwidget_poly` structure when registering your type:
+
+```c
+typedef struct {
+    jwidget widget;
+    int custom_data;
+} jmywidget;
+
+static jwidget_poly type_jmywidget = {
+    .name    = "jmywidget",
+    .csize   = jmywidget_poly_csize,    // Specify natural rendering size
+    .layout  = NULL,
+    .render  = jmywidget_poly_render,   // Actually draw the pixels
+    .event   = jmywidget_poly_event,    // Catch keyboard/touch events
+    .destroy = NULL,
+};
+```
+
+You receive a Type ID by supplying this to `j_register_widget()`, and then call `jwidget_init(&my->widget, type_id, parent)` on creation!
