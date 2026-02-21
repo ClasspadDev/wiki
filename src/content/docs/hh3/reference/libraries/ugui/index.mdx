@@ -2,7 +2,45 @@
 title: uGUI
 description: Tiny UI Library
 sidebar:
-  order: 1
+  order: 0
 ---
 
-## TODO
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+Welcome to the **uGUI** documentation! uGUI is an embedded, lightweight graphical user interface module written in C. This v3 iteration integrates deeply with ClassPad OS elements to provide high-performance windowing, buttons, sliders, input fields, and native OS keyboard support.
+
+If you are looking for an elegant, widget-based approach for your ClassPad graphical add-ins, uGUI makes it remarkably straightforward.
+
+## Start Learning
+
+If you are new to uGUI, we highly recommend starting with the tutorial. It will guide you step-by-step from initialization to setting up interactive windows.
+
+<CardGrid>
+    <LinkCard
+        title="🎓 uGUI Tutorial"
+        href="./tutorial"
+        description="Learn the basics of uGUI by setting up a window, adding interactive buttons, and handling the event loop."
+    />
+    <LinkCard
+        title="📚 Reference Manual"
+        href="./reference"
+        description="Deep dive into uGUI's widgets (Sliders, Textboxes), Virtual Keyboard, custom themes, and rendering APIs."
+    />
+</CardGrid>
+
+## Project Templates
+
+The quickest way to start building your own uGUI add-in is by using our actively maintained v3 template. It comes fully set up with the toolchain!
+
+<CardGrid>
+    <LinkCard
+        title="🚀 uGUI v3 Template"
+        href="https://github.com/TheRainbowPhoenix/uGUI-v3"
+        description="A complete starter template configured for uGUI. Clone this to use uGUI on your ClassPad!"
+    />
+</CardGrid>
+
+:::tip[Community Support]
+Got questions about widget layouts, or need ideas for styling tools? The **ClassPad community** is here to help!
+Connect with developers, share your projects, and report bugs by joining our **[💬 Discord community](https://discord.gg/knpcNJTzpd)**! 
+:::

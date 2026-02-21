@@ -1,0 +1,140 @@
+---
+title: "Reference Manual"
+description: "A comprehensive reference of uGUI widgets, dialog boxes, and touch integration for ClassPad OS."
+sidebar:
+  order: 2
+---
+
+# uGUI Reference Manual
+
+This document serves as the combined reference guide for the uGUI (μGUI) framework, tailored for `gint`/`sdk` integration on ClassPad. It collates knowledge on the rendering engine, interactive widgets, OS-level keyboards, and built-in interactive dialogs.
+
+---
+
+## 1. Core Engine
+
+uGUI requires an essential setup phase where drawing hooks and hardware context are initialized.
+
+### `UG_Init`
+You must maintain a global `UG_GUI` structure that represents the core state of uGUI's internal buffers. 
+```cpp
+void UG_Init(UG_GUI* g, void (*p)(UG_S16, UG_S16, UG_COLOR), UG_S16 x, UG_S16 y);
+```
+- **Arguments**: The GUI object, a wrapper proxy function drawing individual `setPixel` commands, screen width, and height.
+- **Font**: Use `UG_FontSelect(&FONT_8X8)` to bind text.
+
+### `UG_Update` vs `LCD_Refresh`
+uGUI internally invalidates drawing coordinates. Once properties change, call `UG_Update()` to process object redraws to your video buffer. You still must invoke the native hardware `LCD_Refresh()` afterwards.
+
+---
+
+## 2. Window Management
+
+Windows represent an isolated container of widgets. Only one Window is actively "focused" and receiving touch updates at a time.
+
+### `UG_WindowCreate`
+Initializes a window and prepares its memory buffer.
+```cpp
+void UG_WindowCreate(UG_WINDOW* wnd, UG_OBJECT* obj_buff, UG_U8 max_obj, void (*cb)(UG_MESSAGE*));
+```
+- **Arguments**: Address of your `UG_WINDOW`, an array of `UG_OBJECT` pre-allocated locally to reserve UI widgets, and a specific user callback parsing events!
+
+### `UG_WindowShow` / `UG_WindowHide`
+Toggles focus and rendering for an entire window. A disabled window immediately frees all children from the event queue safely.
+
+---
+
+## 3. UI Widgets
+
+Widgets are bound inside Windows via their specific creation macros. Note that coordinates `x1, y1, x2, y2` are always relative to their **parent Window**.
+
+### Buttons (`UG_BUTTON`)
+```cpp
+void UG_ButtonCreate(UG_WINDOW* wnd, UG_BUTTON* btn, UG_U8 id, UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2);
+void UG_ButtonSetText(UG_WINDOW* wnd, UG_U8 id, const char* text);
+```
+Standard touch-friendly clickable zones. Dispatches `OBJ_EVENT_PRESSED`.
+
+### Textboxes (`UG_TEXTBOX`)
+```cpp
+void UG_TextboxCreate(UG_WINDOW* wnd, UG_TEXTBOX* txb, UG_U8 id, UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2);
+```
+Displays multi-line strings supporting alignment parameters (`UG_TextboxSetAlignment`). Formatted natively within boundaries without emitting events.
+
+### Input Fields (`UG_INPUT_FIELD`)
+```cpp
+void UG_InputFieldCreate(UG_WINDOW* wnd, UG_INPUT_FIELD* txb, UG_U8 id, UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, char* buffer, UG_S16 max_length);
+```
+Provides a bound string buffer intercepting touch logic. Intended to be triggered alongside the `UG_OSKeyboard`. Emits `EVENT_INPUTFIELD_CLICKED`.
+
+### Sliders (`UG_SLIDER`)
+A highly modifiable sliding track, useful for brightness/volume UI. Emits `SLD_EVENT_VALUE_CHANGED`.
+- Modify range: `UG_SliderSetRange(wnd, ID, min, max)`
+- Handle queries: `UG_SliderGetValue(wnd, ID)`
+
+---
+
+## 4. Default Dialog System (Messagebox)
+
+uGUI provides baked-in, ready-to-use pop-ups standardizing user-input loops so you don't have to assemble a Custom Window from scratch!
+
+```cpp
+// Required initial call globally
+UG_MessageBox_Init(&gui);
+```
+
+### Supported Styles
+1. **Info Modal**
+   ```cpp
+   UG_MessageBox_ShowInfo("Information Details", "Popup Title");
+   ```
+2. **Confirm (Yes/No)**
+   ```cpp
+   UG_MessageBox_ShowConfirm("Do you want to continue?", "Confirmation");
+   ```
+3. **Text Prompt (Input string)**
+   ```cpp
+   char prompt_buffer[100];
+   UG_MessageBox_ShowPrompt("Enter your name:", "Prompt", prompt_buffer, sizeof(prompt_buffer));
+   ```
+
+### Fetching Dialog Results
+Dialogs act asynchronously within your event-loop polling. To see what the user did, actively check `UG_MessageBox_GetResult()` inside your while-loop:
+```cpp
+    UG_MESSAGEBOX_RESULT res = UG_MessageBox_GetResult();
+    if (res == UG_MESSAGEBOX_RESULT_YES) {
+        printf("User accepted confirmation!");
+    } else if (res == UG_MESSAGEBOX_RESULT_OK) {
+        printf("User typed: %s", prompt_buffer);
+    }
+```
+
+---
+
+## 5. Keyboard & Hardware Binding
+
+Because this is ported to a physical device/emulator, touch and hardware button clicks *must* be correctly routed to the uGUI engine for interactions to manifest.
+
+### Touch Routing
+Pass hardware touch coordinates via `GetInput(&event);`:
+```cpp
+UG_TouchUpdate(event.data.touch_single.p1_x, event.data.touch_single.p1_y, TOUCH_STATE_PRESSED);
+```
+
+### Submitting OSKeyboard events 
+If dealing with an Input Field, `UG_OSKeyboard` heavily processes touch clicks directly (hijacking normal uGUI touch streams):
+```cpp
+if (UG_OSKeyboard_ProcessTouch(x, y, 1)) {
+    // True? Means it was handled by the keyboard.
+}
+```
+
+### Tab Traversal (D-Pad Keyboard support)
+Provide hardware-button accessibility to your interface.
+```cpp
+// KEYCODE_RIGHT or KEYCODE_DOWN
+UG_Window_FocusNext(&window_1, 1);  // Focus the next object ID sequentially
+
+// KEYCODE_LEFT or KEYCODE_UP
+UG_Window_FocusNext(&window_1, -1); // Focus previous
+```

@@ -1,0 +1,198 @@
+---
+title: "Getting Started"
+description: "A comprehensive tutorial on building graphical interfaces using uGUI on the ClassPad."
+sidebar:
+  order: 1
+---
+
+# Getting Started with uGUI
+
+uGUI (μGUI) is a lightweight C library designed to create responsive and modern graphical user interfaces for embedded systems, and we've heavily tuned it for ClassPad. With uGUI, you don't need to manually design button behaviors, touch boundaries, or draw text pixels.
+
+In this tutorial, you'll learn how to set up uGUI, create a window, add buttons, and run the main event loop to intercept user input.
+
+## Contents
+- [Prerequisites](#prerequisites)
+- [Step 1: Initialization](#step-1-initialization)
+- [Step 2: Creating a Window](#step-2-creating-a-window)
+- [Step 3: Adding Buttons & Text](#step-3-adding-buttons--text)
+- [Step 4: The Window Callback](#step-4-the-window-callback)
+- [Step 5: The Event Loop](#step-5-the-event-loop)
+
+---
+
+## Prerequisites
+
+Before starting, include the necessary libraries. Your template should already have the uGUI source embedded in `src/uGUI/`. Have the following includes ready in your `main.cpp`:
+
+```cpp
+#include <appdef.hpp>
+#include <sdk/calc/calc.hpp>
+#include <sdk/os/input.hpp>
+
+extern "C" {
+#include "uGUI/ugui.h"
+#include "uGUI/ugui_config.h"
+}
+```
+
+Because uGUI requires a way to draw individual pixels directly to the calculator screen, we provide a quick wrapper:
+
+```cpp
+void UGWrapper(UG_S16 x, UG_S16 y, UG_COLOR color) { setPixel(x, y, color); }
+```
+
+---
+
+## Step 1: Initialization
+
+We initialize the hardware and spin up the uGUI engine context. We also set a default font.
+
+```cpp
+int main(void) {
+    calcInit();
+
+    UG_GUI gui;
+    
+    // Provide your global GUI object, drawing wrapper, and screen dimensions
+    UG_Init(&gui, UGWrapper, width, height);
+    
+    // Fill the background to make it look clean
+    UG_FillScreen(C_BLACK);
+    UG_FontSelect(&FONT_8X8); // Basic 8x8 bitmap font
+
+    // ... We will create our UI here ...
+
+    calcEnd();
+    return 0;
+}
+```
+
+---
+
+## Step 2: Creating a Window
+
+uGUI organizes graphical elements into "Windows". Windows manage their own child items (called `Objects`), such as buttons or textboxes. 
+
+You need to reserve memory space for your objects upfront!
+
+```cpp
+#define MAX_OBJECTS 10
+
+// Provide static memory instances
+static UG_WINDOW window_1;
+static UG_OBJECT window_1_objects[MAX_OBJECTS];
+
+// Creating the window mapping to an event callback!
+extern void window_1_callback(UG_MESSAGE *msg);
+
+// Initialize it:
+UG_WindowCreate(&window_1, window_1_objects, MAX_OBJECTS, window_1_callback);
+UG_WindowSetTitleText(&window_1, "My First uGUI App");
+```
+
+---
+
+## Step 3: Adding Buttons & Text
+
+With a window object created, we can tell uGUI to spawn new buttons and textboxes into it. Let's add an interactive button.
+
+```cpp
+#define BTN_ID_0 10
+
+static UG_BUTTON button_1;
+
+// Define positional coordinates relative to the window!
+// Object, ID, x1, y1, x2, y2
+UG_ButtonCreate(&window_1, &button_1, BTN_ID_0, 10, 10, 110, 60);
+
+// Style it
+UG_ButtonSetFont(&window_1, BTN_ID_0, &FONT_SYSTEM_1);
+UG_ButtonSetText(&window_1, BTN_ID_0, "Click Me!");
+```
+
+We now have a functional button setup in memory!
+
+To make the window actually visible to the user:
+```cpp
+    UG_WindowShow(&window_1);
+    UG_Update();
+    LCD_Refresh(); // Commit pixel buffer to screen hardware
+```
+
+---
+
+## Step 4: The Window Callback
+
+How do we actually process button clicks? Whenever a user interacts with a widget on your window, uGUI fires a `UG_MESSAGE` struct into the Callback we defined during `UG_WindowCreate`!
+
+Let's catch the click event:
+
+```cpp
+void window_1_callback(UG_MESSAGE *msg) {
+    if (msg->type == MSG_TYPE_OBJECT) {
+        
+        // Ensure it was a button that sent the event
+        if (msg->id == OBJ_TYPE_BUTTON) {
+            
+            // Validate the button was actually completely pressed!
+            if (msg->event == OBJ_EVENT_PRESSED) {
+
+                // Check which button ID triggered the event?
+                switch (msg->sub_id) {
+                    case BTN_ID_0:
+                        UG_FillScreen(C_RED); // Example response!
+                        break;
+                }
+
+                LCD_Refresh();
+            }
+        }
+    }
+}
+```
+
+---
+
+## Step 5: The Event Loop
+
+Because uGUI relies on native keyboard and touchscreen hooks from `gint` / `sdk`, you need to pipe physical touch coordinates directly into `UG_TouchUpdate`.
+
+This ensures uGUI correctly detects when standard OS actions (like drag/drops, clicks, hovering) happen!
+
+```cpp
+    bool running = true;
+    struct InputEvent event;
+
+    // Loop indefinitely
+    while (running) {
+        GetInput(&event, 0xFFFFFFFF, 0x10); // Polling for touch & keys
+        
+        switch (event.type) {
+            case EVENT_TOUCH:
+                if (event.data.touch_single.direction == TOUCH_DOWN) {
+                    UG_TouchUpdate(event.data.touch_single.p1_x,
+                                   event.data.touch_single.p1_y, 
+                                   TOUCH_STATE_PRESSED);
+                } 
+                else if (event.data.touch_single.direction == TOUCH_UP) {
+                    UG_TouchUpdate(event.data.touch_single.p1_x,
+                                   event.data.touch_single.p1_y, 
+                                   TOUCH_STATE_RELEASED);
+                }
+                UG_Update();
+                break;
+
+            case EVENT_KEY:
+                // Hardware Keys
+                if (event.data.key.keyCode == KEYCODE_POWER_CLEAR) {
+                    running = false; // Graceful exit
+                }
+                break;
+        }
+
+        LCD_Refresh();
+    }
+```
+
+Congratulations, you have successfully integrated a beautiful windowed UI with interactive, touch-aware buttons! Ready to explore text boxes, sliders, and standard dialogs? Check out the Reference Manual!
