@@ -236,6 +236,18 @@ If your app loads into VRAM:
 - Load directly into `vbak`.
 - Override `calcInit` and `calcEnd` (they are weak by default) to implement custom VRAM backup logic and avoid overwriting your own data.
 
+## File I/O
+*   **Paths**: Paths are `const char_const16_t*` (UTF-16).
+*   **Strings**: Use `char16_t` arrays and `u"path"` literals. Cast to `(const char_const16_t*)` when calling SDK functions.
+*   **Alignment**: File path buffers passed to SDK functions (like `File_FindFirst`) MUST be 4-byte aligned on SuperH. Use `__attribute__((aligned(4)))`.
+*   **Structs**: `File_FindInfo` uses scoped enums like `File_FindInfo::EntryTypeDirectory` (or just `EntryTypeDirectory` depending on SDK version/macros). Check scoping.
+
+## Input
+*   **Polling**: Use `GetInput` instead of `GetKey`.
+*   **Struct**: `struct Input_Event` MUST be 4-byte aligned. Use `__attribute__((aligned(4)))`. Misalignment causes crashes (address error) at runtime.
+*   **Keycodes**: Use `KEYCODE_*` enums.
+*   **Touch**: Coordinates in `Input_Event` are `int32_t`. Cast to `uint32_t` if comparing with unsigned bounds to avoid compiler warnings.
+
 ## Known Issues
 
 - **PEG (System) UI** is currently not working.
@@ -268,3 +280,11 @@ int main() {
     return 0;
 }
 ```
+
+## Troubleshooting
+
+*   **Crashes**: If it crashes in an SDK function (e.g., `GetInput`, `File_Find...`), check ALIGNMENT of the structs/buffers passed to it.
+*   **Linker Errors**: "Multiple definition of ..." usually means a conflict with SDK symbols (e.g., `fillScreen`). Rename your function or wrap in `#ifdef PC`.
+*   **Compile Errors**: "Did you mean...?" implies the symbol exists but maybe signature mismatch or missing namespace. Check SDK headers.
+*   **Warnings**: Suppress `warn_unused_result` by checking return value `if (func() < 0) {}` rather than `(void)func()`.
+
