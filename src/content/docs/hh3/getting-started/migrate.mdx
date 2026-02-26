@@ -242,7 +242,7 @@ If your app loads into VRAM:
 *   **Alignment**: File path buffers passed to SDK functions (like `File_FindFirst`) MUST be 4-byte aligned on SuperH. Use `__attribute__((aligned(4)))`.
 *   **Structs**: `File_FindInfo` uses scoped enums like `File_FindInfo::EntryTypeDirectory` (or just `EntryTypeDirectory` depending on SDK version/macros). Check scoping.
 
-## Input
+### Input
 *   **Polling**: Use `GetInput` instead of `GetKey`.
 *   **Struct**: `struct Input_Event` MUST be 4-byte aligned. Use `__attribute__((aligned(4)))`. Misalignment causes crashes (address error) at runtime.
 *   **Keycodes**: Use `KEYCODE_*` enums.
