@@ -1,5 +1,5 @@
 ---
-title: Advanced Troubleshooting & Limits
+title: Troubleshooting & Limits
 description: A collection of common issues, limits, and advanced techniques for Classpad app development.
 
 sidebar:
@@ -97,3 +97,49 @@ For a complete implementation of this technique, you can look at the source code
   href="https://github.com/QBos07/CPDoom/blob/master/src/cas/bootstrap.cpp"
   target="_blank"
 />
+
+## Address Error
+
+A common cause of crash is linked to a message simmilar to the following:
+```
+ADDRESS(R) ERROR!
+TARGET=BDF7BE03
+PC=8CFF3B48
+```
+Here's common causes of crash to investigate :
+
+### Address (w) error
+This mean the program tried to write at an address that's not valid or not allowed.
+Check the target value. Here's a concrete example and its fix:
+```
+ADDRESS(W) ERROR!
+TARGET=8CFFF275
+PC=8007D452
+```
+From the `CPapp.elf.map` (generated at compile time) that target is in `.bss.event (0x8cfff275)` in that case, the error indicate "address write error".
+The crash location `0x8007D452` (`0x80XXXXXX` = ROM) looks close to the GetInput (`0x8007CE2C`) call (use the [addresses mapping from the sdk](https://github.com/ClasspadDev/hollyhock-3/blob/3f0eaed37e8fac34c2f4ec8c57389985d2eb372d/versions/v02.01.2000.0000/addresses.json#L221) with your rom version to determine them). 
+If the crash is in `GetInput` or related to it, and the target is `.bss.event`, the `event` variable is likely in `.bss` (uninitialized data).
+If `GetInput` writes to `&event`, and event is at `0x8cfff275`, but `0x8cfff275` is an odd address (ends in 5, so not 4-byte aligned), `GetInput` expects an aligned pointer, and event is unaligned, writing to it might cause an exception.
+
+In that case, the fix is to eother align event, or reorder variables to ensure alignment: Change `uint8_t` to `uint32_t` or add alignas(4).
+
+### address (r) error
+
+The easiest solution is to run `sh4aeb-elf-addr2line -ipfe dist/CPapp.elf 8CFF3B48` (change with your elf file and target/pc address)
+It would output something similar to :
+`_ZN8Renderer12draw_MinimapEb at /workspaces/CP-3D-CarGoWroom/src/Renderer.cpp:303` that give you hint on where the issue is.
+
+Sometimes the line isn't available, and you'd need to troubleshoot the cause of the issue by looking at the `CPapp.elf.map` file that's generated at compile time. 
+
+Here's another alignment issue:
+```
+ADDRESS(R) ERROR!
+TARGET=8CF791FF
+PC=8005A578
+```
+
+The PC is close the file methods : `{ "FunctionName": "File_FindFirst", "startAddress": "0x8005A2AC" ... }`, in that case `File_FindFirst` crash at `0x8CF791FF` (unaligned address) is due to misaligned pointers passed to it (g_wpath, fileName, or findInfoBuf). 
+The fix was to align globals in `src/internal.hpp` and locals in `src/commands/ls.cpp` to 4 bytes using `__attribute__((aligned(4)))` to prevent unaligned access crash in `File_FindFirst`.
+
+
+
