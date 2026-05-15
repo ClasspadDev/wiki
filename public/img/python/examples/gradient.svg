@@ -1,0 +1,93 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="160"
+  height="120"
+  viewBox="0 0 160 120"
+  role="img"
+  aria-label="Animated drawing of a cyan gradient rectangle made of 2 by 2 pixel squares"
+>
+  <rect x="0" y="0" width="160" height="120" fill="white"/>
+
+  <defs>
+    <rect id="px" x="0" y="0" width="2" height="2" shape-rendering="crispEdges"/>
+
+    <g id="row">
+      <use href="#px" x="0"/><use href="#px" x="2"/><use href="#px" x="4"/><use href="#px" x="6"/><use href="#px" x="8"/>
+      <use href="#px" x="10"/><use href="#px" x="12"/><use href="#px" x="14"/><use href="#px" x="16"/><use href="#px" x="18"/>
+      <use href="#px" x="20"/><use href="#px" x="22"/><use href="#px" x="24"/><use href="#px" x="26"/><use href="#px" x="28"/>
+      <use href="#px" x="30"/><use href="#px" x="32"/><use href="#px" x="34"/><use href="#px" x="36"/><use href="#px" x="38"/>
+      <use href="#px" x="40"/><use href="#px" x="42"/><use href="#px" x="44"/><use href="#px" x="46"/><use href="#px" x="48"/>
+      <use href="#px" x="50"/><use href="#px" x="52"/><use href="#px" x="54"/><use href="#px" x="56"/><use href="#px" x="58"/>
+    </g>
+
+    <clipPath id="r0"><rect x="0" y="0" width="0" height="2"><animate attributeName="width" values="0;60;60" keyTimes="0;0.04;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r1"><rect x="0" y="2" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.03;0.07;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r2"><rect x="0" y="4" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.06;0.10;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r3"><rect x="0" y="6" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.09;0.13;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r4"><rect x="0" y="8" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.12;0.16;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r5"><rect x="0" y="10" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.15;0.19;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r6"><rect x="0" y="12" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.18;0.22;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r7"><rect x="0" y="14" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.21;0.25;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r8"><rect x="0" y="16" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.24;0.28;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r9"><rect x="0" y="18" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.27;0.31;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r10"><rect x="0" y="20" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.30;0.34;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r11"><rect x="0" y="22" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.33;0.37;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r12"><rect x="0" y="24" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.36;0.40;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r13"><rect x="0" y="26" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.39;0.43;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r14"><rect x="0" y="28" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.42;0.46;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r15"><rect x="0" y="30" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.45;0.49;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r16"><rect x="0" y="32" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.48;0.52;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r17"><rect x="0" y="34" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.51;0.55;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r18"><rect x="0" y="36" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.54;0.58;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r19"><rect x="0" y="38" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.57;0.61;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r20"><rect x="0" y="40" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.60;0.64;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r21"><rect x="0" y="42" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.63;0.67;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r22"><rect x="0" y="44" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.66;0.70;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r23"><rect x="0" y="46" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.69;0.73;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r24"><rect x="0" y="48" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.72;0.76;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r25"><rect x="0" y="50" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.75;0.79;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r26"><rect x="0" y="52" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.78;0.82;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r27"><rect x="0" y="54" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.81;0.85;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r28"><rect x="0" y="56" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.84;0.88;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r29"><rect x="0" y="58" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.87;0.91;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r30"><rect x="0" y="60" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.90;0.94;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+    <clipPath id="r31"><rect x="0" y="62" width="0" height="2"><animate attributeName="width" values="0;0;60;60" keyTimes="0;0.93;0.97;1" dur="6.4s" repeatCount="indefinite"/></rect></clipPath>
+  </defs>
+
+  <g transform="translate(30 20)">
+    <rect x="-1" y="-1" width="62" height="66" fill="none" stroke="#d4d4d4"/>
+
+    <g fill="rgb(0,0,0)" clip-path="url(#r0)"><use href="#row" y="0"/></g>
+    <g fill="rgb(0,8,8)" clip-path="url(#r1)"><use href="#row" y="2"/></g>
+    <g fill="rgb(0,16,16)" clip-path="url(#r2)"><use href="#row" y="4"/></g>
+    <g fill="rgb(0,25,25)" clip-path="url(#r3)"><use href="#row" y="6"/></g>
+    <g fill="rgb(0,33,33)" clip-path="url(#r4)"><use href="#row" y="8"/></g>
+    <g fill="rgb(0,41,41)" clip-path="url(#r5)"><use href="#row" y="10"/></g>
+    <g fill="rgb(0,49,49)" clip-path="url(#r6)"><use href="#row" y="12"/></g>
+    <g fill="rgb(0,58,58)" clip-path="url(#r7)"><use href="#row" y="14"/></g>
+    <g fill="rgb(0,66,66)" clip-path="url(#r8)"><use href="#row" y="16"/></g>
+    <g fill="rgb(0,74,74)" clip-path="url(#r9)"><use href="#row" y="18"/></g>
+    <g fill="rgb(0,82,82)" clip-path="url(#r10)"><use href="#row" y="20"/></g>
+    <g fill="rgb(0,90,90)" clip-path="url(#r11)"><use href="#row" y="22"/></g>
+    <g fill="rgb(0,99,99)" clip-path="url(#r12)"><use href="#row" y="24"/></g>
+    <g fill="rgb(0,107,107)" clip-path="url(#r13)"><use href="#row" y="26"/></g>
+    <g fill="rgb(0,115,115)" clip-path="url(#r14)"><use href="#row" y="28"/></g>
+    <g fill="rgb(0,123,123)" clip-path="url(#r15)"><use href="#row" y="30"/></g>
+    <g fill="rgb(0,132,132)" clip-path="url(#r16)"><use href="#row" y="32"/></g>
+    <g fill="rgb(0,140,140)" clip-path="url(#r17)"><use href="#row" y="34"/></g>
+    <g fill="rgb(0,148,148)" clip-path="url(#r18)"><use href="#row" y="36"/></g>
+    <g fill="rgb(0,156,156)" clip-path="url(#r19)"><use href="#row" y="38"/></g>
+    <g fill="rgb(0,165,165)" clip-path="url(#r20)"><use href="#row" y="40"/></g>
+    <g fill="rgb(0,173,173)" clip-path="url(#r21)"><use href="#row" y="42"/></g>
+    <g fill="rgb(0,181,181)" clip-path="url(#r22)"><use href="#row" y="44"/></g>
+    <g fill="rgb(0,189,189)" clip-path="url(#r23)"><use href="#row" y="46"/></g>
+    <g fill="rgb(0,197,197)" clip-path="url(#r24)"><use href="#row" y="48"/></g>
+    <g fill="rgb(0,206,206)" clip-path="url(#r25)"><use href="#row" y="50"/></g>
+    <g fill="rgb(0,214,214)" clip-path="url(#r26)"><use href="#row" y="52"/></g>
+    <g fill="rgb(0,222,222)" clip-path="url(#r27)"><use href="#row" y="54"/></g>
+    <g fill="rgb(0,230,230)" clip-path="url(#r28)"><use href="#row" y="56"/></g>
+    <g fill="rgb(0,239,239)" clip-path="url(#r29)"><use href="#row" y="58"/></g>
+    <g fill="rgb(0,247,247)" clip-path="url(#r30)"><use href="#row" y="60"/></g>
+    <g fill="rgb(0,255,255)" clip-path="url(#r31)"><use href="#row" y="62"/></g>
+  </g>
+</svg>

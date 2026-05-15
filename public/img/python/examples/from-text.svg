@@ -1,0 +1,351 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="620"
+  height="260"
+  viewBox="0 0 620 260"
+  role="img"
+  aria-label="Animated conversion of an ASCII DVD logo into pixels"
+>
+  <rect x="0" y="0" width="620" height="260" fill="white" />
+
+  <text x="24" y="28" fill="black" font-family="monospace" font-size="16" font-weight="700">
+    ASCII → pixels
+  </text>
+
+  <text x="34" y="50" fill="black" font-family="monospace" font-size="11">
+    # = black pixel, space = white pixel
+  </text>
+
+  <rect x="24" y="56" width="220" height="202" rx="8" fill="white" stroke="black" stroke-width="1.5" />
+
+  <rect x="30" y="62" width="205" height="12" fill="#bbf7d0" opacity="0.8">
+    <animate
+      attributeName="y"
+      values="62;74;86;98;110;122;134;146;158;170;182;194;206;218;230;242;242"
+      keyTimes="0;0.044;0.089;0.133;0.178;0.222;0.267;0.311;0.356;0.400;0.444;0.489;0.533;0.578;0.622;0.667;1"
+      dur="6s"
+      repeatCount="indefinite"
+      calcMode="discrete"
+    />
+  </rect>
+
+  <text fill="black" font-family="monospace" font-size="10" xml:space="preserve">
+    <tspan x="34" y="70">                       </tspan>
+    <tspan x="34" y="82">   ####    ####        </tspan>
+    <tspan x="34" y="94">  #       #    #       </tspan>
+    <tspan x="34" y="106">  #       #    #       </tspan>
+    <tspan x="34" y="118">  #       ######   ### </tspan>
+    <tspan x="34" y="130">  #       #            </tspan>
+    <tspan x="34" y="142">  #       #            </tspan>
+    <tspan x="34" y="154">   ###    #            </tspan>
+    <tspan x="34" y="166">                       </tspan>
+    <tspan x="34" y="178">  ####   #####  #   #  </tspan>
+    <tspan x="34" y="190">  #   #  #      #   #  </tspan>
+    <tspan x="34" y="202">  #   #  #      #   #  </tspan>
+    <tspan x="34" y="214">  #   #  #####  #   #  </tspan>
+    <tspan x="34" y="226">  #   #  #       # #   </tspan>
+    <tspan x="34" y="238">  #   #  #       # #   </tspan>
+    <tspan x="34" y="250">  ####   #####    #    </tspan>
+  </text>
+
+  <line x1="265" y1="150" x2="325" y2="150" stroke="black" stroke-width="2" />
+  <polygon points="325,150 315,144 315,156" fill="black" />
+
+  <rect x="350" y="56" width="170" height="132" rx="8" fill="white" stroke="black" stroke-width="1.5" />
+
+  <g transform="translate(366 74)">
+    <rect x="0" y="0" width="138" height="96" fill="white" stroke="#d4d4d4" />
+
+    <path
+      d="M 6 0 V 96 M 12 0 V 96 M 18 0 V 96 M 24 0 V 96 M 30 0 V 96 M 36 0 V 96 M 42 0 V 96 M 48 0 V 96 M 54 0 V 96 M 60 0 V 96 M 66 0 V 96 M 72 0 V 96 M 78 0 V 96 M 84 0 V 96 M 90 0 V 96 M 96 0 V 96 M 102 0 V 96 M 108 0 V 96 M 114 0 V 96 M 120 0 V 96 M 126 0 V 96 M 132 0 V 96 M 0 6 H 138 M 0 12 H 138 M 0 18 H 138 M 0 24 H 138 M 0 30 H 138 M 0 36 H 138 M 0 42 H 138 M 0 48 H 138 M 0 54 H 138 M 0 60 H 138 M 0 66 H 138 M 0 72 H 138 M 0 78 H 138 M 0 84 H 138 M 0 90 H 138"
+      stroke="#e5e7eb"
+      stroke-width="1"
+    />
+
+    <rect x="18" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.000;0.025;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="24" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.008;0.033;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="30" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.016;0.041;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="36" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.024;0.049;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="66" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.033;0.058;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="72" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.041;0.066;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="78" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.049;0.074;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="84" y="6" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.057;0.082;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="12" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.065;0.090;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="12" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.073;0.098;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="90" y="12" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.081;0.106;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="18" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.089;0.114;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="18" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.098;0.123;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="90" y="18" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.106;0.131;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.114;0.139;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.122;0.147;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="66" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.130;0.155;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="72" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.138;0.163;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="78" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.146;0.171;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="84" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.154;0.179;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="90" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.163;0.188;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="114" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.171;0.196;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="120" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.179;0.204;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="126" y="24" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.187;0.212;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="30" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.195;0.220;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="30" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.203;0.228;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="36" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.211;0.236;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="36" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.220;0.245;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="18" y="42" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.228;0.253;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="24" y="42" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.236;0.261;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="30" y="42" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.244;0.269;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="42" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.252;0.277;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.260;0.285;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="18" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.268;0.293;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="24" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.276;0.301;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="30" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.285;0.310;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.293;0.318;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.301;0.326;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="66" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.309;0.334;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="72" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.317;0.342;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="78" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.325;0.350;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="96" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.333;0.358;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="120" y="54" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.341;0.366;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="60" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.350;0.375;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="36" y="60" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.358;0.383;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="60" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.366;0.391;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="96" y="60" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.374;0.399;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="120" y="60" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.382;0.407;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="66" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.390;0.415;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="36" y="66" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.398;0.423;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="66" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.407;0.432;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="96" y="66" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.415;0.440;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="120" y="66" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.423;0.448;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.431;0.456;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="36" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.439;0.464;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.447;0.472;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.455;0.480;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="66" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.463;0.488;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="72" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.472;0.497;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="78" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.480;0.505;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="96" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.488;0.513;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="120" y="72" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.496;0.521;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="78" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.504;0.529;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="36" y="78" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.512;0.537;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="78" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.520;0.545;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="102" y="78" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.528;0.553;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="114" y="78" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.537;0.562;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="84" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.545;0.570;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="36" y="84" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.553;0.578;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="84" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.561;0.586;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="102" y="84" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.569;0.594;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="114" y="84" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.577;0.602;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="12" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.585;0.610;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="18" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.593;0.618;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="24" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.602;0.627;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="30" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.610;0.635;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="54" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.618;0.643;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="60" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.626;0.651;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="66" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.634;0.659;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="72" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.642;0.667;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <rect x="108" y="90" width="6" height="6" fill="black" opacity="0" shape-rendering="crispEdges">
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.650;0.675;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+
+    <rect x="0" y="0" width="138" height="6" fill="none" stroke="#16a34a" stroke-width="2" opacity="0.9">
+      <animate
+        attributeName="y"
+        values="0;6;12;18;24;30;36;42;48;54;60;66;72;78;84;90;90"
+        keyTimes="0;0.044;0.089;0.133;0.178;0.222;0.267;0.311;0.356;0.400;0.444;0.489;0.533;0.578;0.622;0.667;1"
+        dur="6s"
+        repeatCount="indefinite"
+        calcMode="discrete"
+      />
+    </rect>
+  </g>
+
+  <text x="365" y="205" fill="black" font-family="monospace" font-size="11">
+    dx →
+  </text>
+  <text x="532" y="84" fill="black" font-family="monospace" font-size="11">
+    dy ↓
+  </text>
+
+  <rect x="350" y="220" width="170" height="10" fill="#e5e7eb" rx="5" />
+  <rect x="350" y="220" width="0" height="10" fill="#16a34a" rx="5">
+    <animate
+      attributeName="width"
+      values="0;170;170"
+      keyTimes="0;0.667;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </rect>
+</svg>

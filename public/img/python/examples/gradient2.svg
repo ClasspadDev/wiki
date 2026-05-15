@@ -1,0 +1,249 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="150"
+  height="120"
+  viewBox="0 0 150 120"
+  role="img"
+  aria-label="Animated diagonal gradient drawn with 2 by 2 pixel cells"
+>
+  <rect x="0" y="0" width="150" height="120" fill="white" />
+
+  <defs>
+    <linearGradient id="row0" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,0,255)" />
+      <stop offset="1" stop-color="rgb(255,0,0)" />
+    </linearGradient>
+    <linearGradient id="row1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,8,255)" />
+      <stop offset="1" stop-color="rgb(255,8,0)" />
+    </linearGradient>
+    <linearGradient id="row2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,16,255)" />
+      <stop offset="1" stop-color="rgb(255,16,0)" />
+    </linearGradient>
+    <linearGradient id="row3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,25,255)" />
+      <stop offset="1" stop-color="rgb(255,25,0)" />
+    </linearGradient>
+    <linearGradient id="row4" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,33,255)" />
+      <stop offset="1" stop-color="rgb(255,33,0)" />
+    </linearGradient>
+    <linearGradient id="row5" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,41,255)" />
+      <stop offset="1" stop-color="rgb(255,41,0)" />
+    </linearGradient>
+    <linearGradient id="row6" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,49,255)" />
+      <stop offset="1" stop-color="rgb(255,49,0)" />
+    </linearGradient>
+    <linearGradient id="row7" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,58,255)" />
+      <stop offset="1" stop-color="rgb(255,58,0)" />
+    </linearGradient>
+    <linearGradient id="row8" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,66,255)" />
+      <stop offset="1" stop-color="rgb(255,66,0)" />
+    </linearGradient>
+    <linearGradient id="row9" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,74,255)" />
+      <stop offset="1" stop-color="rgb(255,74,0)" />
+    </linearGradient>
+    <linearGradient id="row10" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,82,255)" />
+      <stop offset="1" stop-color="rgb(255,82,0)" />
+    </linearGradient>
+    <linearGradient id="row11" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,90,255)" />
+      <stop offset="1" stop-color="rgb(255,90,0)" />
+    </linearGradient>
+    <linearGradient id="row12" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,99,255)" />
+      <stop offset="1" stop-color="rgb(255,99,0)" />
+    </linearGradient>
+    <linearGradient id="row13" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,107,255)" />
+      <stop offset="1" stop-color="rgb(255,107,0)" />
+    </linearGradient>
+    <linearGradient id="row14" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,115,255)" />
+      <stop offset="1" stop-color="rgb(255,115,0)" />
+    </linearGradient>
+    <linearGradient id="row15" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,123,255)" />
+      <stop offset="1" stop-color="rgb(255,123,0)" />
+    </linearGradient>
+    <linearGradient id="row16" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,132,255)" />
+      <stop offset="1" stop-color="rgb(255,132,0)" />
+    </linearGradient>
+    <linearGradient id="row17" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,140,255)" />
+      <stop offset="1" stop-color="rgb(255,140,0)" />
+    </linearGradient>
+    <linearGradient id="row18" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,148,255)" />
+      <stop offset="1" stop-color="rgb(255,148,0)" />
+    </linearGradient>
+    <linearGradient id="row19" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,156,255)" />
+      <stop offset="1" stop-color="rgb(255,156,0)" />
+    </linearGradient>
+    <linearGradient id="row20" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,165,255)" />
+      <stop offset="1" stop-color="rgb(255,165,0)" />
+    </linearGradient>
+    <linearGradient id="row21" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,173,255)" />
+      <stop offset="1" stop-color="rgb(255,173,0)" />
+    </linearGradient>
+    <linearGradient id="row22" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,181,255)" />
+      <stop offset="1" stop-color="rgb(255,181,0)" />
+    </linearGradient>
+    <linearGradient id="row23" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,189,255)" />
+      <stop offset="1" stop-color="rgb(255,189,0)" />
+    </linearGradient>
+    <linearGradient id="row24" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,197,255)" />
+      <stop offset="1" stop-color="rgb(255,197,0)" />
+    </linearGradient>
+    <linearGradient id="row25" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,206,255)" />
+      <stop offset="1" stop-color="rgb(255,206,0)" />
+    </linearGradient>
+    <linearGradient id="row26" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,214,255)" />
+      <stop offset="1" stop-color="rgb(255,214,0)" />
+    </linearGradient>
+    <linearGradient id="row27" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,222,255)" />
+      <stop offset="1" stop-color="rgb(255,222,0)" />
+    </linearGradient>
+    <linearGradient id="row28" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,230,255)" />
+      <stop offset="1" stop-color="rgb(255,230,0)" />
+    </linearGradient>
+    <linearGradient id="row29" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,239,255)" />
+      <stop offset="1" stop-color="rgb(255,239,0)" />
+    </linearGradient>
+    <linearGradient id="row30" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,247,255)" />
+      <stop offset="1" stop-color="rgb(255,247,0)" />
+    </linearGradient>
+    <linearGradient id="row31" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgb(0,255,255)" />
+      <stop offset="1" stop-color="rgb(255,255,0)" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(43 24)" shape-rendering="crispEdges">
+    <rect x="-1" y="-1" width="66" height="66" fill="none" stroke="#d4d4d4" />
+
+    <rect x="0" y="0" width="0" height="2" fill="url(#row0)">
+      <animate attributeName="width" values="0;64;64" keyTimes="0;0.06;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="2" width="0" height="2" fill="url(#row1)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.03;0.09;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="4" width="0" height="2" fill="url(#row2)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.06;0.12;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="6" width="0" height="2" fill="url(#row3)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.09;0.15;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="8" width="0" height="2" fill="url(#row4)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.12;0.18;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="10" width="0" height="2" fill="url(#row5)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.15;0.21;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="12" width="0" height="2" fill="url(#row6)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.18;0.24;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="14" width="0" height="2" fill="url(#row7)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.21;0.27;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="16" width="0" height="2" fill="url(#row8)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.24;0.30;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="18" width="0" height="2" fill="url(#row9)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.27;0.33;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="20" width="0" height="2" fill="url(#row10)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.30;0.36;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="22" width="0" height="2" fill="url(#row11)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.33;0.39;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="24" width="0" height="2" fill="url(#row12)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.36;0.42;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="26" width="0" height="2" fill="url(#row13)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.39;0.45;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="28" width="0" height="2" fill="url(#row14)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.42;0.48;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="30" width="0" height="2" fill="url(#row15)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.45;0.51;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="32" width="0" height="2" fill="url(#row16)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.48;0.54;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="34" width="0" height="2" fill="url(#row17)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.51;0.57;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="36" width="0" height="2" fill="url(#row18)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.54;0.60;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="38" width="0" height="2" fill="url(#row19)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.57;0.63;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="40" width="0" height="2" fill="url(#row20)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.60;0.66;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="42" width="0" height="2" fill="url(#row21)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.63;0.69;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="44" width="0" height="2" fill="url(#row22)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.66;0.72;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="46" width="0" height="2" fill="url(#row23)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.69;0.75;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="48" width="0" height="2" fill="url(#row24)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.72;0.78;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="50" width="0" height="2" fill="url(#row25)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.75;0.81;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="52" width="0" height="2" fill="url(#row26)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.78;0.84;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="54" width="0" height="2" fill="url(#row27)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.81;0.87;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="56" width="0" height="2" fill="url(#row28)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.84;0.90;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="58" width="0" height="2" fill="url(#row29)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.87;0.93;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="60" width="0" height="2" fill="url(#row30)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.90;0.96;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+    <rect x="0" y="62" width="0" height="2" fill="url(#row31)">
+      <animate attributeName="width" values="0;0;64;64" keyTimes="0;0.93;0.99;1" dur="4s" repeatCount="indefinite" />
+    </rect>
+
+    <path
+      d="M 2 0 V 64 M 4 0 V 64 M 6 0 V 64 M 8 0 V 64 M 10 0 V 64 M 12 0 V 64 M 14 0 V 64 M 16 0 V 64 M 18 0 V 64 M 20 0 V 64 M 22 0 V 64 M 24 0 V 64 M 26 0 V 64 M 28 0 V 64 M 30 0 V 64 M 32 0 V 64 M 34 0 V 64 M 36 0 V 64 M 38 0 V 64 M 40 0 V 64 M 42 0 V 64 M 44 0 V 64 M 46 0 V 64 M 48 0 V 64 M 50 0 V 64 M 52 0 V 64 M 54 0 V 64 M 56 0 V 64 M 58 0 V 64 M 60 0 V 64 M 62 0 V 64 M 0 2 H 64 M 0 4 H 64 M 0 6 H 64 M 0 8 H 64 M 0 10 H 64 M 0 12 H 64 M 0 14 H 64 M 0 16 H 64 M 0 18 H 64 M 0 20 H 64 M 0 22 H 64 M 0 24 H 64 M 0 26 H 64 M 0 28 H 64 M 0 30 H 64 M 0 32 H 64 M 0 34 H 64 M 0 36 H 64 M 0 38 H 64 M 0 40 H 64 M 0 42 H 64 M 0 44 H 64 M 0 46 H 64 M 0 48 H 64 M 0 50 H 64 M 0 52 H 64 M 0 54 H 64 M 0 56 H 64 M 0 58 H 64 M 0 60 H 64 M 0 62 H 64"
+      stroke="white"
+      stroke-width="0.25"
+      opacity="0.35"
+    />
+  </g>
+</svg>

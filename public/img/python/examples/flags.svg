@@ -1,0 +1,38 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="260"
+  height="90"
+  viewBox="0 0 260 90"
+  role="img"
+  aria-label="Animated drawing of France and Germany flags using rectangles"
+>
+  <rect x="0" y="0" width="260" height="90" fill="white"/>
+
+  <rect x="10" y="10" width="60" height="40" fill="white" stroke="#d4d4d4" stroke-width="1"/>
+
+  <rect x="10" y="10" width="20" height="0" fill="rgb(0,0,255)">
+    <animate attributeName="height" values="0;40;40" keyTimes="0;0.12;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect x="30" y="10" width="20" height="0" fill="white" stroke="#d4d4d4" stroke-width="1">
+    <animate attributeName="height" values="0;0;40;40" keyTimes="0;0.16;0.28;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect x="50" y="10" width="20" height="0" fill="rgb(255,0,0)">
+    <animate attributeName="height" values="0;0;0;40;40" keyTimes="0;0.32;0.44;0.56;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect x="110" y="10" width="50" height="30" fill="white" stroke="#d4d4d4" stroke-width="1"/>
+
+  <rect x="110" y="10" width="0" height="10" fill="black">
+    <animate attributeName="width" values="0;0;0;0;50;50" keyTimes="0;0.56;0.62;0.68;0.80;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect x="110" y="20" width="0" height="10" fill="rgb(255,0,0)">
+    <animate attributeName="width" values="0;0;0;0;0;50;50" keyTimes="0;0.68;0.74;0.80;0.86;0.92;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <rect x="110" y="30" width="0" height="10" fill="rgb(255,255,0)">
+    <animate attributeName="width" values="0;0;0;0;0;0;50;50" keyTimes="0;0.80;0.84;0.88;0.92;0.94;0.98;1" dur="4s" repeatCount="indefinite"/>
+  </rect>
+</svg>

@@ -61,6 +61,8 @@ gint.drect(80, 30, 130, 40, gint.C_RGB(31, 31, 0))   # Yellow
 
 This one uses **horizontal bars** instead. Simple!
 
+![](/wiki/img/python/examples/flags.svg)
+
 ---
 
 ## 2. Drawing Circles and Ellipses
@@ -92,6 +94,8 @@ gint.dellipse(130, 70, 150, 90, gint.C_NONE, gint.C_BLUE)
 - You define the ellipse using a rectangle: `(x1, y1)` to `(x2, y2)`
 - Again, choose fill and border colors
 
+![](/wiki/img/python/examples/ellipses.svg)
+
 ---
 
 ## 3. Drawing a Gradient Rectangle (Y Axis Only)
@@ -113,6 +117,8 @@ for y in range(0, 32):
 
 This is how gradients are built: same row = same color.
 
+![](/wiki/img/python/examples/gradient.svg)
+
 ---
 
 ## 4. Drawing a Diagonal Gradient (X and Y Based)
@@ -130,6 +136,9 @@ for y in range(0, 32):
 ```
 
 Now the color changes **horizontally and vertically**, producing a 2D gradient. Remember that `C_RGB` uses RGB555, so `31` is the max color value and `0` the minimum.
+
+
+![](/wiki/img/python/examples/gradient2.svg)
 
 ---
 
@@ -151,6 +160,9 @@ gint.dhline(gint.DHEIGHT-10, gray)
 
 These are perfect for drawing menus, borders, and separators.
 
+
+![](/wiki/img/python/examples/dvline.svg)
+
 ---
 
 ## 6. Drawing a Box Using Lines
@@ -167,6 +179,8 @@ gint.dline(150, 230, 150, 200, gint.C_BLACK)  # Left
 This draws a rectangle manually, line by line.
 
 You can use this to draw any polygon or shape.
+
+![](/wiki/img/python/examples/box-lines.svg)
 
 ---
 

@@ -1,0 +1,92 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="260"
+  height="180"
+  viewBox="0 0 260 180"
+  role="img"
+  aria-label="Animated gutter lines drawn vertically and horizontally"
+>
+  <rect x="0" y="0" width="260" height="180" fill="white" />
+
+  <rect x="30" y="20" width="200" height="130" fill="white" stroke="#d4d4d4" stroke-width="1" />
+
+  <line
+    x1="50"
+    y1="20"
+    x2="50"
+    y2="150"
+    stroke="rgb(148,148,148)"
+    stroke-width="4"
+    stroke-linecap="square"
+    stroke-dasharray="130"
+    stroke-dashoffset="130"
+  >
+    <animate
+      attributeName="stroke-dashoffset"
+      values="130;0;0"
+      keyTimes="0;0.18;1"
+      dur="4s"
+      repeatCount="indefinite"
+    />
+  </line>
+
+  <line
+    x1="210"
+    y1="20"
+    x2="210"
+    y2="150"
+    stroke="rgb(148,148,148)"
+    stroke-width="4"
+    stroke-linecap="square"
+    stroke-dasharray="130"
+    stroke-dashoffset="130"
+  >
+    <animate
+      attributeName="stroke-dashoffset"
+      values="130;130;0;0"
+      keyTimes="0;0.18;0.36;1"
+      dur="4s"
+      repeatCount="indefinite"
+    />
+  </line>
+
+  <line
+    x1="30"
+    y1="40"
+    x2="230"
+    y2="40"
+    stroke="rgb(148,148,148)"
+    stroke-width="4"
+    stroke-linecap="square"
+    stroke-dasharray="200"
+    stroke-dashoffset="200"
+  >
+    <animate
+      attributeName="stroke-dashoffset"
+      values="200;200;0;0"
+      keyTimes="0;0.36;0.54;1"
+      dur="4s"
+      repeatCount="indefinite"
+    />
+  </line>
+
+  <line
+    x1="30"
+    y1="130"
+    x2="230"
+    y2="130"
+    stroke="rgb(148,148,148)"
+    stroke-width="4"
+    stroke-linecap="square"
+    stroke-dasharray="200"
+    stroke-dashoffset="200"
+  >
+    <animate
+      attributeName="stroke-dashoffset"
+      values="200;200;0;0"
+      keyTimes="0;0.54;0.72;1"
+      dur="4s"
+      repeatCount="indefinite"
+    />
+  </line>
+</svg>

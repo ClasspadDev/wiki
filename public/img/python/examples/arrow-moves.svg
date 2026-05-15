@@ -1,0 +1,96 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="620"
+  height="300"
+  viewBox="0 0 620 300"
+  role="img"
+  aria-label="Arrow keys moving a box by speed on x and y"
+>
+  <rect x="0" y="0" width="620" height="300" fill="white" />
+
+  <rect x="30" y="30" width="340" height="240" rx="12" fill="white" stroke="black" stroke-width="2" />
+
+  <line x1="200" y1="30" x2="200" y2="270" stroke="#d4d4d4" stroke-width="1" stroke-dasharray="4 4" />
+  <line x1="30" y1="150" x2="370" y2="150" stroke="#d4d4d4" stroke-width="1" stroke-dasharray="4 4" />
+
+  <g stroke="#16a34a" stroke-width="4" stroke-linecap="square" fill="none">
+    <line x1="170" y1="150" x2="140" y2="150" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.08;0.12;0.22;0.26;1" dur="6s" repeatCount="indefinite" />
+    </line>
+    <polygon points="140,150 150,144 150,156" fill="#16a34a" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.08;0.12;0.22;0.26;1" dur="6s" repeatCount="indefinite" />
+    </polygon>
+
+    <line x1="170" y1="150" x2="200" y2="150" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1;0;0" keyTimes="0;0.26;0.30;0.34;0.44;0.48;1" dur="6s" repeatCount="indefinite" />
+    </line>
+    <polygon points="200,150 190,144 190,156" fill="#16a34a" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1;0;0" keyTimes="0;0.26;0.30;0.34;0.44;0.48;1" dur="6s" repeatCount="indefinite" />
+    </polygon>
+
+    <line x1="200" y1="150" x2="200" y2="120" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1;0;0" keyTimes="0;0.48;0.52;0.54;0.56;0.66;0.70;1" dur="6s" repeatCount="indefinite" />
+    </line>
+    <polygon points="200,120 194,130 206,130" fill="#16a34a" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1;0;0" keyTimes="0;0.48;0.52;0.54;0.56;0.66;0.70;1" dur="6s" repeatCount="indefinite" />
+    </polygon>
+
+    <line x1="200" y1="120" x2="200" y2="150" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;0;1;1;0;0" keyTimes="0;0.70;0.74;0.76;0.78;0.80;0.90;0.94;1" dur="6s" repeatCount="indefinite" />
+    </line>
+    <polygon points="200,150 194,140 206,140" fill="#16a34a" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;0;1;1;0;0" keyTimes="0;0.70;0.74;0.76;0.78;0.80;0.90;0.94;1" dur="6s" repeatCount="indefinite" />
+    </polygon>
+  </g>
+
+  <g>
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="
+        0 0;
+        0 0;
+        -30 0;
+        -30 0;
+        0 0;
+        0 0;
+        0 -30;
+        0 -30;
+        0 0;
+        0 0
+      "
+      keyTimes="0;0.12;0.20;0.34;0.42;0.56;0.64;0.80;0.88;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+
+    <rect x="185" y="135" width="30" height="30" fill="black" />
+
+    <circle cx="200" cy="150" r="4" fill="#16a34a" />
+  </g>
+
+  <text x="182" y="288" fill="black" font-family="monospace" font-size="12">x</text>
+  <text x="383" y="154" fill="black" font-family="monospace" font-size="12">y</text>
+
+  <g transform="translate(430 58)">
+    <rect x="50" y="0" width="54" height="44" rx="6" fill="white" stroke="black" stroke-width="2">
+      <animate attributeName="fill" values="white;white;white;white;#bbf7d0;#bbf7d0;white;white" keyTimes="0;0.48;0.52;0.56;0.58;0.68;0.72;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <text x="68" y="29" fill="black" font-family="monospace" font-size="24">↑</text>
+
+    <rect x="0" y="50" width="54" height="44" rx="6" fill="white" stroke="black" stroke-width="2">
+      <animate attributeName="fill" values="white;white;#bbf7d0;#bbf7d0;white;white" keyTimes="0;0.08;0.10;0.24;0.28;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <text x="18" y="79" fill="black" font-family="monospace" font-size="24">←</text>
+
+    <rect x="50" y="50" width="54" height="44" rx="6" fill="white" stroke="black" stroke-width="2">
+      <animate attributeName="fill" values="white;white;white;white;white;#bbf7d0;#bbf7d0;white;white" keyTimes="0;0.70;0.74;0.78;0.80;0.82;0.92;0.96;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <text x="68" y="79" fill="black" font-family="monospace" font-size="24">↓</text>
+
+    <rect x="100" y="50" width="54" height="44" rx="6" fill="white" stroke="black" stroke-width="2">
+      <animate attributeName="fill" values="white;white;white;#bbf7d0;#bbf7d0;white;white" keyTimes="0;0.26;0.30;0.32;0.46;0.50;1" dur="6s" repeatCount="indefinite" />
+    </rect>
+    <text x="118" y="79" fill="black" font-family="monospace" font-size="24">→</text>
+  </g>
+</svg>

@@ -1,0 +1,232 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="720"
+  height="260"
+  viewBox="0 0 720 260"
+  role="img"
+  aria-label="Animated state machine showing Menu, Playing, and Game Over transitions"
+>
+  <rect x="0" y="0" width="720" height="260" fill="white" />
+
+  <path
+    d="M 190 115 C 245 70, 295 70, 350 115"
+    fill="none"
+    stroke="#9ca3af"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <polygon points="350,115 337,110 342,125" fill="#9ca3af" />
+
+  <path
+    d="M 390 115 C 445 70, 495 70, 550 115"
+    fill="none"
+    stroke="#9ca3af"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <polygon points="550,115 537,110 542,125" fill="#9ca3af" />
+
+  <path
+    d="M 560 160 C 390 245, 210 245, 160 160"
+    fill="none"
+    stroke="#9ca3af"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <polygon points="160,160 174,162 166,149" fill="#9ca3af" />
+
+  <path
+    d="M 190 115 C 245 70, 295 70, 350 115"
+    fill="none"
+    stroke="#16a34a"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-dasharray="180"
+    stroke-dashoffset="180"
+    opacity="0"
+  >
+    <animate
+      attributeName="opacity"
+      values="0;0;1;1;0;0"
+      keyTimes="0;0.10;0.14;0.24;0.28;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+    <animate
+      attributeName="stroke-dashoffset"
+      values="180;180;0;0;180;180"
+      keyTimes="0;0.10;0.22;0.26;0.28;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </path>
+
+  <path
+    d="M 390 115 C 445 70, 495 70, 550 115"
+    fill="none"
+    stroke="#16a34a"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-dasharray="180"
+    stroke-dashoffset="180"
+    opacity="0"
+  >
+    <animate
+      attributeName="opacity"
+      values="0;0;1;1;0;0"
+      keyTimes="0;0.38;0.42;0.52;0.56;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+    <animate
+      attributeName="stroke-dashoffset"
+      values="180;180;0;0;180;180"
+      keyTimes="0;0.38;0.50;0.54;0.56;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </path>
+
+  <path
+    d="M 560 160 C 390 245, 210 245, 160 160"
+    fill="none"
+    stroke="#16a34a"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-dasharray="450"
+    stroke-dashoffset="450"
+    opacity="0"
+  >
+    <animate
+      attributeName="opacity"
+      values="0;0;1;1;0;0"
+      keyTimes="0;0.66;0.70;0.80;0.84;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+    <animate
+      attributeName="stroke-dashoffset"
+      values="450;450;0;0;450;450"
+      keyTimes="0;0.66;0.78;0.82;0.84;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </path>
+
+  <g>
+    <rect x="60" y="95" width="130" height="70" rx="12" fill="white" stroke="black" stroke-width="2" />
+    <text x="90" y="124" fill="black" font-family="monospace" font-size="16" font-weight="700">
+      MENU
+    </text>
+    <text x="76" y="148" fill="#2563eb" font-family="monospace" font-size="11">
+      MAIN MENU
+    </text>
+
+    <rect x="54" y="89" width="142" height="82" rx="16" fill="none" stroke="#16a34a" stroke-width="4" opacity="1">
+      <animate
+        attributeName="opacity"
+        values="1;1;0;0;0;0;1;1"
+        keyTimes="0;0.14;0.18;0.70;0.74;0.82;0.86;1"
+        dur="6s"
+        repeatCount="indefinite"
+      />
+    </rect>
+  </g>
+
+  <g>
+    <rect x="300" y="95" width="130" height="70" rx="12" fill="white" stroke="black" stroke-width="2" />
+    <rect x="300" y="95" width="130" height="18" rx="10" fill="black" />
+    <text x="327" y="105" fill="white" font-family="monospace" font-size="8">
+      ACTIVE
+    </text>
+    <text x="330" y="135" fill="black" font-family="monospace" font-size="16" font-weight="700">
+      PLAY
+    </text>
+    <text x="317" y="154" fill="#dc2626" font-family="monospace" font-size="11">
+      RUNNING
+    </text>
+
+    <rect x="294" y="89" width="142" height="82" rx="16" fill="none" stroke="#16a34a" stroke-width="4" opacity="0">
+      <animate
+        attributeName="opacity"
+        values="0;0;1;1;0;0"
+        keyTimes="0;0.18;0.22;0.42;0.46;1"
+        dur="6s"
+        repeatCount="indefinite"
+      />
+    </rect>
+  </g>
+
+  <g>
+    <rect x="540" y="95" width="130" height="70" rx="12" fill="black" stroke="black" stroke-width="2" />
+    <text x="566" y="124" fill="white" font-family="monospace" font-size="16" font-weight="700">
+      OVER
+    </text>
+    <text x="560" y="148" fill="white" font-family="monospace" font-size="11">
+      GAME OVER
+    </text>
+
+    <rect x="534" y="89" width="142" height="82" rx="16" fill="none" stroke="#16a34a" stroke-width="4" opacity="0">
+      <animate
+        attributeName="opacity"
+        values="0;0;1;1;0;0"
+        keyTimes="0;0.46;0.50;0.70;0.74;1"
+        dur="6s"
+        repeatCount="indefinite"
+      />
+    </rect>
+  </g>
+
+  <g transform="translate(315 18)">
+    <rect x="0" y="0" width="90" height="38" rx="8" fill="white" stroke="black" stroke-width="2">
+      <animate
+        attributeName="fill"
+        values="#bbf7d0;#bbf7d0;white;white;#bbf7d0;#bbf7d0;white;white;#bbf7d0;#bbf7d0;white;white"
+        keyTimes="0;0.08;0.12;0.36;0.38;0.40;0.44;0.64;0.66;0.68;0.72;1"
+        dur="6s"
+        repeatCount="indefinite"
+      />
+    </rect>
+    <text x="28" y="25" fill="black" font-family="monospace" font-size="16" font-weight="700">
+      EXE
+    </text>
+  </g>
+
+  <rect x="250" y="200" width="220" height="36" rx="8" fill="#f8fafc" stroke="#d4d4d4" stroke-width="1" />
+  <text x="270" y="223" fill="black" font-family="monospace" font-size="13">
+    state =
+  </text>
+
+  <text x="335" y="223" fill="#16a34a" font-family="monospace" font-size="13" font-weight="700">
+    STATE_MENU
+    <animate
+      attributeName="opacity"
+      values="1;1;0;0;0;0;1;1"
+      keyTimes="0;0.16;0.18;0.70;0.74;0.84;0.86;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </text>
+
+  <text x="335" y="223" fill="#16a34a" font-family="monospace" font-size="13" font-weight="700" opacity="0">
+    STATE_PLAYING
+    <animate
+      attributeName="opacity"
+      values="0;0;1;1;0;0"
+      keyTimes="0;0.18;0.20;0.44;0.46;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </text>
+
+  <text x="335" y="223" fill="#16a34a" font-family="monospace" font-size="13" font-weight="700" opacity="0">
+    STATE_GAMEOVER
+    <animate
+      attributeName="opacity"
+      values="0;0;1;1;0;0"
+      keyTimes="0;0.46;0.48;0.72;0.74;1"
+      dur="6s"
+      repeatCount="indefinite"
+    />
+  </text>
+</svg>
