@@ -1,0 +1,558 @@
+---
+title: Dino Run
+description: The last dinosaur, running away from extinction
+sidebar:
+  order: 7
+---
+
+In this tutorial, we’ll build an infinite runner similar to the famous "Dino" game. You will learn how to handle gravity, animate characters using text-based sprites, and manage different game states (Menu, Playing, and Game Over).
+
+## Defining the Sprites
+
+Since we don't want to use image files yet, we represent our characters using lists of strings. Each `#` represents a pixel.
+
+```
+SPRITE_DINO_RUN1 = [
+    "      #### ",
+    "      ## ##",
+    "      #####",
+    " #   ##### ",
+    " ##########",
+    " ##########",
+    "  ######## ",
+    "   #   #   ",
+    "   ##      "
+]
+```
+
+### How Scaling Works
+
+To draw these, we use a helper function called `draw_sprite()`. It works like a printer: it looks at every character in our list and decides how to draw them.
+
+The first loop goes line-by-line (rows), and the second loop goes character-by-character (columns).
+    
+We multiply the position (`col_idx`) by the `scale`. If the scale is 2, the first pixel is at 0, the second is at 2, the third is at 4, and so on. This "spreads" the dino out to make it bigger.
+    
+Instead of drawing one tiny pixel, we use `drect` to draw a filled box of size `scale`.
+    
+
+Here is the code to render our Dino at three different sizes:
+
+```
+from gint import *
+
+SPRITE_DINO_RUN1 = [
+    "      #### ",
+    "      ## ##",
+    "      #####",
+    " #   ##### ",
+    " ##########",
+    " ##########",
+    "  ######## ",
+    "   #   #   ",
+    "   ##      "
+]
+
+def draw_sprite(sprite, x, y, scale=2):
+    """Draws a text-based sprite string at a specific scale."""
+    for row_idx, row in enumerate(sprite):
+        for col_idx, char in enumerate(row):
+            if char == "#":
+                # Calculate the top-left of our 'pixel block'
+                px = x + (col_idx * scale)
+                py = y + (row_idx * scale)
+                
+                # Draw a filled rectangle. 
+                # We use 'scale - 1' so the box is exactly the right size.
+                drect(px, py, px + scale - 1, py + scale - 1, C_BLACK)
+
+# Visualizing the Scales
+dclear(C_WHITE)
+
+# 1x Scale (Original size)
+dtext(10, 5, C_BLACK, "1x")
+draw_sprite(SPRITE_DINO_RUN1, 10, 25, scale=1)
+
+# 2x Scale (Standard for our game)
+dtext(40, 5, C_BLACK, "2x")
+draw_sprite(SPRITE_DINO_RUN1, 40, 25, scale=2)
+
+# 4x Scale (Extra Large)
+dtext(100, 5, C_BLACK, "4x")
+draw_sprite(SPRITE_DINO_RUN1, 100, 25, scale=4)
+
+dupdate()
+getkey()
+```
+
+
+## Physics: Jumping and Gravity
+
+To make the dino jump, we use two variables: `player_y` (position) and `player_dy` (velocity).
+
+When the user presses **UP**, we set `player_dy` to a negative number (moving up).
+    
+Every frame, we add `player_dy` to `player_y`.
+    
+We then add a constant (Gravity) to `player_dy` to pull the dino back down.
+    
+
+```python
+# Gravity logic
+game.player_y += game.player_dy
+if game.player_y < 0:
+    game.player_dy += 1  # Pulling down
+else:
+    game.player_y = 0    # Stay on ground
+    game.is_jumping = False
+```
+
+You can now ues this to create a simple jumping game :
+
+```python
+from gint import *
+
+WIDTH = DWIDTH
+HEIGHT = DHEIGHT
+GROUND_Y = HEIGHT - 20
+
+SPRITE_DINO_RUN1 = [
+    "      #### ",
+    "      ## ##",
+    "      #####",
+    " #   ##### ",
+    " ##########",
+    " ##########",
+    "  ######## ",
+    "   #   #   ",
+    "   ##      "
+]
+
+def draw_sprite(sprite, x, y, scale=2):
+    """Draws a text-based sprite string at a specific scale."""
+    for row_idx, row in enumerate(sprite):
+        for col_idx, char in enumerate(row):
+            if char == "#":
+                px = x + (col_idx * scale)
+                py = y + (row_idx * scale)
+                drect(px, py, px + scale - 1, py + scale - 1, C_BLACK)
+
+def main():
+    player_y = 0      # Relative offset from ground
+    player_dy = 0     # Vertical velocity
+    is_jumping = False
+
+    while True:
+        dclear(C_WHITE)
+        
+        # Using pollevent() to read key pressed
+        cleareventflips()
+        ev = pollevent()
+        while ev.type != KEYEV_NONE:
+            if ev.type == KEYEV_DOWN:
+                # Jump if Up or Numpad 8 is pressed
+                if ev.key in [KEY_UP, KEY_8] and not is_jumping:
+                    player_dy = -8
+                    is_jumping = True
+            ev = pollevent()
+
+        # Apply velocity to the offset
+        player_y += player_dy
+        
+        # If player is in the air (offset < 0)
+        if player_y < 0:
+            player_dy += 1 # Gravity pulls down (increases dy)
+        else:
+            # Landing logic
+            player_y = 0
+            player_dy = 0
+            is_jumping = False
+
+        # Draw the floor line
+        dline(0, GROUND_Y, WIDTH, GROUND_Y, C_BLACK)
+        
+        # Draw the Dino relative to the ground
+        # 18 is the height of the sprite at scale 2
+        py = GROUND_Y - 18 + player_y
+        draw_sprite(SPRITE_DINO_RUN1, 20, int(py))
+        
+        dtext(10, 5, C_BLACK, "Press UP to Jump")
+        
+        dupdate()
+        
+        # Exit on DEL key
+        if keydown(KEY_DEL):
+            break
+
+main()
+```
+
+## Obstacles and Collision
+
+Obstacles are stored in a list. Every frame, we move them to the left. If an obstacle goes off-screen (x < 0), we remove it and increase the score.
+
+For collisions, we use **Bounding Box** (AABB) logic. If the rectangle of the player overlaps with the rectangle of a cactus, it's Game Over.
+
+### Understanding AABB Collision
+
+**Axis-Aligned Bounding Boxes (AABB)** are the simplest way to detect if two objects are touching. It assumes objects are rectangles that are not rotated.
+
+## The Logic
+For two rectangles to collide, **all four** of these conditions must be true:
+
+1.  The **Left** of A is to the left of the **Right** of B.
+2.  The **Right** of A is to the right of the **Left** of B.
+3.  The **Top** of A is above the **Bottom** of B.
+4.  The **Bottom** of A is below the **Top** of B.
+
+<div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 20px 0; border: 1px solid #e2e8f0;">
+
+<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+  <!-- Grid -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="200" fill="url(#grid)" />
+
+  <!-- Player Rect -->
+  <rect x="50" y="60" width="80" height="100" fill="rgba(59, 130, 246, 0.2)" stroke="#3b82f6" stroke-width="2" rx="4" />
+  <text x="60" y="50" fill="#3b82f6" font-size="12" font-weight="bold">PLAYER (A)</text>
+  
+  <!-- Cactus Rect -->
+  <rect x="110" y="100" width="60" height="80" fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="2" rx="4" />
+  <text x="120" y="195" fill="#ef4444" font-size="12" font-weight="bold">CACTUS (B)</text>
+
+  <!-- Highlight Overlap -->
+  <rect x="110" y="100" width="20" height="60" fill="rgba(168, 85, 247, 0.4)" stroke="#a855f7" stroke-width="1" stroke-dasharray="4" />
+  
+  <!-- Labels -->
+  <line x1="50" y1="60" x2="130" y2="60" stroke="#3b82f6" stroke-dasharray="2" />
+  <text x="10" y="65" fill="#64748b" font-size="10">y1</text>
+  
+  <line x1="50" y1="60" x2="50" y2="160" stroke="#3b82f6" stroke-dasharray="2" />
+  <text x="45" y="175" fill="#64748b" font-size="10">x1</text>
+</svg>
+
+</div>
+
+### AABB Code implementation
+
+In our Python code, we write it like this:
+
+```python
+def check_collision(ax, ay, aw, ah, bx, by, bw, bh):
+    return (
+        ax < bx + bw and  # A's left < B's right
+        ax + aw > bx and  # A's right > B's left
+        ay < by + bh and  # A's top < B's bottom
+        ay + ah > by      # A's bottom > B's top
+    )
+```
+
+From that, we can create a small game demo that would move the cactus with keys to visualize collisions:
+
+```
+from gint import *
+import random
+
+# Screen dimensions
+WIDTH = DWIDTH
+HEIGHT = DHEIGHT
+
+# Game States
+STATE_MENU = 0
+STATE_PLAYING = 1
+
+# Rendered at 2x scale
+SPRITE_DINO_RUN1 = [
+    "      #### ",
+    "      ## ##",
+    "      #####",
+    " #   ##### ",
+    " ##########",
+    " ##########",
+    "  ######## ",
+    "   #   #   ",
+    "   ##      "
+]
+
+
+SPRITE_CACTUS = [
+    "  #  ",
+    "  # #",
+    "# # #",
+    "# # #",
+    "#####",
+    "  #  ",
+    "  #  "
+]
+
+class Game:
+    def __init__(self):
+        self.state = STATE_MENU
+        self.score = 0
+        
+        # Player Variables
+        self.player_x = 10
+        self.player_y = HEIGHT - 40 - 36
+        self.ground_y = HEIGHT - 40
+        
+        # Manual Control Variables
+        self.cactus_x = 80
+        self.is_colliding = False
+
+    def reset(self):
+        self.state = STATE_PLAYING
+        self.cactus_x = 80
+        self.is_colliding = False
+
+def draw_sprite(sprite, x, y, scale=4):
+    for row_idx, row in enumerate(sprite):
+        for col_idx, char in enumerate(row):
+            if char == "#":
+                px = x + (col_idx * scale)
+                py = y + (row_idx * scale)
+                drect(px, py, px + scale - 1, py + scale - 1, C_BLACK)
+
+def check_collision(px, py, pw, ph, ox, oy, ow, oh):
+    """
+    AABB Collision Logic:
+    Returns True if the rectangles overlap.
+    """
+    return (px < ox + ow and
+            px + pw > ox and
+            py < oy + oh and
+            py + ph > oy)
+
+game = Game()
+
+while True:
+    dclear(C_WHITE)
+    
+    # Input Handling
+    cleareventflips()
+    ev = pollevent()
+    while ev.type != KEYEV_NONE:
+        if ev.type == KEYEV_DOWN:
+            if game.state == STATE_MENU:
+                if ev.key in [KEY_EXE, KEY_5]:
+                    game.reset()
+        ev = pollevent()
+
+    if game.state == STATE_PLAYING:
+        # Manual Cactus Movement
+        if keydown(KEY_LEFT):
+            game.cactus_x -= 3
+        if keydown(KEY_RIGHT):
+            game.cactus_x += 3
+            
+        # Collision logic variables (Updated for 4x Scale)
+        # Player Hitbox: [x, y, w, h] -> 8x9 pixels * 4 = 32x36
+        p_hitbox = [game.player_x, game.player_y, 32, 36]
+        # Cactus Hitbox: [x, y, w, h] -> 5x7 pixels * 4 = 20x28
+        o_hitbox = [game.cactus_x, game.ground_y - 28, 20, 28]
+        
+        # Check collision
+        game.is_colliding = check_collision(
+            p_hitbox[0], p_hitbox[1], p_hitbox[2], p_hitbox[3],
+            o_hitbox[0], o_hitbox[1], o_hitbox[2], o_hitbox[3]
+        )
+
+    # Color based on collision status
+    hitbox_color = C_RED if game.is_colliding else C_BLUE
+    
+    # Draw Ground
+    dline(0, game.ground_y, WIDTH, game.ground_y, C_BLACK)
+
+    if game.state == STATE_MENU:
+        dtext(10, HEIGHT//2 - 5, C_BLACK, "COLLISION DEMO")
+        dtext(25, HEIGHT//2 + 5, C_BLACK, "Press EXE")
+    
+    elif game.state == STATE_PLAYING:
+        # Draw Dino Sprite + Hitbox
+        drect_border(game.player_x, game.player_y, game.player_x + 32, game.player_y + 36, C_WHITE, 1, hitbox_color)
+        draw_sprite(SPRITE_DINO_RUN1, game.player_x, game.player_y, 4)
+            
+        # Draw Cactus + Hitbox
+        drect_border(game.cactus_x, game.ground_y - 28, game.cactus_x + 20, game.ground_y, C_WHITE, 1, hitbox_color)
+        draw_sprite(SPRITE_CACTUS, game.cactus_x, game.ground_y - 28, 4)
+            
+        # Instruction & Status
+        status = "HIT!" if game.is_colliding else "SAFE"
+        dtext(5, 5, hitbox_color, status)
+        dtext(5, 15, C_BLACK, "Use LEFT/RIGHT")
+
+    # Final screen update
+    dupdate()
+    
+    if keydown(KEY_DEL):
+        break
+```
+
+## Final Code
+
+Here is the complete game logic. Note that we use `pollevent()` for jumps (one-time press) and `keydown()` for ducking (holding the key).
+
+```
+from gint import *
+import random
+
+# Game States
+STATE_MENU = 0
+STATE_PLAYING = 1
+STATE_GAMEOVER = 2
+
+# Sprites
+SPRITE_DINO_RUN1 = [
+    "      #### ",
+    "      ## ##",
+    "      #####",
+    " #   ##### ",
+    " ##########",
+    " ##########",
+    "  ######## ",
+    "   #   #   ",
+    "   ##      "
+]
+
+SPRITE_DINO_RUN2 = [
+    "      #### ",
+    "      ## ##",
+    "      #####",
+    " #   ##### ",
+    " ##########",
+    " ##########",
+    "  ######## ",
+    "   #   #   ",
+    "       ##  "
+]
+
+SPRITE_DINO_DUCK = [
+    "           ",
+    "           ",
+    "           ",
+    "      #####",
+    " ##########",
+    "###########",
+    " ##########",
+    "  #      # "
+]
+
+SPRITE_CACTUS = [
+    "  #  ",
+    "  # #",
+    "# # #",
+    "# # #",
+    "#####",
+    "  #  ",
+    "  #  "
+]
+
+class Game:
+    def __init__(self):
+        self.state = STATE_MENU
+        self.score = 0
+        self.high_score = 0
+        self.player_y = 0
+        self.player_dy = 0
+        self.is_jumping = False
+        self.is_ducking = False
+        self.ground_y = DHEIGHT - 40
+        self.frame_count = 0
+        self.obstacles = []
+        self.spawn_timer = 0
+
+    def reset(self):
+        self.state = STATE_PLAYING
+        self.score = 0
+        self.player_y = 0
+        self.player_dy = 0
+        self.is_jumping = False
+        self.obstacles = []
+        self.spawn_timer = 60
+
+def draw_sprite(sprite, x, y, scale=2):
+    for row_idx, row in enumerate(sprite):
+        for col_idx, char in enumerate(row):
+            if char == "#":
+                px = x + (col_idx * scale)
+                py = y + (row_idx * scale)
+                drect(px, py, px + scale - 1, py + scale - 1, C_BLACK)
+
+def check_collision(px, py, pw, ph, ox, oy, ow, oh):
+    return px < ox + ow and px + pw > ox and py < oy + oh and py + ph > oy
+
+game = Game()
+
+# Main Loop
+while True:
+    dclear(C_WHITE)
+    
+    # Input
+    ev = pollevent()
+    if ev.type == KEYEV_DOWN:
+        if game.state != STATE_PLAYING:
+            if ev.key in [KEY_EXE, KEY_5]: game.reset()
+        elif ev.key in [KEY_UP, KEY_8] and not game.is_jumping:
+            game.player_dy = -10
+            game.is_jumping = True
+    
+    game.is_ducking = keydown(KEY_DOWN) or keydown(KEY_2)
+
+    # Logic
+    if game.state == STATE_PLAYING:
+        game.frame_count += 1
+        game.player_y += game.player_dy
+        if game.player_y < 0:
+            game.player_dy += 1
+        else:
+            game.player_y = 0
+            game.player_dy = 0
+            game.is_jumping = False
+            
+        game.spawn_timer -= 1
+        if game.spawn_timer <= 0:
+            game.obstacles.append([DWIDTH, "cactus"])
+            game.spawn_timer = random.randint(40, 80)
+            
+        # Collision & Movement
+        p_rect = (25, game.ground_y - 18 + game.player_y, 16, 18)
+        if game.is_ducking and not game.is_jumping:
+            p_rect = (25, game.ground_y - 10, 20, 10)
+            
+        new_obs = []
+        for obs in game.obstacles:
+            obs[0] -= 6 
+            o_rect = (obs[0], game.ground_y - 14, 10, 14)
+            if check_collision(p_rect[0], p_rect[1], p_rect[2], p_rect[3], o_rect[0], o_rect[1], o_rect[2], o_rect[3]):
+                game.state = STATE_GAMEOVER
+                if game.score > game.high_score: game.high_score = game.score
+            if obs[0] > -20: new_obs.append(obs)
+            else: game.score += 1
+        game.obstacles = new_obs
+
+    # Rendering
+    dline(0, game.ground_y, DWIDTH, game.ground_y, C_BLACK)
+    if game.state == STATE_MENU:
+        dtext(DWIDTH//2 - 40, DHEIGHT//2, C_BLACK, "DINO RUN")
+        dtext(DWIDTH//2 - 60, DHEIGHT//2 + 20, C_BLACK, "Press EXE to Start")
+    elif game.state in [STATE_PLAYING, STATE_GAMEOVER]:
+        py = game.ground_y - 18 + game.player_y
+        if game.is_ducking and not game.is_jumping:
+            draw_sprite(SPRITE_DINO_DUCK, 25, game.ground_y - 16)
+        else:
+            anim = SPRITE_DINO_RUN1 if (game.frame_count // 5) % 2 == 0 or game.is_jumping else SPRITE_DINO_RUN2
+            draw_sprite(anim, 25, py)
+        for obs in game.obstacles:
+            draw_sprite(SPRITE_CACTUS, obs[0], game.ground_y - 14)
+        dtext(10, 10, C_BLACK, "Score: " + str(game.score))
+
+    if game.state == STATE_GAMEOVER:
+        dtext(DWIDTH//2 - 40, DHEIGHT//2 - 10, C_BLACK, "GAME OVER")
+        dtext(DWIDTH//2 - 45, DHEIGHT//2 + 10, C_BLACK, "High: " + str(game.high_score))
+
+    dupdate()
+```
+
