@@ -1,0 +1,427 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="520"
+  height="260"
+  viewBox="0 0 520 260"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">Dino jumping physics with gravity</title>
+  <desc id="desc">
+    A pixel dino jumps upward with negative velocity, slows down because of gravity,
+    then falls back to the ground.
+  </desc>
+
+  <rect x="0" y="0" width="520" height="260" fill="white" />
+
+  <text
+    x="20"
+    y="28"
+    fill="black"
+    font-family="monospace"
+    font-size="16"
+    font-weight="700"
+  >
+    Jumping + Gravity
+  </text>
+
+  <text
+    x="20"
+    y="50"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    player_y += player_dy   |   player_dy += gravity
+  </text>
+
+  <line
+    x1="20"
+    y1="205"
+    x2="500"
+    y2="205"
+    stroke="black"
+    stroke-width="3"
+    stroke-linecap="square"
+  />
+
+  <text
+    x="430"
+    y="222"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    ground: y = 0
+  </text>
+
+  <path
+    d="M 60 185 C 140 95, 245 95, 330 185"
+    fill="none"
+    stroke="black"
+    stroke-width="1"
+    stroke-dasharray="4 5"
+    opacity="0.45"
+  />
+
+  <text
+    x="175"
+    y="92"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    player_y &lt; 0 means in the air
+  </text>
+
+  <line
+    x1="75"
+    y1="175"
+    x2="75"
+    y2="125"
+    stroke="black"
+    stroke-width="2"
+    marker-end="url(#arrow)"
+  />
+  <text
+    x="88"
+    y="145"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    player_dy = -8
+  </text>
+  <text
+    x="88"
+    y="160"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    jump moves up
+  </text>
+
+  <line
+    x1="355"
+    y1="118"
+    x2="355"
+    y2="170"
+    stroke="black"
+    stroke-width="2"
+    marker-end="url(#arrow)"
+  />
+  <text
+    x="370"
+    y="145"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    gravity: +1
+  </text>
+  <text
+    x="370"
+    y="160"
+    fill="black"
+    font-family="monospace"
+    font-size="11"
+  >
+    pulls down
+  </text>
+
+  <defs>
+    <marker
+      id="arrow"
+      markerWidth="8"
+      markerHeight="8"
+      refX="4"
+      refY="4"
+      orient="auto"
+      markerUnits="strokeWidth"
+    >
+      <path d="M 0 0 L 8 4 L 0 8 z" fill="black" />
+    </marker>
+  </defs>
+
+  <text x="50" y="235" fill="black" font-family="monospace" font-size="10">
+    takeoff
+  </text>
+
+  <text x="210" y="235" fill="black" font-family="monospace" font-size="10">
+    slow down
+  </text>
+
+  <text x="320" y="235" fill="black" font-family="monospace" font-size="10">
+    land
+  </text>
+
+  <g opacity="0.18" transform="translate(55 169) scale(2)">
+    <rect x="6" y="0" width="1" height="1" fill="black" />
+    <rect x="7" y="0" width="1" height="1" fill="black" />
+    <rect x="8" y="0" width="1" height="1" fill="black" />
+    <rect x="9" y="0" width="1" height="1" fill="black" />
+    <rect x="6" y="1" width="1" height="1" fill="black" />
+    <rect x="7" y="1" width="1" height="1" fill="black" />
+    <rect x="9" y="1" width="1" height="1" fill="black" />
+    <rect x="10" y="1" width="1" height="1" fill="black" />
+    <rect x="6" y="2" width="1" height="1" fill="black" />
+    <rect x="7" y="2" width="1" height="1" fill="black" />
+    <rect x="8" y="2" width="1" height="1" fill="black" />
+    <rect x="9" y="2" width="1" height="1" fill="black" />
+    <rect x="10" y="2" width="1" height="1" fill="black" />
+    <rect x="1" y="3" width="1" height="1" fill="black" />
+    <rect x="5" y="3" width="1" height="1" fill="black" />
+    <rect x="6" y="3" width="1" height="1" fill="black" />
+    <rect x="7" y="3" width="1" height="1" fill="black" />
+    <rect x="8" y="3" width="1" height="1" fill="black" />
+    <rect x="9" y="3" width="1" height="1" fill="black" />
+    <rect x="1" y="4" width="1" height="1" fill="black" />
+    <rect x="2" y="4" width="1" height="1" fill="black" />
+    <rect x="3" y="4" width="1" height="1" fill="black" />
+    <rect x="4" y="4" width="1" height="1" fill="black" />
+    <rect x="5" y="4" width="1" height="1" fill="black" />
+    <rect x="6" y="4" width="1" height="1" fill="black" />
+    <rect x="7" y="4" width="1" height="1" fill="black" />
+    <rect x="8" y="4" width="1" height="1" fill="black" />
+    <rect x="9" y="4" width="1" height="1" fill="black" />
+    <rect x="10" y="4" width="1" height="1" fill="black" />
+    <rect x="1" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="5" width="1" height="1" fill="black" />
+    <rect x="3" y="5" width="1" height="1" fill="black" />
+    <rect x="4" y="5" width="1" height="1" fill="black" />
+    <rect x="5" y="5" width="1" height="1" fill="black" />
+    <rect x="6" y="5" width="1" height="1" fill="black" />
+    <rect x="7" y="5" width="1" height="1" fill="black" />
+    <rect x="8" y="5" width="1" height="1" fill="black" />
+    <rect x="9" y="5" width="1" height="1" fill="black" />
+    <rect x="10" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="6" width="1" height="1" fill="black" />
+    <rect x="4" y="6" width="1" height="1" fill="black" />
+    <rect x="5" y="6" width="1" height="1" fill="black" />
+    <rect x="6" y="6" width="1" height="1" fill="black" />
+    <rect x="7" y="6" width="1" height="1" fill="black" />
+    <rect x="8" y="6" width="1" height="1" fill="black" />
+    <rect x="9" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="7" width="1" height="1" fill="black" />
+    <rect x="7" y="7" width="1" height="1" fill="black" />
+    <rect x="3" y="8" width="1" height="1" fill="black" />
+    <rect x="4" y="8" width="1" height="1" fill="black" />
+  </g>
+
+  <g opacity="0.18" transform="translate(205 105) scale(2)">
+    <rect x="6" y="0" width="1" height="1" fill="black" />
+    <rect x="7" y="0" width="1" height="1" fill="black" />
+    <rect x="8" y="0" width="1" height="1" fill="black" />
+    <rect x="9" y="0" width="1" height="1" fill="black" />
+    <rect x="6" y="1" width="1" height="1" fill="black" />
+    <rect x="7" y="1" width="1" height="1" fill="black" />
+    <rect x="9" y="1" width="1" height="1" fill="black" />
+    <rect x="10" y="1" width="1" height="1" fill="black" />
+    <rect x="6" y="2" width="1" height="1" fill="black" />
+    <rect x="7" y="2" width="1" height="1" fill="black" />
+    <rect x="8" y="2" width="1" height="1" fill="black" />
+    <rect x="9" y="2" width="1" height="1" fill="black" />
+    <rect x="10" y="2" width="1" height="1" fill="black" />
+    <rect x="1" y="3" width="1" height="1" fill="black" />
+    <rect x="5" y="3" width="1" height="1" fill="black" />
+    <rect x="6" y="3" width="1" height="1" fill="black" />
+    <rect x="7" y="3" width="1" height="1" fill="black" />
+    <rect x="8" y="3" width="1" height="1" fill="black" />
+    <rect x="9" y="3" width="1" height="1" fill="black" />
+    <rect x="1" y="4" width="1" height="1" fill="black" />
+    <rect x="2" y="4" width="1" height="1" fill="black" />
+    <rect x="3" y="4" width="1" height="1" fill="black" />
+    <rect x="4" y="4" width="1" height="1" fill="black" />
+    <rect x="5" y="4" width="1" height="1" fill="black" />
+    <rect x="6" y="4" width="1" height="1" fill="black" />
+    <rect x="7" y="4" width="1" height="1" fill="black" />
+    <rect x="8" y="4" width="1" height="1" fill="black" />
+    <rect x="9" y="4" width="1" height="1" fill="black" />
+    <rect x="10" y="4" width="1" height="1" fill="black" />
+    <rect x="1" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="5" width="1" height="1" fill="black" />
+    <rect x="3" y="5" width="1" height="1" fill="black" />
+    <rect x="4" y="5" width="1" height="1" fill="black" />
+    <rect x="5" y="5" width="1" height="1" fill="black" />
+    <rect x="6" y="5" width="1" height="1" fill="black" />
+    <rect x="7" y="5" width="1" height="1" fill="black" />
+    <rect x="8" y="5" width="1" height="1" fill="black" />
+    <rect x="9" y="5" width="1" height="1" fill="black" />
+    <rect x="10" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="6" width="1" height="1" fill="black" />
+    <rect x="4" y="6" width="1" height="1" fill="black" />
+    <rect x="5" y="6" width="1" height="1" fill="black" />
+    <rect x="6" y="6" width="1" height="1" fill="black" />
+    <rect x="7" y="6" width="1" height="1" fill="black" />
+    <rect x="8" y="6" width="1" height="1" fill="black" />
+    <rect x="9" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="7" width="1" height="1" fill="black" />
+    <rect x="7" y="7" width="1" height="1" fill="black" />
+    <rect x="3" y="8" width="1" height="1" fill="black" />
+    <rect x="4" y="8" width="1" height="1" fill="black" />
+  </g>
+
+  <g opacity="0.18" transform="translate(325 169) scale(2)">
+    <rect x="6" y="0" width="1" height="1" fill="black" />
+    <rect x="7" y="0" width="1" height="1" fill="black" />
+    <rect x="8" y="0" width="1" height="1" fill="black" />
+    <rect x="9" y="0" width="1" height="1" fill="black" />
+    <rect x="6" y="1" width="1" height="1" fill="black" />
+    <rect x="7" y="1" width="1" height="1" fill="black" />
+    <rect x="9" y="1" width="1" height="1" fill="black" />
+    <rect x="10" y="1" width="1" height="1" fill="black" />
+    <rect x="6" y="2" width="1" height="1" fill="black" />
+    <rect x="7" y="2" width="1" height="1" fill="black" />
+    <rect x="8" y="2" width="1" height="1" fill="black" />
+    <rect x="9" y="2" width="1" height="1" fill="black" />
+    <rect x="10" y="2" width="1" height="1" fill="black" />
+    <rect x="1" y="3" width="1" height="1" fill="black" />
+    <rect x="5" y="3" width="1" height="1" fill="black" />
+    <rect x="6" y="3" width="1" height="1" fill="black" />
+    <rect x="7" y="3" width="1" height="1" fill="black" />
+    <rect x="8" y="3" width="1" height="1" fill="black" />
+    <rect x="9" y="3" width="1" height="1" fill="black" />
+    <rect x="1" y="4" width="1" height="1" fill="black" />
+    <rect x="2" y="4" width="1" height="1" fill="black" />
+    <rect x="3" y="4" width="1" height="1" fill="black" />
+    <rect x="4" y="4" width="1" height="1" fill="black" />
+    <rect x="5" y="4" width="1" height="1" fill="black" />
+    <rect x="6" y="4" width="1" height="1" fill="black" />
+    <rect x="7" y="4" width="1" height="1" fill="black" />
+    <rect x="8" y="4" width="1" height="1" fill="black" />
+    <rect x="9" y="4" width="1" height="1" fill="black" />
+    <rect x="10" y="4" width="1" height="1" fill="black" />
+    <rect x="1" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="5" width="1" height="1" fill="black" />
+    <rect x="3" y="5" width="1" height="1" fill="black" />
+    <rect x="4" y="5" width="1" height="1" fill="black" />
+    <rect x="5" y="5" width="1" height="1" fill="black" />
+    <rect x="6" y="5" width="1" height="1" fill="black" />
+    <rect x="7" y="5" width="1" height="1" fill="black" />
+    <rect x="8" y="5" width="1" height="1" fill="black" />
+    <rect x="9" y="5" width="1" height="1" fill="black" />
+    <rect x="10" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="6" width="1" height="1" fill="black" />
+    <rect x="4" y="6" width="1" height="1" fill="black" />
+    <rect x="5" y="6" width="1" height="1" fill="black" />
+    <rect x="6" y="6" width="1" height="1" fill="black" />
+    <rect x="7" y="6" width="1" height="1" fill="black" />
+    <rect x="8" y="6" width="1" height="1" fill="black" />
+    <rect x="9" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="7" width="1" height="1" fill="black" />
+    <rect x="7" y="7" width="1" height="1" fill="black" />
+    <rect x="3" y="8" width="1" height="1" fill="black" />
+    <rect x="4" y="8" width="1" height="1" fill="black" />
+  </g>
+
+  <g transform="translate(55 169) scale(2)">
+    <animateTransform
+      attributeName="transform"
+      type="translate"
+      values="55 169; 120 125; 205 105; 285 130; 325 169; 55 169"
+      keyTimes="0; 0.22; 0.45; 0.68; 0.85; 1"
+      dur="2.6s"
+      repeatCount="indefinite"
+      additive="replace"
+    />
+
+    <animateTransform
+      attributeName="transform"
+      type="scale"
+      values="2"
+      dur="2.6s"
+      repeatCount="indefinite"
+      additive="sum"
+    />
+
+    <rect x="6" y="0" width="1" height="1" fill="black" />
+    <rect x="7" y="0" width="1" height="1" fill="black" />
+    <rect x="8" y="0" width="1" height="1" fill="black" />
+    <rect x="9" y="0" width="1" height="1" fill="black" />
+    <rect x="6" y="1" width="1" height="1" fill="black" />
+    <rect x="7" y="1" width="1" height="1" fill="black" />
+    <rect x="9" y="1" width="1" height="1" fill="black" />
+    <rect x="10" y="1" width="1" height="1" fill="black" />
+    <rect x="6" y="2" width="1" height="1" fill="black" />
+    <rect x="7" y="2" width="1" height="1" fill="black" />
+    <rect x="8" y="2" width="1" height="1" fill="black" />
+    <rect x="9" y="2" width="1" height="1" fill="black" />
+    <rect x="10" y="2" width="1" height="1" fill="black" />
+    <rect x="1" y="3" width="1" height="1" fill="black" />
+    <rect x="5" y="3" width="1" height="1" fill="black" />
+    <rect x="6" y="3" width="1" height="1" fill="black" />
+    <rect x="7" y="3" width="1" height="1" fill="black" />
+    <rect x="8" y="3" width="1" height="1" fill="black" />
+    <rect x="9" y="3" width="1" height="1" fill="black" />
+    <rect x="1" y="4" width="1" height="1" fill="black" />
+    <rect x="2" y="4" width="1" height="1" fill="black" />
+    <rect x="3" y="4" width="1" height="1" fill="black" />
+    <rect x="4" y="4" width="1" height="1" fill="black" />
+    <rect x="5" y="4" width="1" height="1" fill="black" />
+    <rect x="6" y="4" width="1" height="1" fill="black" />
+    <rect x="7" y="4" width="1" height="1" fill="black" />
+    <rect x="8" y="4" width="1" height="1" fill="black" />
+    <rect x="9" y="4" width="1" height="1" fill="black" />
+    <rect x="10" y="4" width="1" height="1" fill="black" />
+    <rect x="1" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="5" width="1" height="1" fill="black" />
+    <rect x="3" y="5" width="1" height="1" fill="black" />
+    <rect x="4" y="5" width="1" height="1" fill="black" />
+    <rect x="5" y="5" width="1" height="1" fill="black" />
+    <rect x="6" y="5" width="1" height="1" fill="black" />
+    <rect x="7" y="5" width="1" height="1" fill="black" />
+    <rect x="8" y="5" width="1" height="1" fill="black" />
+    <rect x="9" y="5" width="1" height="1" fill="black" />
+    <rect x="10" y="5" width="1" height="1" fill="black" />
+    <rect x="2" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="6" width="1" height="1" fill="black" />
+    <rect x="4" y="6" width="1" height="1" fill="black" />
+    <rect x="5" y="6" width="1" height="1" fill="black" />
+    <rect x="6" y="6" width="1" height="1" fill="black" />
+    <rect x="7" y="6" width="1" height="1" fill="black" />
+    <rect x="8" y="6" width="1" height="1" fill="black" />
+    <rect x="9" y="6" width="1" height="1" fill="black" />
+    <rect x="3" y="7" width="1" height="1" fill="black" />
+    <rect x="7" y="7" width="1" height="1" fill="black" />
+    <rect x="3" y="8" width="1" height="1" fill="black" />
+    <rect x="4" y="8" width="1" height="1" fill="black" />
+  </g>
+
+  <rect
+    x="20"
+    y="72"
+    width="120"
+    height="42"
+    fill="white"
+    stroke="black"
+    stroke-width="1"
+  />
+
+  <text x="28" y="90" fill="black" font-family="monospace" font-size="10">
+    Press UP:
+  </text>
+  <text x="28" y="105" fill="black" font-family="monospace" font-size="10">
+    player_dy = -8
+  </text>
+
+  <rect
+    x="365"
+    y="72"
+    width="130"
+    height="42"
+    fill="white"
+    stroke="black"
+    stroke-width="1"
+  />
+
+  <text x="373" y="90" fill="black" font-family="monospace" font-size="10">
+    Each frame:
+  </text>
+  <text x="373" y="105" fill="black" font-family="monospace" font-size="10">
+    player_dy += 1
+  </text>
+</svg>
