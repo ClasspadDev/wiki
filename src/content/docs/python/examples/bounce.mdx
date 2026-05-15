@@ -148,8 +148,8 @@ for dy in range(DVD_H):
 
 This is a **nested loop**. It goes through every row and column of the image:
 
-- `dy` is the **row index** — it starts at 0 and goes up to `DVD_H - 1` (in our case, 15).
-- `dx` is the **column index** — it starts at 0 and goes up to `DVD_W - 1` (in our case, 22).
+- `dy` is the **row index**, that starts at 0 and goes up to `DVD_H - 1` (in our case, 15).
+- `dx` is the **column index**, that starts at 0 and goes up to `DVD_W - 1` (in our case, 22).
 
 This lets us visit **every character** of the logo, one by one, starting from the top-left.
 
@@ -238,7 +238,7 @@ These are special color constants provided by `gint`.
 
 ## Step 6: The Main Loop
 
-This part is the **core** of your program — where everything comes alive and the logo starts moving around!
+This part is the **core** of your program where everything comes alive and the logo starts moving around!
 
 We call this an **animation loop**. The idea is simple:  
 - Clear the screen  
@@ -260,7 +260,7 @@ Let’s break that down carefully.
 
 ---
 
-### `gint.dclear(bg)` — Clear the screen
+### `gint.dclear(bg)` Clear the screen
 
 This clears the entire screen before drawing the next frame.
 
@@ -270,7 +270,7 @@ If we don’t do this, the previous frame would stay visible and the screen woul
 
 ---
 
-### `draw_logo(x, y, fg, bg)` — Draw the logo
+### `draw_logo(x, y, fg, bg)` Draw the logo
 
 This draws the logo at position `(x, y)`.
 
@@ -280,7 +280,7 @@ This draws the logo at position `(x, y)`.
 
 ---
 
-### `gint.dupdate()` — Display the frame
+### `gint.dupdate()` Display the frame
 
 This updates the screen and actually **shows what you drew**.
 
@@ -337,7 +337,7 @@ This makes the logo **bounce** back the other way.
 
 ### Check if the user wants to exit
 
-We don’t want this loop to run forever — we let the user press the **EXIT key** to stop it.
+We don’t want this loop to run forever, we let the user press the **EXIT key** to stop it.
 
 ```py
     ev = gint.pollevent()

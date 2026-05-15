@@ -21,7 +21,7 @@ To address this, the `.bin` format was developed with the following consideratio
 
 ### Loader Behavior
 
-The loader checks if the load address starts with `0x8C`. If it does, it treats it as a load address; otherwise, it assumes the file contains raw executable code. This approach, while effective, carries some risk—there's a possibility that a machine code instruction could inadvertently contain `0x8C`, leading to potential crashes.
+The loader checks if the load address starts with `0x8C`. If it does, it treats it as a load address; otherwise, it assumes the file contains raw executable code. This approach, while effective, carries some risk: there's a possibility that a machine code instruction could inadvertently contain `0x8C`, leading to potential crashes.
 
 The implementation was aimed to support various combinations of loaders and file types:
    - Simple loaders that copy everything to `0x8CFF0000` and execute it.

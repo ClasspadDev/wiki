@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-PythonExtra is fast enough for real-time games — **if you’re careful**.  
+PythonExtra is fast enough for real-time games **if you’re careful**.  
 But if your app starts lagging, there are three usual culprits:
 
 1. Drawing too much  
@@ -18,7 +18,7 @@ This page shows how to spot those issues and fix them, with **concrete examples*
 
 ## 1. Avoid Unnecessary Overdraw
 
-You can easily get 20+ FPS with full-screen redraws — **as long as you’re not redrawing what doesn’t need to change.**
+You can easily get 20+ FPS with full-screen redraws **as long as you’re not redrawing what doesn’t need to change.**
 
 ### ❌ Bad: Redrawing things you're about to overwrite
 
@@ -95,7 +95,7 @@ If you're building a huge array of tiny tuples, you’re feeding the garbage col
 positions = [(x, x) for x in range(1000)]
 ```
 
-That’s 1,000 allocations — and it gets worse if you do this in a loop.
+That’s 1,000 allocations and it gets worse if you do this in a loop.
 
 ### ✅ Better: Use a flat array or shared buffer
 
@@ -152,7 +152,7 @@ Spread expensive calculations across frames, or only update when data changes.
 
 ## Extra Notes
 
-- `drect()` includes both x2/y2 — so full-screen is `drect(0, 0, DWIDTH-1, DHEIGHT-1, color)`
+- `drect()` includes both x2/y2 so full-screen is `drect(0, 0, DWIDTH-1, DHEIGHT-1, color)`
 - `dupdate()` is mandatory to display changes. Call it once per frame.
 - For input-heavy loops, `clearevents()` and `cleareventflips()` are your friends.
 - Partial redraws (only updating specific screen regions) **can** improve performance but are tricky. Unless you’re drawing fewer than 3 things per frame, **full redraw is simpler and usually fast enough**.
@@ -160,4 +160,4 @@ Spread expensive calculations across frames, or only update when data changes.
 ---
 
 Need help diagnosing your frame drops?  
-Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-6841a36030cc8191963c8856c9c1e2bb-pythonextra-helper) — just paste your loop or logic!
+Ask the [👨‍💻 PythonExtra ChatGPT](https://chatgpt.com/g/g-6841a36030cc8191963c8856c9c1e2bb-pythonextra-helper) just paste your loop or logic!
