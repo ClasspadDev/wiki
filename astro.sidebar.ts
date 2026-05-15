@@ -140,6 +140,7 @@ export const sidebar = [
                 },
                 {
                     label: 'Reference',
+                    collapsed: true,
                     autogenerate: { directory: 'python/reference' },
                 },
                 { label: 'Optimize', link: '/python/optimize/' },
