@@ -102,9 +102,7 @@ Overclocking utilities manipulate the FLL multiplier (FLF) or PLL multiplier to 
 
 Spread-spectrum clock generation (SSCG) is a technique used to reduce Electromagnetic Interference (EMI) by slightly modulating the clock frequency. It is enabled by default on newer models.
 
-However, downspreading degrades performance and creates major issues at higher PLL values. The TMU-based timer operates at Pϕ/4, and spread spectrum causes timer drift. Furthermore, the slowdown depends on the PLL value, estimated by:
-
-$$ f_{SS} = \begin{cases} f_0 \times \left(1 - 1.6\% \times \frac{PLL}{16}\right), & \text{if } 3 \le PLL \le 32 \\ f_0, & \text{if } 1 \le PLL \le 2 \end{cases} $$
+However, downspreading degrades performance and creates major issues at higher PLL values. The TMU-based timer operates at Pϕ/4, and spread spectrum causes timer drift. Furthermore, the slowdown depends on the PLL value.
 
 Because of this scaling penalty, a PLL of ×33 performs identically to ×1 under spread spectrum. This is why advanced utilities automatically disable spread spectrum at startup, allowing you to accurately benchmark and push the PLL multiplier up to ×64.
 
