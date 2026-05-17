@@ -104,6 +104,8 @@ Spread-spectrum clock generation (SSCG) is a technique used to reduce Electromag
 
 However, downspreading degrades performance and creates major issues at higher PLL values. The TMU-based timer operates at Pϕ/4, and spread spectrum causes timer drift. Furthermore, the slowdown depends on the PLL value.
 
+![](/wiki/img/hardware/overclock/spread_spectrum.svg)
+
 Because of this scaling penalty, a PLL of ×33 performs identically to ×1 under spread spectrum. This is why advanced utilities automatically disable spread spectrum at startup, allowing you to accurately benchmark and push the PLL multiplier up to ×64.
 
 ### The Bus State Controller (BSC) & Memory Timings
