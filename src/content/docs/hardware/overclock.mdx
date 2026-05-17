@@ -3,3 +3,138 @@ title: Overclocking
 description: How to make the calculator faster
 ---
 
+import { LinkCard, CardGrid, Icon } from '@astrojs/starlight/components';
+
+Overclocking your ClassPad allows you to push the hardware beyond factory limits, granting smoother gameplay, faster rendering, quicker calculations, and funny glitchs. If you are a user wanting to boost your games or a developer looking to squeeze every frame out of your engine, this guide covers everything you need to know.
+Remember that overclocking is a last-effort optimization, and you should consider optimizing your code first.
+
+---
+
+## Using CPTune4
+
+If you just want to make your calculator faster without touching any code, **CPTune4** is the tool you need. CPTune4 is a powerful overclocking and benchmarking utility for CASIO ClassPad II calculators running Hollyhock. 
+
+### Features
+*   **Real-time frequency monitoring** : view CPU, PLL, SFO, BFC, and PFC frequencies live.
+*   **FLL multiplier tuning** : overclock up to ×2047 (use with caution!).
+*   **Memory tester** : verify RAM and ROM integrity.
+*   **Dhrystone benchmark** : measure raw CPU performance in iterations per second.
+*   **FPS counter** : see your display refresh rate in real time.
+
+### Usage
+Launch from the Hollyhock app menu. Use the arrow keys to navigate and adjust frequency multipliers. Press `[7]` to capture current values, and `[8]` for help.
+
+> **⚠ Warning:** Overclocking beyond stable limits may cause the calculator to freeze. A battery pull safely resets it back to factory defaults.
+
+### Compatibility
+Tested on ClassPad II (fx-CP400+E) with Hollyhock firmware. Not compatible with non-Hollyhock devices.
+
+<CardGrid>
+    <div class="card-app">
+        <LinkCard
+            title="⚡ Get CPTune4"
+            href="https://classpaddev.github.io/store/p/cptune4?ref=cpwiki"
+            description="Download CPTune4 from the ClasspadDev Store to easily overclock your calculator."
+        />
+    </div>
+</CardGrid>
+
+---
+
+## Developer Guide: Integrating Overclocking
+
+If you are developing a game or a computationally heavy application (like an emulator or a sandbox sim), you can integrate overclocking directly into your code. 
+
+By manipulating the Clock Pulse Generator (CPG) registers, you can define preset speed levels (e.g., Default, Light, Medium, Fast, Turbo). To do this safely, you must always snapshot the OS-default hardware state before making any modifications.
+
+### Basic Implementation
+
+Here is a simplified structural example of how to initialize and apply an overclock in your engine's startup routine:
+
+```cpp
+#include "overclock.h"
+
+int main() {
+    // 1. Snapshot the OS-default CPG clock registers FIRST, 
+    // before any other hardware init that might change clock state.
+    oclock_init();
+
+    // 2. Read your user's saved preferences
+    int userOverclockLevel = get_saved_settings().oc_level;
+
+    // 3. Apply the persisted overclock level 
+    // (level 0 = default = no register write).
+    oclock_apply(userOverclockLevel);
+
+    // 4. Continue with regular hardware/display initialization...
+    engine_init();
+    
+    // ... game loop ...
+}
+```
+
+The underlying implementation (usually split into `overclock.h` and `overclock.cpp`) interacts directly with Memory-Mapped I/O (MMIO) registers at `0xA4150000` (CPG) and `0xFEC10000` (BSC). When increasing the frequency, it is critical to also adjust the SDRAM wait cycles to ensure memory stability.
+
+_If you are looking for drop-in headers to manage FLL/PLL scaling, wait-state adjustments, and safe fallback routines, check the source code of projects like [CPBoy](https://www.google.com/search?q=https://github.com/QBos07/CPBoy) or [Falling-Sand-Sim](https://www.google.com/search?q=https://github.com/SPLATPLAYS/Falling-Sand-Sim)._
+
+---
+
+## Hardware-Level Overclocking
+
+For developers and enthusiasts who want to understand _how_ overclocking actually works on the SH7305/SH4AL-DSP architecture, this section breaks down the hardware components involved.
+
+### The Clock Pulse Generator (CPG)
+
+The CPG generates the clock signals that drive the entire system. The base signal originates from the Real-Time Clock (RTC) oscillator, which ticks at 32.768 kHz. This signal passes through two multiplier circuits:the **FLL** (Frequency Lock Loop) and the **PLL** (Phase Lock Loop):before being divided into four main operational frequencies:
+
+- **Iϕ (CPU Clock):** Determines raw processing speed.
+    
+- **Sϕ (SuperHyway Clock):** The main bus of the Microprocessor Unit (MPU).
+    
+- **Bϕ (Bus Clock):** Determines the speed of external memory (RAM/ROM) and LCD access.
+    
+- **Pϕ (Peripheral Clock):** Controls timers and serial communication.
+    
+
+Overclocking utilities manipulate the FLL multiplier (FLF) or PLL multiplier to increase these base frequencies.
+
+### Spread Spectrum
+
+Spread-spectrum clock generation (SSCG) is a technique used to reduce Electromagnetic Interference (EMI) by slightly modulating the clock frequency. It is enabled by default on newer models.
+
+However, downspreading degrades performance and creates major issues at higher PLL values. The TMU-based timer operates at Pϕ/4, and spread spectrum causes timer drift. Furthermore, the slowdown depends on the PLL value, estimated by:
+
+$$ f_{SS} = \begin{cases} f_0 \times \left(1 - 1.6\% \times \frac{PLL}{16}\right), & \text{if } 3 \le PLL \le 32 \\ f_0, & \text{if } 1 \le PLL \le 2 \end{cases} $$
+
+Because of this scaling penalty, a PLL of ×33 performs identically to ×1 under spread spectrum. This is why advanced utilities automatically disable spread spectrum at startup, allowing you to accurately benchmark and push the PLL multiplier up to ×64.
+
+### The Bus State Controller (BSC) & Memory Timings
+
+A faster CPU is useless if it spends all its time waiting for RAM. The BSC manages wait cycles:the deliberate delays given to memory modules to complete read/write operations.
+
+Area 3 (CS3WCR) controls the SDRAM. The default memory timings are very conservative to maximize battery life, usually following a `CL-tRCD-tRP-tRAS` format. When pushing the bus frequency (Bϕ) higher, you must adjust the Row Cycle Time (tRC) to prevent system crashes. The minimum recommended tRC is calculated as:
+
+**tRC = tRP + tRAS**
+
+Where **tRAS = CL + tRCD + 2**. By tightening the memory timings (e.g., raising tRC to 6 cycles instead of the default 4), the hardware can comfortably handle bus frequencies exceeding 130 MHz.
+
+### LCD Controller (LCDC) Timings
+
+Area 5A (CS5ABCR / CS5AWCR) controls the LCD. The most important registers here are:
+
+- **IWW:** Idle cycles between read/write operations.
+    
+- **WW:** Write access wait cycles.
+    
+- **HW:** Delay cycles after negation.
+    
+
+By reducing IWW to 0 and tightening WW and HW, you can gain massive improvements in `dupdate()` benchmarks (up to a 67% speedup).
+
+**Important:** The LCD hardware is sensitive. If the bus frequency exceeds 105 MHz while IWW is set to 0, you will likely experience visual artifacts and screen glitches. It is generally recommended to keep a total of 1.5 cycles for IWW + WW + HW for stability.
+
+### OS Power Management
+
+Overclocking modifications are applied to volatile RAM. If the battery dies or the reset button is pressed, all settings revert to factory defaults.
+
+The ClassPad (fx-CP400) handles sleep modes differently than the fx-CG series. It switches to hibernation 30 seconds after entering sleep mode. However, the ClassPad OS does _not_ reset the CS5A (LCDC) registers during sleep, and most CPG and BSC states are retained even through hibernation, making overclock profiles surprisingly persistent across standard sleep cycles.
