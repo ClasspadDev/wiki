@@ -3,6 +3,803 @@ title: SuperH CPU 73050
 description: Unofficial documentation of the SuperH CPU 73050
 ---
 
-The CPU73050 is used by the fx-CG50 PRIZM, that's neighbor of the ClassPad CP400 and pretty similar CPU (CP400 report as SH-7305à. It's a SuperH4 Big Endian CPU with no Floating Point Unit (FPU). 
+The CPU73050 is used by the fx-CG50 PRIZM, that's neighbor of the ClassPad CP400 and theorized similar CPU (CP400 report as SH-7305). It's a SuperH4 Big Endian CPU with no Floating Point Unit (FPU). 
 
-TODO: Add opcodes and details here...
+## CPU73050  Opcode Formats
+
+### add
+
+| Format | Abstract | Code |
+|---|---|---|
+| `add #imm,Rn` | Adds Rm to Rn and stores result in Rn. | `0111nnnniiiiiiii` |
+| `add Rm,Rn` | Adds Rm to Rn and stores result in Rn. | `0011nnnnmmmm1100` |
+
+### addc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `addc Rm,Rn` | Adds with carry using T as carry-in/out. | `0011nnnnmmmm1110` |
+
+### addv
+
+| Format | Abstract | Code |
+|---|---|---|
+| `addv Rm,Rn` | Adds with signed overflow detection (T reflects overflow). | `0011nnnnmmmm1111` |
+
+### and
+
+| Format | Abstract | Code |
+|---|---|---|
+| `and #imm,R0` | Bitwise AND. | `11001001iiiiiiii` |
+| `and Rm,Rn` | Bitwise AND. | `0010nnnnmmmm1001` |
+
+### and.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `and.b #imm,@(R0,GBR)` |  | `11001101iiiiiiii` |
+
+### bf
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bf disp` | If T==0 then branch to PC+4+(disp*2). | `10001011dddddddd` |
+
+### bf/s
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bf/s disp` | If T==0 then delayed branch to PC+4+(disp*2). | `10001111dddddddd` |
+
+### bra
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bra disp` | Unconditional branch to PC+4+(disp*2). | `1010iiiidddddddd` |
+
+### braf
+
+| Format | Abstract | Code |
+|---|---|---|
+| `braf Rn` | Unconditional branch via register offset (PC+4+Rm). | `0000nnnn00100011` |
+
+### bsr
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bsr disp` | Branch to subroutine; PR <- return address. | `1011iiiidddddddd` |
+
+### bsrf
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bsrf Rn` | Branch to subroutine via register offset; PR <- return address. | `0000nnnn00000011` |
+
+### bt
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bt disp` | If T==1 then branch to PC+4+(disp*2). | `10001001dddddddd` |
+
+### bt/s
+
+| Format | Abstract | Code |
+|---|---|---|
+| `bt/s disp` | If T==1 then delayed branch to PC+4+(disp*2). | `10001101dddddddd` |
+
+### clrdmxy
+
+| Format | Abstract | Code |
+|---|---|---|
+| `clrdmxy` |  | `0000000010001000` |
+
+### clrmac
+
+| Format | Abstract | Code |
+|---|---|---|
+| `clrmac` | Clears MAC registers. | `0000000000101000` |
+
+### clrs
+
+| Format | Abstract | Code |
+|---|---|---|
+| `clrs` | Clears S bit. | `0000000001001000` |
+
+### clrt
+
+| Format | Abstract | Code |
+|---|---|---|
+| `clrt` | Clears T bit. | `0000000000001000` |
+
+### cmp/eq
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/eq #imm,R0` | Compares equality and updates T. | `10001000iiiiiiii` |
+| `cmp/eq Rm,Rn` | Compares equality and updates T. | `0011nnnnmmmm0000` |
+
+### cmp/ge
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/ge Rm,Rn` | Signed >= compare, updates T. | `0011nnnnmmmm0011` |
+
+### cmp/gt
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/gt Rm,Rn` | Signed > compare, updates T. | `0011nnnnmmmm0111` |
+
+### cmp/hi
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/hi Rm,Rn` | Unsigned > compare, updates T. | `0011nnnnmmmm0110` |
+
+### cmp/hs
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/hs Rm,Rn` | Unsigned >= compare, updates T. | `0011nnnnmmmm0010` |
+
+### cmp/pl
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/pl Rn` | Compares Rn > 0, updates T. | `0100nnnn00010101` |
+
+### cmp/pz
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/pz Rn` | Compares Rn >= 0, updates T. | `0100nnnn00010001` |
+
+### cmp/str
+
+| Format | Abstract | Code |
+|---|---|---|
+| `cmp/str Rm,Rn` | Byte-wise string compare between registers, updates T. | `0010nnnnmmmm1100` |
+
+### div0s
+
+| Format | Abstract | Code |
+|---|---|---|
+| `div0s Rm,Rn` | Initializes signed divide step state. | `0010nnnnmmmm0111` |
+
+### div0u
+
+| Format | Abstract | Code |
+|---|---|---|
+| `div0u` | Initializes unsigned divide step state. | `0000000000011001` |
+
+### div1
+
+| Format | Abstract | Code |
+|---|---|---|
+| `div1 Rm,Rn` | Performs one iterative divide step. | `0011nnnnmmmm0100` |
+
+### dmuls.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `dmuls.l Rm,Rn` |  | `0011nnnnmmmm1101` |
+
+### dmulu.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `dmulu.l Rm,Rn` |  | `0011nnnnmmmm0101` |
+
+### dsp
+
+| Format | Abstract | Code |
+|---|---|---|
+| `dsp` |  | `111100xxxxxxxxxx` |
+| `dsp` |  | `111101xxxxxxxxxx` |
+| `dsp` |  | `111110xxxxxxxxxx` |
+
+### dt
+
+| Format | Abstract | Code |
+|---|---|---|
+| `dt Rn` | Decrement and test (updates T when result is zero). | `0100nnnn00010000` |
+
+### exts.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `exts.b Rm,Rn` | Sign-extends byte to 32-bit. | `0110nnnnmmmm1110` |
+
+### exts.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `exts.w Rm,Rn` | Sign-extends word to 32-bit. | `0110nnnnmmmm1111` |
+
+### extu.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `extu.b Rm,Rn` | Zero-extends byte to 32-bit. | `0110nnnnmmmm1100` |
+
+### extu.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `extu.w Rm,Rn` | Zero-extends word to 32-bit. | `0110nnnnmmmm1101` |
+
+### icbi
+
+| Format | Abstract | Code |
+|---|---|---|
+| `icbi @Rn` | Instruction cache block invalidate. | `0000nnnn11100011` |
+
+### jmp
+
+| Format | Abstract | Code |
+|---|---|---|
+| `jmp @Rn` | Jump to target register address. | `0100nnnn00101011` |
+
+### jsr
+
+| Format | Abstract | Code |
+|---|---|---|
+| `jsr @Rn` | Jump to subroutine register target; PR <- return address. | `0100nnnn00001011` |
+
+### ldc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ldc Rn,SR` | Loads control register from general register. | `0100nnnn00001110` |
+| `ldc Rn,GBR` | Loads control register from general register. | `0100nnnn00011110` |
+| `ldc Rn,VBR` | Loads control register from general register. | `0100nnnn00101110` |
+| `ldc Rn,SSR` | Loads control register from general register. | `0100nnnn00111110` |
+| `ldc Rn,SPC` | Loads control register from general register. | `0100nnnn01001110` |
+| `ldc Rn,Rm_bank` | Loads control register from general register. | `0100nnnn1mmm1110` |
+| `ldc Rn,RC` | Loads control register from general register. | `0100nnnn01011110` |
+| `ldc Rn` | Loads control register from general register. | `0100nnnn01101110` |
+| `ldc Rn` | Loads control register from general register. | `0100nnnn01111110` |
+| `ldc Rn` | Loads control register from general register. | `0100nnnn00111010` |
+| `ldc Rn` | Loads control register from general register. | `0100nnnn11111010` |
+
+### ldc.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ldc.l @Rn+,SR` | Loads control register longword from memory form. | `0100nnnn00000111` |
+| `ldc.l @Rn+,GBR` | Loads control register longword from memory form. | `0100nnnn00010111` |
+| `ldc.l @Rn+,VBR` | Loads control register longword from memory form. | `0100nnnn00100111` |
+| `ldc.l @Rn+,SSR` | Loads control register longword from memory form. | `0100nnnn00110111` |
+| `ldc.l @Rn+,SPC` | Loads control register longword from memory form. | `0100nnnn01000111` |
+| `ldc.l @Rn+,Rm_bank` | Loads control register longword from memory form. | `0100nnnn1mmm0111` |
+| `ldc.l @Rn+,RC` | Loads control register longword from memory form. | `0100nnnn01010111` |
+| `ldc.l @Rn+` | Loads control register longword from memory form. | `0100nnnn01100111` |
+| `ldc.l @Rn+` | Loads control register longword from memory form. | `0100nnnn01110111` |
+| `ldc.l @Rn+` | Loads control register longword from memory form. | `0100nnnn00110110` |
+| `ldc.l @Rn+` | Loads control register longword from memory form. | `0100nnnn11110110` |
+
+### ldrc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ldrc Rn` | Load RC control/register context. | `0100nnnn00110100` |
+| `ldrc #imm` | Load RC control/register context. | `10001010iiiiiiii` |
+
+### ldre
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ldre @(disp,PC)` | Load resource/register extension. | `10001110dddddddd` |
+
+### ldrs
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ldrs @(disp,PC)` | Load status/control extension. | `10001100dddddddd` |
+
+### lds
+
+| Format | Abstract | Code |
+|---|---|---|
+| `lds Rn,MACH` | Loads system register from general register. | `0100nnnn00001010` |
+| `lds Rn,MACL` | Loads system register from general register. | `0100nnnn00011010` |
+| `lds Rn,PR` | Loads system register from general register. | `0100nnnn00101010` |
+| `lds Rn` | Loads system register from general register. | `0100nnnn01101010` |
+| `lds Rn` | Loads system register from general register. | `0100nnnn01111010` |
+| `lds Rn` | Loads system register from general register. | `0100nnnn10001010` |
+| `lds Rn` | Loads system register from general register. | `0100nnnn10011010` |
+| `lds Rn` | Loads system register from general register. | `0100nnnn10101010` |
+| `lds Rn` | Loads system register from general register. | `0100nnnn10111010` |
+
+### lds.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `lds.l @Rn+,MACH` | Loads system register longword from memory form. | `0100nnnn00000110` |
+| `lds.l @Rn+,MACL` | Loads system register longword from memory form. | `0100nnnn00010110` |
+| `lds.l @Rn+,PR` | Loads system register longword from memory form. | `0100nnnn00100110` |
+| `lds.l @Rn+` | Loads system register longword from memory form. | `0100nnnn01100110` |
+| `lds.l @Rn+` | Loads system register longword from memory form. | `0100nnnn01110110` |
+| `lds.l @Rn+` | Loads system register longword from memory form. | `0100nnnn10000110` |
+| `lds.l @Rn+` | Loads system register longword from memory form. | `0100nnnn10010110` |
+| `lds.l @Rn+` | Loads system register longword from memory form. | `0100nnnn10100110` |
+| `lds.l @Rn+` | Loads system register longword from memory form. | `0100nnnn10110110` |
+
+### ldtlb
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ldtlb` | Loads TLB entry using MMU state. | `0000000000111000` |
+
+### mac.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mac.l @Rm+,@Rn+` | Multiply-accumulate longword. | `0000nnnnmmmm1111` |
+
+### mac.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mac.w @Rm+,@Rn+` | Multiply-accumulate word. | `0100nnnnmmmm1111` |
+
+### mov
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mov #imm,Rn` | Moves a value between general registers. | `1110nnnniiiiiiii` |
+| `mov Rm,Rn` | Moves a value between general registers. | `0110nnnnmmmm0011` |
+
+### mov.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mov.b Rm,@Rn` | Moves one byte between register/memory forms. | `0010nnnnmmmm0000` |
+| `mov.b Rm,@-Rn` | Moves one byte between register/memory forms. | `0010nnnnmmmm0100` |
+| `mov.b Rm,@(R0,Rn)` | Moves one byte between register/memory forms. | `0000nnnnmmmm0100` |
+| `mov.b @Rm,Rn` | Moves one byte between register/memory forms. | `0110nnnnmmmm0000` |
+| `mov.b @Rm+,Rn` | Moves one byte between register/memory forms. | `0110nnnnmmmm0100` |
+| `mov.b R0,@(disp,GBR)` | Moves one byte between register/memory forms. | `11000000iiiiiiii` |
+| `mov.b R0,@(disp,Rm)` | Moves one byte between register/memory forms. | `10000000mmmmdddd` |
+| `mov.b @(R0,Rm),Rn` | Moves one byte between register/memory forms. | `0000nnnnmmmm1100` |
+| `mov.b @(disp,GBR),R0` | Moves one byte between register/memory forms. | `11000100iiiiiiii` |
+| `mov.b @(disp,Rm),R0` | Moves one byte between register/memory forms. | `10000100mmmmdddd` |
+
+### mov.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mov.l Rm,@Rn` | Moves one longword between register/memory forms. | `0010nnnnmmmm0010` |
+| `mov.l Rm,@-Rn` | Moves one longword between register/memory forms. | `0010nnnnmmmm0110` |
+| `mov.l Rm,@(R0,Rn)` | Moves one longword between register/memory forms. | `0000nnnnmmmm0110` |
+| `mov.l Rm,@(disp,Rn)` | Moves one longword between register/memory forms. | `0001nnnnmmmmdddd` |
+| `mov.l @Rm,Rn` | Moves one longword between register/memory forms. | `0110nnnnmmmm0010` |
+| `mov.l @Rm+,Rn` | Moves one longword between register/memory forms. | `0110nnnnmmmm0110` |
+| `mov.l R0,@(disp,GBR)` | Moves one longword between register/memory forms. | `11000010iiiiiiii` |
+| `mov.l @(R0,Rm),Rn` | Moves one longword between register/memory forms. | `0000nnnnmmmm1110` |
+| `mov.l @(disp,GBR),R0` | Moves one longword between register/memory forms. | `11000110iiiiiiii` |
+| `mov.l @(disp,Rm),Rn` | Moves one longword between register/memory forms. | `0101nnnnmmmmdddd` |
+| `mov.l @(disp,PC),Rn` | Moves one longword between register/memory forms. | `1101nnnndddddddd` |
+
+### mov.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mov.w Rm,@Rn` | Moves one word between register/memory forms. | `0010nnnnmmmm0001` |
+| `mov.w Rm,@-Rn` | Moves one word between register/memory forms. | `0010nnnnmmmm0101` |
+| `mov.w Rm,@(R0,Rn)` | Moves one word between register/memory forms. | `0000nnnnmmmm0101` |
+| `mov.w @Rm,Rn` | Moves one word between register/memory forms. | `0110nnnnmmmm0001` |
+| `mov.w @Rm+,Rn` | Moves one word between register/memory forms. | `0110nnnnmmmm0101` |
+| `mov.w R0,@(disp,GBR)` | Moves one word between register/memory forms. | `11000001iiiiiiii` |
+| `mov.w R0,@(disp,Rm)` | Moves one word between register/memory forms. | `10000001mmmmdddd` |
+| `mov.w @(R0,Rm),Rn` | Moves one word between register/memory forms. | `0000nnnnmmmm1101` |
+| `mov.w @(disp,GBR),R0` | Moves one word between register/memory forms. | `11000101iiiiiiii` |
+| `mov.w @(disp,Rm),R0` | Moves one word between register/memory forms. | `10000101mmmmdddd` |
+| `mov.w @(disp,PC),Rn` | Moves one word between register/memory forms. | `1001nnnndddddddd` |
+
+### mova
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mova @(disp,PC),R0` | Computes PC-relative address into R0. | `11000111dddddddd` |
+
+### movca.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `movca.l R0,@Rn` | Cache line move/store assist. | `0000nnnn11000011` |
+
+### movco.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `movco.l R0,@Rn` | Conditional store longword variant. | `0000nnnn01110011` |
+
+### movli.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `movli.l @Rn,R0` | Load-linked style move longword. | `0000nnnn01100011` |
+
+### movt
+
+| Format | Abstract | Code |
+|---|---|---|
+| `movt Rn` | Copies T bit into a general register. | `0000nnnn00101001` |
+
+### movua.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `movua.l @Rn,R0` | Unaligned longword move variant. | `0100nnnn10101001` |
+| `movua.l @Rn+,R0` | Unaligned longword move variant. | `0100nnnn11101001` |
+
+### mul.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mul.l Rm,Rn` | 32-bit multiply, low result path. | `0000nnnnmmmm0111` |
+
+### muls.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `muls.w Rm,Rn` | Signed 16x16 multiply. | `0010nnnnmmmm1111` |
+
+### mulu.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `mulu.w Rm,Rn` | Unsigned 16x16 multiply. | `0010nnnnmmmm1110` |
+
+### neg
+
+| Format | Abstract | Code |
+|---|---|---|
+| `neg Rm,Rn` |  | `0110nnnnmmmm1011` |
+
+### negc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `negc Rm,Rn` |  | `0110nnnnmmmm1010` |
+
+### nop
+
+| Format | Abstract | Code |
+|---|---|---|
+| `nop` | No operation. | `0000000000001001` |
+
+### not
+
+| Format | Abstract | Code |
+|---|---|---|
+| `not Rm,Rn` | Bitwise NOT. | `0110nnnnmmmm0111` |
+
+### ocbi
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ocbi @Rn` | Operand cache block invalidate. | `0000nnnn10010011` |
+
+### ocbp
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ocbp @Rn` | Operand cache block purge. | `0000nnnn10100011` |
+
+### ocbwb
+
+| Format | Abstract | Code |
+|---|---|---|
+| `ocbwb @Rn` | Operand cache block write-back. | `0000nnnn10110011` |
+
+### or
+
+| Format | Abstract | Code |
+|---|---|---|
+| `or #imm,R0` | Bitwise OR. | `11001011iiiiiiii` |
+| `or Rm,Rn` | Bitwise OR. | `0010nnnnmmmm1011` |
+
+### or.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `or.b #imm,@(R0,GBR)` |  | `11001111iiiiiiii` |
+
+### pref
+
+| Format | Abstract | Code |
+|---|---|---|
+| `pref @Rn` | Prefetch hint. | `0000nnnn10000011` |
+
+### prefi
+
+| Format | Abstract | Code |
+|---|---|---|
+| `prefi @Rn` | Instruction prefetch hint. | `0000nnnn11010011` |
+
+### rotcl
+
+| Format | Abstract | Code |
+|---|---|---|
+| `rotcl Rn` | Rotate left through carry (T). | `0100nnnn00100100` |
+
+### rotcr
+
+| Format | Abstract | Code |
+|---|---|---|
+| `rotcr Rn` | Rotate right through carry (T). | `0100nnnn00100101` |
+
+### rotl
+
+| Format | Abstract | Code |
+|---|---|---|
+| `rotl Rn` | Rotate left through register. | `0100nnnn00000100` |
+
+### rotr
+
+| Format | Abstract | Code |
+|---|---|---|
+| `rotr Rn` | Rotate right through register. | `0100nnnn00000101` |
+
+### rte
+
+| Format | Abstract | Code |
+|---|---|---|
+| `rte` | Return from exception; restores control state and PC. | `0000000000101011` |
+
+### rts
+
+| Format | Abstract | Code |
+|---|---|---|
+| `rts` | Return from subroutine; PC <- PR. | `0000000000001011` |
+
+### setdmx
+
+| Format | Abstract | Code |
+|---|---|---|
+| `setdmx` |  | `0000000010011000` |
+
+### setdmy
+
+| Format | Abstract | Code |
+|---|---|---|
+| `setdmy` |  | `0000000011001000` |
+
+### setrc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `setrc Rn` | Set RC control/register context. | `0100nnnn00010100` |
+| `setrc #imm` | Set RC control/register context. | `10000010iiiiiiii` |
+
+### sets
+
+| Format | Abstract | Code |
+|---|---|---|
+| `sets` | Sets S bit. | `0000000001011000` |
+
+### sett
+
+| Format | Abstract | Code |
+|---|---|---|
+| `sett` | Sets T bit. | `0000000000011000` |
+
+### shad
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shad Rm,Rn` |  | `0100nnnnmmmm1100` |
+
+### shal
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shal Rn` | Arithmetic shift left by 1. | `0100nnnn00100000` |
+
+### shar
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shar Rn` | Arithmetic shift right by 1. | `0100nnnn00100001` |
+
+### shld
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shld Rm,Rn` |  | `0100nnnnmmmm1101` |
+
+### shll
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shll Rn` | Logical shift left by 1. | `0100nnnn00000000` |
+
+### shll16
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shll16 Rn` |  | `0100nnnn00101000` |
+
+### shll2
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shll2 Rn` |  | `0100nnnn00001000` |
+
+### shll8
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shll8 Rn` |  | `0100nnnn00011000` |
+
+### shlr
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shlr Rn` | Logical shift right by 1. | `0100nnnn00000001` |
+
+### shlr16
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shlr16 Rn` |  | `0100nnnn00101001` |
+
+### shlr2
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shlr2 Rn` |  | `0100nnnn00001001` |
+
+### shlr8
+
+| Format | Abstract | Code |
+|---|---|---|
+| `shlr8 Rn` |  | `0100nnnn00011001` |
+
+### sleep
+
+| Format | Abstract | Code |
+|---|---|---|
+| `sleep` | Enters low-power sleep until interrupt/exception. | `0000000000011011` |
+
+### stc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `stc SR,Rn` | Stores control register to general register/memory form. | `0000nnnn00000010` |
+| `stc GBR,Rn` | Stores control register to general register/memory form. | `0000nnnn00010010` |
+| `stc VBR,Rn` | Stores control register to general register/memory form. | `0000nnnn00100010` |
+| `stc SSR,Rn` | Stores control register to general register/memory form. | `0000nnnn00110010` |
+| `stc SPC,Rn` | Stores control register to general register/memory form. | `0000nnnn01000010` |
+| `stc Rm_bank,Rn` | Stores control register to general register/memory form. | `0000nnnn1mmm0010` |
+| `stc RC,Rn` | Stores control register to general register/memory form. | `0000nnnn01010010` |
+| `stc` | Stores control register to general register/memory form. | `0000nnnn01100010` |
+| `stc` | Stores control register to general register/memory form. | `0000nnnn01110010` |
+| `stc` | Stores control register to general register/memory form. | `0000nnnn00111010` |
+| `stc` | Stores control register to general register/memory form. | `0000nnnn11111010` |
+
+### stc.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `stc.l SR,@-Rn` | Stores control register longword with memory form. | `0100nnnn00000011` |
+| `stc.l GBR,@-Rn` | Stores control register longword with memory form. | `0100nnnn00010011` |
+| `stc.l VBR,@-Rn` | Stores control register longword with memory form. | `0100nnnn00100011` |
+| `stc.l SSR,@-Rn` | Stores control register longword with memory form. | `0100nnnn00110011` |
+| `stc.l SPC,@-Rn` | Stores control register longword with memory form. | `0100nnnn01000011` |
+| `stc.l Rm_bank,@-Rn` | Stores control register longword with memory form. | `0100nnnn1mmm0011` |
+| `stc.l RC,@-Rn` | Stores control register longword with memory form. | `0100nnnn01010011` |
+| `stc.l` | Stores control register longword with memory form. | `0100nnnn01100011` |
+| `stc.l` | Stores control register longword with memory form. | `0100nnnn01110011` |
+| `stc.l` | Stores control register longword with memory form. | `0100nnnn00110010` |
+| `stc.l` | Stores control register longword with memory form. | `0100nnnn11110010` |
+
+### sts
+
+| Format | Abstract | Code |
+|---|---|---|
+| `sts MACH,Rn` |  | `0000nnnn00001010` |
+| `sts MACL,Rn` |  | `0000nnnn00011010` |
+| `sts PR,Rn` |  | `0000nnnn00101010` |
+| `sts` |  | `0000nnnn01101010` |
+| `sts` |  | `0000nnnn01111010` |
+| `sts` |  | `0000nnnn10001010` |
+| `sts` |  | `0000nnnn10011010` |
+| `sts` |  | `0000nnnn10101010` |
+| `sts` |  | `0000nnnn10111010` |
+
+### sts.l
+
+| Format | Abstract | Code |
+|---|---|---|
+| `sts.l MACH,@-Rn` |  | `0100nnnn00000010` |
+| `sts.l MACL,@-Rn` |  | `0100nnnn00010010` |
+| `sts.l PR,@-Rn` |  | `0100nnnn00100010` |
+| `sts.l` |  | `0100nnnn01100010` |
+| `sts.l` |  | `0100nnnn01110010` |
+| `sts.l` |  | `0100nnnn10000010` |
+| `sts.l` |  | `0100nnnn10010010` |
+| `sts.l` |  | `0100nnnn10100010` |
+| `sts.l` |  | `0100nnnn10110010` |
+
+### sub
+
+| Format | Abstract | Code |
+|---|---|---|
+| `sub Rm,Rn` | Subtracts Rm from Rn and stores result in Rn. | `0011nnnnmmmm1000` |
+
+### subc
+
+| Format | Abstract | Code |
+|---|---|---|
+| `subc Rm,Rn` | Subtracts with borrow using T as borrow-in/out. | `0011nnnnmmmm1010` |
+
+### subv
+
+| Format | Abstract | Code |
+|---|---|---|
+| `subv Rm,Rn` | Subtracts with signed overflow detection (T reflects overflow). | `0011nnnnmmmm1011` |
+
+### swap.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `swap.b Rm,Rn` |  | `0110nnnnmmmm1000` |
+
+### swap.w
+
+| Format | Abstract | Code |
+|---|---|---|
+| `swap.w Rm,Rn` |  | `0110nnnnmmmm1001` |
+
+### synco
+
+| Format | Abstract | Code |
+|---|---|---|
+| `synco` | Synchronization barrier. | `0000000010101011` |
+
+### tas.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `tas.b @Rn` | Test-and-set byte; updates T and sets high bit in memory byte. | `0100nnnn00011011` |
+
+### trapa
+
+| Format | Abstract | Code |
+|---|---|---|
+| `trapa #imm` | Software trap/exception instruction. | `11000011iiiiiiii` |
+
+### tst
+
+| Format | Abstract | Code |
+|---|---|---|
+| `tst #imm,R0` | Bitwise test, updates T. | `11001000iiiiiiii` |
+| `tst Rm,Rn` | Bitwise test, updates T. | `0010nnnnmmmm1000` |
+
+### tst.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `tst.b #imm,@(R0,GBR)` |  | `11001100iiiiiiii` |
+
+### xor
+
+| Format | Abstract | Code |
+|---|---|---|
+| `xor #imm,R0` | Bitwise XOR. | `11001010iiiiiiii` |
+| `xor Rm,Rn` | Bitwise XOR. | `0010nnnnmmmm1010` |
+
+### xor.b
+
+| Format | Abstract | Code |
+|---|---|---|
+| `xor.b #imm,@(R0,GBR)` |  | `11001110iiiiiiii` |
+
+### xtrct
+
+| Format | Abstract | Code |
+|---|---|---|
+| `xtrct Rm,Rn` |  | `0010nnnnmmmm1101` |
