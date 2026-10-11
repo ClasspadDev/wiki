@@ -17,19 +17,34 @@ Back in the early V2 days (over 6 years ago), there was no shared compiler — e
 
 ## What is a .hh3 file?
 
-A `.hh3` file is a **small ELF executable** — the standard executable format used on Linux. If you're more familiar with Windows, think of it like a `.exe` file, but for your calculator. When you compile your C/C++ code, the compiler produces a `.hh3` file, and the Hollyhock launcher ("**YAL**") loads it and runs your program.
+A `.hh3` file is a **small ELF executable** : the standard executable format used on Linux. If you're more familiar with Windows, think of it like a `.exe` file, but for your calculator. When you compile your C/C++ code, the compiler produces a `.hh3` file, and the Hollyhock launcher ("**YAL**") loads it and runs your program.
 
 ## Can I still use V2?
 
-Yes! Switching between V2 and V3 is just a matter of swapping the `run.bin` file at the root of your calculator (V2 apps still work). That said, **V3 is recommended** — it's actively developed, more flexible, and nearly everything has been ported to it.
+Yes! Switching between V2 and V3 is just a matter of swapping the `run.bin` file at the root of your calculator (V2 apps still work). That said, **V3 is recommended** as it is actively developed, more flexible, and nearly everything has been ported to it.
 
 ## Is my calculator backwards compatible between versions?
 
 Mostly, but **don't expect perfect forward compatibility**. Apps made for one setup generally keep working, but there's no guarantee that something built today will work on a future OS or firmware version without an update. When in doubt, check the [app store](https://classpaddev.github.io/store/) for the latest version of a program.
 
-## I'm new to programming — where should I start?
+## How do I update back to the official OS?
 
-The community recommendation is to **start with Python**, using the calculator's Python support. It's forgiving, interactive, and you'll learn how the calculator works along the way. Once you're comfortable, moving to **C/C++** is natural — most of what you learned in Python still applies. A great entry point is the [Python app](https://classpaddev.github.io/store/p/python) and the [Python section of this wiki](/wiki/python/introduction/).
+Before exams, we recommend restoring the official Casio OS so your calculator is not modified. Download the official updater from [TI-Planet's archive](https://tiplanet.org/forum/archives_voir.php?id=5032905) [Mac Version](https://tiplanet.org/forum/archives_voir.php?id=5032910), then put the calculator in normal OS update mode.
+
+On the calculator:
+
+1. Connect the ClassPad to your computer with a standard USB cable.
+2. When the USB menu appears, press `Clear` or choose `5: Cancel`.
+3. Open the `Communication` app.
+4. Open the top menu `Link`.
+5. Choose `OS Update`, then press `OK`.
+6. Leave the calculator alone until the update is complete. The screen will go blank, then the calculator will ask for touch screen alignment and initial setup again.
+
+On the computer, wait 10 to 20 seconds for the USB drivers to install if needed, then click `OK` in the updater to start the official update. The update takes several minutes. Do not unplug the calculator while it is running.
+
+## I'm new to programming : where should I start?
+
+The community recommendation is to **start with Python**, using the calculator's Python support. It's forgiving, interactive, and you'll learn how the calculator works along the way. Once you're comfortable, moving to **C/C++** is natural as most of what you learned in Python still applies. A great entry point is the [Python app](https://classpaddev.github.io/store/p/python) and the [Python section of this wiki](/wiki/python/introduction/).
 
 ## What are the ways to make native programs?
 
