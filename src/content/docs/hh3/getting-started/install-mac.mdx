@@ -1,0 +1,122 @@
+---
+title: Install on macOS
+description: Install HollyHock3 from macOS with Parallels and Windows 11.
+sidebar:
+  order: 3
+---
+
+This guide explains how to install HollyHock3 from a Mac by running Windows 11 in Parallels.
+
+HollyHock3 installation is still done from Windows. On macOS, Parallels is the easiest supported path because the installer and the calculator update tool can run inside the Windows virtual machine.
+
+> Original PDF guide created by [`creezyz`](t.me/creezyz) (`@creezyz` on Discord): [Download the PDF version](/wiki/files/mac-tutorial.pdf).
+
+## Disclaimer
+
+:::caution
+- You are modifying your calculator. If something goes wrong, you are responsible for the result.
+- Do not unplug the calculator while the update is running.
+- Do not touch the cable or calculator during the update step.
+- If you are unsure, ask for help on the [ClassPadDev Discord server](https://discord.gg/knpcNJTzpd) before continuing.
+:::
+
+## What you need
+
+- A Mac
+- A ClassPad II calculator
+- A USB cable
+- Parallels Desktop
+- CrystalFetch from the Mac App Store
+- A Windows 11 ISO downloaded with CrystalFetch
+
+## 1. Install Parallels
+
+Download the free Parallels trial from [parallels.com/products/desktop/trial](https://www.parallels.com/products/desktop/trial/).
+
+Open the downloaded file and follow the on-screen instructions. macOS may ask you to authenticate with your password.
+
+## 2. Download Windows 11 with CrystalFetch
+
+Install CrystalFetch from the Mac App Store, then use it to download a Windows 11 ISO.
+
+Save the ISO somewhere easy to find, such as your Desktop.
+
+In CrystalFetch, choose Windows 11 and the right architecture for your Mac.
+
+![Download Windows 11 with CrystalFetch](/wiki/img/install/mac/crystalfetch-download.png)
+
+## 3. Create a Windows 11 virtual machine
+
+Open Parallels and choose the option to install from an image file.
+
+![Install Windows from an image file](/wiki/img/install/mac/parallels-image-file.png)
+
+Select the Windows 11 ISO file that CrystalFetch downloaded, then click `Continue`.
+
+![Select the Windows ISO file](/wiki/img/install/mac/select-iso.png)
+
+When Parallels asks which edition to install, choose `Windows 11 Home`.
+
+![Choose Windows 11 Home](/wiki/img/install/mac/windows-home.png)
+
+Continue through the Windows setup. When you reach the login page, create a Windows account.
+
+If Parallels asks for activation, click `Try free for 14 days`.
+
+## 4. Let Windows finish installing
+
+Launch Windows 11 from Parallels and let the installation finish.
+
+![Windows 11 installing in Parallels](/wiki/img/install/mac/windows-installing.png)
+
+## 5. Run the HollyHock3 installer in Windows
+
+Inside Windows 11, open Microsoft Edge and go to [classpad.dev](https://classpad.dev).
+
+Follow the Windows installer instructions from the main [Install HollyHock3 MOD](/wiki/hh3/getting-started/install/) page.
+
+When the installer asks you to connect your calculator, plug the calculator into the Mac. Parallels will ask whether the USB device should connect to macOS or Windows 11. Choose `Windows 11`.
+
+![Choose where to connect the USB device](/wiki/img/install/mac/usb-routing.png)
+
+The calculator OS update happens during this step. Do not unplug the calculator and do not touch the cable while the update is running.
+
+## 6. Copy run.bin and your apps
+
+After the update is done, reconnect your calculator and select `USB Mass Storage`.
+
+You can copy files from macOS or from Windows in Parallels:
+
+1. Download `run.bin` from the [first run steps](https://classpaddev.github.io/first-run/#steps).
+2. Copy `run.bin` to the root of your calculator storage.
+3. Copy any `.hh3` programs, games, and Python apps you want to use to the root of the calculator too.
+4. Safely eject the calculator.
+
+## 7. Launch your app
+
+On the calculator:
+
+1. Go to the ClassPad home screen.
+2. Open `System`.
+3. Open the top left `System` menu.
+4. Choose `Hollyhock Launcher`.
+5. Pick your app and press `Run`.
+
+## Troubleshooting
+
+### Parallels asks where to connect the calculator
+
+During installation, choose `Windows 11`. The updater needs to see the calculator from inside the Windows virtual machine.
+
+For normal file copying after installation, you can choose macOS or Windows. The important part is that the calculator is in `USB Mass Storage` mode.
+
+### The installer does not see the calculator
+
+Unplug the calculator, plug it in again, and make sure Parallels connects it to `Windows 11`.
+
+If you still have trouble, restart Windows in Parallels and try again.
+
+### You need help
+
+Join the [ClassPadDev Discord server](https://discord.gg/knpcNJTzpd) and explain which step failed.
+
