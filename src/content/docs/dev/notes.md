@@ -19,7 +19,7 @@ description: Internal memory mapping of the fx-CP400
 | **YRAM**       | `0xE501_7000` | `0xE501_9000` | **8 KB** | Fast data RAM (Bank 2)           |
 | **IL Memory**  | `0xE520_0000` | `0xE520_4000` | **16 KB**| Fast instruction RAM             |
 | Direct I/O     | `0xFEC0_0000` | `0xFEFF_FFFF` | 4 MB     | Hardware registers               |
-| **RS Memory**  | `0xFD80_0000` | `0xFD80_07FF` | **2 KB** | CRITICAL. Retained during standby |
+| **RS Memory**  | `0xFD80_0000` | `0xFD80_07FF` | **16 KB** | CRITICAL. Retained during standby |
 
 ---
 
